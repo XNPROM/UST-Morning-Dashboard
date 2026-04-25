@@ -1,0 +1,6 @@
+lseg-data
+pandas
+numpy
+plotly
+pandas-market-calendars
+python-dotenv

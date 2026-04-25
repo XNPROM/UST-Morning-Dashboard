@@ -1,0 +1,102 @@
+name: Dashboard
+
+on:
+  schedule:
+    - cron: "5 1 * * 1-5"
+  workflow_dispatch:
+    inputs:
+      report_date:
+        description: "Business date override in YYYY-MM-DD format"
+        required: false
+        type: string
+      push_report:
+        description: "Push generated HTML back to the repository"
+        required: true
+        default: true
+        type: boolean
+      fail_on_blocking_quality:
+        description: "Fail the run if blocking quality issues are detected"
+        required: true
+        default: true
+        type: boolean
+
+permissions:
+  contents: write
+
+jobs:
+  dashboard:
+    runs-on: ubuntu-latest
+    env:
+      TZ: Asia/Shanghai
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: true
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Configure git identity
+        if: ${{ github.event_name == 'schedule' || github.event.inputs.push_report == 'true' }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Write .env from repository secrets
+        run: |
+          cat > .env <<EOF
+          LSEG_APP_KEY=${LSEG_APP_KEY}
+          LSEG_LDP_LOGIN=${LSEG_LDP_LOGIN}
+          LSEG_LDP_PASSWORD=${LSEG_LDP_PASSWORD}
+          EOF
+        env:
+          LSEG_APP_KEY: ${{ secrets.LSEG_APP_KEY }}
+          LSEG_LDP_LOGIN: ${{ secrets.LSEG_LDP_LOGIN }}
+          LSEG_LDP_PASSWORD: ${{ secrets.LSEG_LDP_PASSWORD }}
+
+      - name: Run dashboard
+        shell: bash
+        env:
+          REPORT_DATE: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.report_date || '' }}
+          PUSH_REPORT: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.push_report || 'true' }}
+          FAIL_ON_BLOCKING_QUALITY: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.fail_on_blocking_quality || 'true' }}
+        run: |
+          set -euo pipefail
+          args=()
+
+          if [[ -n "${REPORT_DATE}" ]]; then
+            args+=(--date "${REPORT_DATE}")
+          fi
+
+          if [[ "${PUSH_REPORT}" != "true" ]]; then
+            args+=(--no-push)
+          fi
+
+          if [[ "${FAIL_ON_BLOCKING_QUALITY}" == "true" ]]; then
+            args+=(--fail-on-blocking-quality)
+          fi
+
+          python run_dashboard.py "${args[@]}"
+
+      - name: Upload report artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: dashboard-${{ github.run_id }}
+          if-no-files-found: warn
+          path: |
+            reports/*.html
+            reports/*.csv
+            reports/*.txt
+            reports/*.json
+            logs/**
