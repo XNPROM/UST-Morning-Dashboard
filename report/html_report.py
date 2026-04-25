@@ -21,6 +21,18 @@ SECTION_LABELS = {
 }
 
 
+CORE_PROVENANCE_ASSETS = [
+    "UST 2Y",
+    "UST 10Y",
+    "UST 30Y",
+    "DXY",
+    "USDCNY",
+    "USDCNH",
+    "Brent crude",
+    "Gold",
+]
+
+
 def html_table(df: pd.DataFrame, cols: list[str] | None = None, max_rows: int | None = None) -> str:
     if cols:
         df = df[[c for c in cols if c in df.columns]].copy()
@@ -31,10 +43,10 @@ def html_table(df: pd.DataFrame, cols: list[str] | None = None, max_rows: int | 
     return df.to_html(index=False, escape=True, classes="clean-table", border=0)
 
 
-def metric_card(title: str, body: str, detail: str = "") -> str:
+def metric_card(title: str, body: str, detail: str = "", tone: str = "default") -> str:
     detail_html = f"<div class='metric-detail'>{detail}</div>" if detail else ""
     return (
-        "<div class='metric-card'>"
+        f"<div class='metric-card metric-card-{tone}'>"
         f"<div class='metric-title'>{title}</div>"
         f"<div class='metric-body'>{body}</div>"
         f"{detail_html}"
@@ -43,11 +55,11 @@ def metric_card(title: str, body: str, detail: str = "") -> str:
 
 
 def _grade_badge(grade: str) -> str:
-    colors = {"A": "#2f6b60", "B": "#a86a2a", "C": "#a94438"}
-    color = colors.get(grade, "#6b7280")
+    colors = {"A": "#0f766e", "B": "#b45309", "C": "#b91c1c"}
+    color = colors.get(grade, "#64748b")
     return (
-        "<span style='display:inline-block;padding:4px 10px;border-radius:999px;"
-        f"background:{color};color:white;font-size:12px;font-weight:700'>{grade}</span>"
+        "<span class='grade-badge' "
+        f"style='background:{color};border-color:{color};'>{grade}</span>"
     )
 
 
@@ -66,18 +78,22 @@ def _quality_banner(summary_main: pd.DataFrame, quality_df: pd.DataFrame) -> str
             "<div class='status-banner status-banner-danger'>"
             "<div class='status-banner-title'>本批次数据存在关键缺口</div>"
             "<div class='status-banner-body'>"
-            "高优先级问题已经出现，页面内容仅适合用于排查数据状态。"
+            "当前页面保留用于排查与核对，暂不适合作为晨会正式引用材料。"
             f"{sample}{more}</div></div>"
         )
 
-    medium = quality_df[quality_df.get("Severity", pd.Series(dtype=str)).eq("MEDIUM")] if not quality_df.empty else pd.DataFrame()
+    medium = (
+        quality_df[quality_df.get("Severity", pd.Series(dtype=str)).eq("MEDIUM")]
+        if not quality_df.empty
+        else pd.DataFrame()
+    )
     if not medium.empty:
         sample = "；".join(
             f"{row['Asset']}：{row['Issue']}" for _, row in medium.head(3).iterrows()
         )
         return (
             "<div class='status-banner status-banner-warn'>"
-            "<div class='status-banner-title'>本批次含有待继续核对的数据项</div>"
+            "<div class='status-banner-title'>本批次仍有待继续核对的数据项</div>"
             f"<div class='status-banner-body'>{sample}</div></div>"
         )
 
@@ -85,8 +101,9 @@ def _quality_banner(summary_main: pd.DataFrame, quality_df: pd.DataFrame) -> str
         return (
             "<div class='status-banner status-banner-warn'>"
             "<div class='status-banner-title'>主观察区间暂无可用数据</div>"
-            "<div class='status-banner-body'>图表和摘要会保留页面结构，但本批次不适合用于晨会引用。</div>"
-            "</div>"
+            "<div class='status-banner-body'>"
+            "页面结构和诊断区会保留，但当前批次不适合作为晨会引用版本。"
+            "</div></div>"
         )
 
     return ""
@@ -95,13 +112,17 @@ def _quality_banner(summary_main: pd.DataFrame, quality_df: pd.DataFrame) -> str
 def _quality_summary_text(summary_main: pd.DataFrame, quality_df: pd.DataFrame) -> str:
     blocking = find_blocking_quality_issues(quality_df)
     if not blocking.empty:
-        return f"共有 {len(blocking)} 项高优先级问题，本页仅保留排查信息。"
+        return f"共识别出 {len(blocking)} 项高优先级问题，本页用于排查与核对。"
     if summary_main.empty:
-        return "主观察区间为空，页面结构保留用于检查运行状态。"
-    medium_count = int(quality_df["Severity"].eq("MEDIUM").sum()) if not quality_df.empty and "Severity" in quality_df.columns else 0
+        return "主观察区间为空，当前页面仅用于确认运行状态和数据可得性。"
+    medium_count = (
+        int(quality_df["Severity"].eq("MEDIUM").sum())
+        if not quality_df.empty and "Severity" in quality_df.columns
+        else 0
+    )
     if medium_count:
-        return f"当前没有高优先级问题，另有 {medium_count} 项待继续核对。"
-    return "当前批次没有发现高优先级缺口。"
+        return f"当前没有高优先级缺口，另有 {medium_count} 项待继续核对。"
+    return "当前批次通过主要完整性检查，可进入摘要阅读与图表核对。"
 
 
 def _notes_section(morning_notes: list[str]) -> str:
@@ -110,18 +131,24 @@ def _notes_section(morning_notes: list[str]) -> str:
     return "<ul class='notes-list'>" + "".join(f"<li>{note}</li>" for note in morning_notes) + "</ul>"
 
 
+def _primary_message(morning_notes: list[str], status_summary_text: str) -> str:
+    if morning_notes:
+        return morning_notes[0]
+    return status_summary_text
+
+
 def _ai_section(interpretation: dict[str, str] | None) -> str:
     if not interpretation:
         return """
-        <div class="section-shell section-ai">
+        <section class="section-shell section-ai" id="analysis">
             <div class="section-head">
                 <div class="section-kicker">Research Reading</div>
                 <h2>四维分析</h2>
             </div>
             <div class="ai-empty">
-                当前没有载入分析文本。只有在主观察区间数据完整且未出现高优先级问题时，才建议生成这一部分。
+                当前没有载入分析文本。只有在主观察区间数据完整且没有高优先级问题时，才建议保留这一部分。
             </div>
-        </div>
+        </section>
         """
 
     dims = [
@@ -133,7 +160,7 @@ def _ai_section(interpretation: dict[str, str] | None) -> str:
 
     cards = []
     for key, title in dims:
-        content = interpretation.get(key, "当日数据不足，当前段落暂无法写入。")
+        content = interpretation.get(key, "当日数据不足，当前段落暂时无法写入。")
         cards.append(
             "<article class='analysis-card'>"
             f"<div class='analysis-title'>{title}</div>"
@@ -142,14 +169,14 @@ def _ai_section(interpretation: dict[str, str] | None) -> str:
         )
 
     return f"""
-    <div class="section-shell section-ai">
+    <section class="section-shell section-ai" id="analysis">
         <div class="section-head">
             <div class="section-kicker">Research Reading</div>
             <h2>四维分析</h2>
         </div>
         <div class="analysis-grid">{"".join(cards)}</div>
-        <div class="section-footnote">以下文字仅在数据完整时展示，用于辅助阅读摘要与图表。</div>
-    </div>
+        <div class="section-footnote">本区块只在数据完整时显示，用于辅助阅读摘要和图表，不替代表格原始数值。</div>
+    </section>
     """
 
 
@@ -161,6 +188,56 @@ def _render_figures(figs: list) -> str:
     if not blocks:
         return "<div class='empty-state'>当前批次没有生成图表。</div>"
     return "<div class='charts-grid'>" + "".join(blocks) + "</div>"
+
+
+def _main_quote_time(summary_main: pd.DataFrame, windows: ReportWindows) -> str:
+    if summary_main.empty or "Last Time" not in summary_main.columns:
+        return windows.main_end.strftime("%Y-%m-%d %H:%M")
+    times = summary_main["Last Time"].dropna().astype(str)
+    if times.empty:
+        return windows.main_end.strftime("%Y-%m-%d %H:%M")
+    return max(times)
+
+
+def _select_log_row(all_logs: pd.DataFrame, asset: str) -> pd.Series | None:
+    if all_logs.empty or "name" not in all_logs.columns:
+        return None
+    rows = all_logs[all_logs["name"].eq(asset)].copy()
+    if rows.empty:
+        return None
+    freq_rank = {"5min": 0, "daily": 1}
+    status_rank = {"ok": 0, "invalid": 1, "failed": 2}
+    rows["__freq_rank"] = rows.get("freq", pd.Series(dtype=str)).map(freq_rank).fillna(9)
+    rows["__status_rank"] = rows.get("status", pd.Series(dtype=str)).map(status_rank).fillna(9)
+    rows = rows.sort_values(["__status_rank", "__freq_rank", "rows"], ascending=[True, True, False])
+    return rows.iloc[0]
+
+
+def _provenance_table(summary_main: pd.DataFrame, all_logs: pd.DataFrame) -> str:
+    if summary_main.empty:
+        return "<div class='empty-state'>主观察区间为空，当前没有可核对的核心资产来源。</div>"
+
+    rows = []
+    assets = [asset for asset in CORE_PROVENANCE_ASSETS if asset in set(summary_main.get("Asset", []))]
+    if not assets:
+        assets = list(summary_main["Asset"].head(8))
+
+    for asset in assets:
+        summary_row = summary_main.loc[summary_main["Asset"].eq(asset)].iloc[0]
+        log_row = _select_log_row(all_logs, asset)
+        rows.append(
+            {
+                "Asset": asset,
+                "Level": summary_row.get("Level", ""),
+                "Last Time": summary_row.get("Last Time", ""),
+                "RIC": "" if log_row is None else log_row.get("ric", ""),
+                "Field": "" if log_row is None else log_row.get("field", ""),
+                "Freq": "" if log_row is None else log_row.get("freq", ""),
+                "Rows": "" if log_row is None else log_row.get("rows", ""),
+            }
+        )
+
+    return html_table(pd.DataFrame(rows), ["Asset", "Level", "Last Time", "RIC", "Field", "Freq", "Rows"])
 
 
 def generate_html_report(
@@ -179,6 +256,7 @@ def generate_html_report(
     timestamp: str | None = None,
 ) -> tuple[str, str, str]:
     timestamp = timestamp or datetime.now(settings.REPORT_TZ).strftime("%Y%m%d_%H%M")
+    generated_at = datetime.now(settings.REPORT_TZ)
     os.makedirs(settings.OUTPUT_DIR, exist_ok=True)
 
     html_path = os.path.join(settings.OUTPUT_DIR, f"morning_dashboard_{timestamp}.html")
@@ -189,6 +267,8 @@ def generate_html_report(
     all_logs.to_csv(log_path, index=False, encoding="utf-8-sig")
 
     summary_cols = ["Group", "Asset", "Level", "Change Text", "% Change Text", "High", "Low", "Obs"]
+    log_cols = ["freq", "section", "group", "name", "ric", "field", "rows", "status", "error"]
+    log_display = all_logs[[c for c in log_cols if c in all_logs.columns]].copy()
 
     rates_tbl = html_table(rows_by_section(summary_main, ["A. Rates", "B. Real & Inflation"]), summary_cols)
     usd_rmb_tbl = html_table(rows_by_section(summary_main, ["D. USD & FX", "E. RMB"]), summary_cols)
@@ -213,230 +293,325 @@ def generate_html_report(
         )
 
     grades = compute_quality_grade(quality_df)
-    grade_badges = " ".join(
-        f"{_section_label(sec)} {_grade_badge(grade)}" for sec, grade in sorted(grades.items())
+    grade_badges = "".join(
+        f"<span class='grade-line'>{_section_label(sec)} {_grade_badge(grade)}</span>"
+        for sec, grade in sorted(grades.items())
     )
     status_banner_html = _quality_banner(summary_main, quality_df)
     status_summary_text = _quality_summary_text(summary_main, quality_df)
 
-    cards_html = "".join(
+    main_quote_time = _main_quote_time(summary_main, windows)
+    primary_message = _primary_message(morning_notes, status_summary_text)
+    provenance_html = _provenance_table(summary_main, log_display)
+
+    metrics_html = "".join(
         [
-            metric_card(
-                "观察时点",
-                windows.asof_dt.strftime("%Y-%m-%d %H:%M"),
-                "Asia/Shanghai",
-            ),
-            metric_card(
-                "主观察区间",
-                f"{windows.main_start.strftime('%m-%d %H:%M')} 至 {windows.main_end.strftime('%m-%d %H:%M')}",
-                "上一中国收盘后至早会",
-            ),
-            metric_card("十年期美债", chg(summary_main, "UST 10Y")),
-            metric_card("美元指数", chg(summary_main, "DXY")),
-            metric_card("人民币中间价", fixing_value, fixing_detail),
+            metric_card("报告时点", windows.asof_dt.strftime("%Y-%m-%d %H:%M"), "Asia/Shanghai", "neutral"),
+            metric_card("对应美国市场日", windows.prev_us_day.strftime("%Y-%m-%d"), "用于外部公开数据核对", "neutral"),
+            metric_card("主窗口末端报价", main_quote_time, "主观察区间最后一个有效点", "neutral"),
+            metric_card("十年期美债", chg(summary_main, "UST 10Y"), "名义收益率", "highlight"),
+            metric_card("美元指数", chg(summary_main, "DXY"), ".DXY", "highlight"),
+            metric_card("人民币中间价", fixing_value, fixing_detail, "neutral"),
         ]
     )
 
     notes_html = _notes_section(morning_notes)
     figs_block = _render_figures(figs)
-
     quality_html = html_table(quality_df)
     trading_html = html_table(trading_hours)
     events_html = html_table(event_calendar)
-    log_html = html_table(
-        all_logs[["freq", "section", "group", "name", "ric", "field", "rows", "status", "error"]]
-    )
-
+    log_html = html_table(log_display)
     ai_section = _ai_section(interpretation)
 
-    main_window_desc = f"上一中国交易日 {windows.main_start.strftime('%H:%M')} 至今日 {windows.main_end.strftime('%H:%M')}"
-    ny_window_desc = f"{windows.ny_start.strftime('%m-%d %H:%M')} 至 {windows.ny_end.strftime('%m-%d %H:%M')} Asia/Shanghai"
+    main_window_desc = (
+        f"{windows.main_start.strftime('%Y-%m-%d %H:%M')} 至 "
+        f"{windows.main_end.strftime('%Y-%m-%d %H:%M')} Asia/Shanghai"
+    )
+    ny_window_desc = (
+        f"{windows.ny_start.strftime('%Y-%m-%d %H:%M')} 至 "
+        f"{windows.ny_end.strftime('%Y-%m-%d %H:%M')} Asia/Shanghai"
+    )
 
     html = f"""
 <!doctype html>
 <html>
 <head>
 <meta charset="utf-8">
-<title>美债与美元市场晨间报告 {windows.asof_dt.strftime('%Y-%m-%d')}</title>
+<title>美债与美元晨间简报 {windows.asof_dt.strftime('%Y-%m-%d')}</title>
 <style>
 :root {{
-    --page-bg: #f5f0e5;
-    --page-bg-2: #fcfaf4;
-    --paper: #fffdf8;
-    --paper-2: #f8f3e8;
-    --ink: #182530;
-    --muted: #6f7880;
-    --line: #ded4c4;
-    --accent: #24564f;
-    --accent-2: #b16d2e;
-    --danger: #8d3f33;
-    --shadow: 0 22px 50px rgba(24, 37, 48, 0.12);
+    --page-bg: #eff3f8;
+    --surface: #ffffff;
+    --surface-soft: #f7f9fc;
+    --surface-strong: #0f172a;
+    --ink: #0f172a;
+    --muted: #475569;
+    --line: #d9e2ec;
+    --accent: #0f766e;
+    --accent-soft: rgba(15, 118, 110, 0.10);
+    --warn: #b45309;
+    --warn-soft: rgba(180, 83, 9, 0.12);
+    --danger: #b91c1c;
+    --danger-soft: rgba(185, 28, 28, 0.10);
+    --navy: #10233f;
+    --shadow: 0 18px 45px rgba(15, 23, 42, 0.08);
 }}
 * {{
     box-sizing: border-box;
 }}
+html {{
+    scroll-behavior: smooth;
+}}
 body {{
     margin: 0;
     color: var(--ink);
-    font-family: "Bahnschrift", "Aptos", "PingFang SC", "Microsoft YaHei", sans-serif;
+    font-family: "Aptos", "Segoe UI Variable", "PingFang SC", "Microsoft YaHei", sans-serif;
     background:
-        radial-gradient(circle at top left, rgba(36, 86, 79, 0.12), transparent 28%),
-        radial-gradient(circle at top right, rgba(177, 109, 46, 0.10), transparent 22%),
-        linear-gradient(180deg, var(--page-bg) 0%, var(--page-bg-2) 48%, #f9f8f3 100%);
+        radial-gradient(circle at top left, rgba(16, 35, 63, 0.08), transparent 26%),
+        radial-gradient(circle at top right, rgba(15, 118, 110, 0.10), transparent 24%),
+        linear-gradient(180deg, #f5f8fc 0%, var(--page-bg) 34%, #f8fafc 100%);
 }}
 .page {{
-    max-width: 1440px;
+    max-width: 1500px;
     margin: 0 auto;
-    padding: 28px 22px 44px 22px;
+    padding: 28px 20px 40px 20px;
 }}
-.hero {{
+.masthead {{
     display: grid;
-    grid-template-columns: minmax(0, 1.7fr) minmax(300px, 0.9fr);
-    gap: 20px;
-    margin-bottom: 20px;
+    grid-template-columns: minmax(0, 1.5fr) minmax(300px, 0.85fr);
+    gap: 18px;
+    align-items: stretch;
+    margin-bottom: 18px;
 }}
-.hero-main,
-.hero-side {{
-    background: linear-gradient(160deg, rgba(255,255,255,0.96), rgba(250,245,235,0.95));
-    border: 1px solid rgba(222, 212, 196, 0.9);
-    border-radius: 28px;
+.hero-panel,
+.status-panel,
+.section-shell,
+.side-card,
+.collapsible {{
+    background: rgba(255, 255, 255, 0.96);
+    border: 1px solid rgba(217, 226, 236, 0.92);
+    border-radius: 24px;
     box-shadow: var(--shadow);
 }}
-.hero-main {{
-    padding: 28px 30px 26px 30px;
-    position: relative;
-    overflow: hidden;
-}}
-.hero-main::after {{
-    content: "";
-    position: absolute;
-    inset: 0;
+.hero-panel {{
+    padding: 28px 30px;
     background:
-        linear-gradient(115deg, transparent 0%, transparent 58%, rgba(36, 86, 79, 0.05) 100%);
-    pointer-events: none;
+        linear-gradient(135deg, rgba(255, 255, 255, 0.96), rgba(247, 249, 252, 0.96)),
+        linear-gradient(180deg, rgba(16, 35, 63, 0.03), transparent);
 }}
-.hero-kicker {{
+.eyebrow {{
+    margin-bottom: 12px;
     font-size: 12px;
-    font-weight: 700;
     letter-spacing: 0.18em;
-    color: var(--accent);
     text-transform: uppercase;
-    margin-bottom: 10px;
-}}
-.hero-main h1 {{
-    margin: 0;
-    font-size: 40px;
-    line-height: 1.15;
     font-weight: 700;
-    font-family: "Source Han Serif SC", "STSong", "SimSun", Georgia, serif;
+    color: var(--accent);
 }}
-.hero-lead {{
-    margin: 14px 0 18px 0;
-    max-width: 760px;
-    font-size: 15px;
-    line-height: 1.75;
-    color: #33424f;
+.hero-panel h1 {{
+    margin: 0;
+    font-size: 42px;
+    line-height: 1.12;
+    font-family: "Georgia", "Source Han Serif SC", "STSong", serif;
+    color: #10233f;
 }}
-.hero-meta {{
+.hero-copy {{
+    margin: 16px 0 18px 0;
+    max-width: 880px;
+    font-size: 16px;
+    line-height: 1.8;
+    color: #1f3147;
+}}
+.hero-meta,
+.section-nav {{
     display: flex;
     flex-wrap: wrap;
-    gap: 12px;
-    font-size: 13px;
-    color: var(--muted);
+    gap: 10px;
 }}
-.hero-chip {{
-    padding: 8px 12px;
+.hero-chip,
+.nav-chip {{
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 12px;
     border-radius: 999px;
-    background: rgba(36, 86, 79, 0.08);
-    border: 1px solid rgba(36, 86, 79, 0.12);
+    border: 1px solid rgba(16, 35, 63, 0.08);
+    background: rgba(255, 255, 255, 0.72);
+    color: var(--muted);
+    font-size: 13px;
 }}
-.hero-side {{
-    padding: 24px 24px 22px 24px;
+.nav-chip {{
+    text-decoration: none;
+    color: #173150;
+    background: rgba(15, 118, 110, 0.08);
+    border-color: rgba(15, 118, 110, 0.14);
+}}
+.status-panel {{
+    padding: 22px 24px;
+    background:
+        linear-gradient(180deg, rgba(16, 35, 63, 0.96), rgba(16, 35, 63, 0.90)),
+        linear-gradient(135deg, rgba(15, 118, 110, 0.22), transparent 55%);
+    color: #f8fafc;
 }}
 .status-label {{
+    margin-bottom: 10px;
     font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 0.14em;
+    letter-spacing: 0.16em;
     text-transform: uppercase;
-    color: var(--accent-2);
-    margin-bottom: 8px;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.72);
 }}
 .status-summary {{
     font-size: 16px;
-    line-height: 1.7;
-    color: #283540;
+    line-height: 1.8;
+    color: #f8fafc;
     margin-bottom: 18px;
 }}
 .status-grades {{
     display: flex;
     flex-wrap: wrap;
-    gap: 8px 12px;
+    gap: 8px 10px;
+}}
+.grade-line {{
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: rgba(248, 250, 252, 0.92);
     font-size: 13px;
-    line-height: 1.8;
+}}
+.grade-badge {{
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 28px;
+    padding: 3px 10px;
+    border-radius: 999px;
+    border: 1px solid transparent;
+    color: #fff;
+    font-size: 12px;
+    font-weight: 700;
+}}
+.section-nav {{
+    margin-bottom: 18px;
 }}
 .status-banner {{
-    border-radius: 22px;
-    padding: 16px 20px;
-    margin: 0 0 20px 0;
-    box-shadow: 0 14px 30px rgba(24, 37, 48, 0.08);
+    border-radius: 20px;
+    padding: 16px 18px;
+    margin-bottom: 18px;
 }}
 .status-banner-danger {{
-    background: linear-gradient(135deg, rgba(141, 63, 51, 0.13), rgba(177, 109, 46, 0.08));
-    border: 1px solid rgba(141, 63, 51, 0.20);
+    background: linear-gradient(135deg, var(--danger-soft), rgba(255, 255, 255, 0.96));
+    border: 1px solid rgba(185, 28, 28, 0.18);
 }}
 .status-banner-warn {{
-    background: linear-gradient(135deg, rgba(177, 109, 46, 0.12), rgba(255, 255, 255, 0.95));
-    border: 1px solid rgba(177, 109, 46, 0.18);
+    background: linear-gradient(135deg, var(--warn-soft), rgba(255, 255, 255, 0.96));
+    border: 1px solid rgba(180, 83, 9, 0.18);
 }}
 .status-banner-title {{
+    margin-bottom: 6px;
     font-size: 16px;
     font-weight: 700;
-    margin-bottom: 6px;
 }}
 .status-banner-body {{
     font-size: 14px;
-    line-height: 1.75;
-    color: #34424e;
+    line-height: 1.8;
+    color: #334155;
+}}
+.overview-grid {{
+    display: grid;
+    grid-template-columns: minmax(0, 1.45fr) minmax(320px, 0.9fr);
+    gap: 18px;
+    margin-bottom: 18px;
+}}
+.overview-main {{
+    min-width: 0;
+}}
+.overview-side {{
+    display: grid;
+    gap: 16px;
+    align-content: start;
+    position: sticky;
+    top: 18px;
+    min-width: 0;
+}}
+.side-card {{
+    padding: 18px 20px;
+}}
+.side-card h3 {{
+    margin: 0 0 12px 0;
+    font-size: 20px;
+    font-family: "Georgia", "Source Han Serif SC", "STSong", serif;
+    color: #10233f;
+}}
+.side-note {{
+    font-size: 14px;
+    line-height: 1.8;
+    color: #334155;
+}}
+.mini-list {{
+    display: grid;
+    gap: 10px;
+}}
+.mini-row {{
+    display: grid;
+    grid-template-columns: 108px 1fr;
+    gap: 10px;
+    align-items: start;
+    padding-top: 10px;
+    border-top: 1px solid rgba(217, 226, 236, 0.92);
+}}
+.mini-row:first-child {{
+    padding-top: 0;
+    border-top: 0;
+}}
+.mini-label {{
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #64748b;
+    font-weight: 700;
+}}
+.mini-value {{
+    font-size: 14px;
+    line-height: 1.7;
+    color: #1e293b;
 }}
 .metrics-grid {{
     display: grid;
-    grid-template-columns: repeat(5, minmax(0, 1fr));
-    gap: 14px;
-    margin-bottom: 20px;
-}}
-.metric-card,
-.section-shell,
-.collapsible {{
-    background: rgba(255, 253, 248, 0.95);
-    border: 1px solid rgba(222, 212, 196, 0.88);
-    border-radius: 24px;
-    box-shadow: 0 18px 36px rgba(24, 37, 48, 0.08);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
 }}
 .metric-card {{
-    padding: 16px 18px 18px 18px;
+    padding: 14px 16px 16px 16px;
+    border-radius: 18px;
+    border: 1px solid rgba(217, 226, 236, 0.92);
+    background: var(--surface-soft);
+}}
+.metric-card-highlight {{
+    background: linear-gradient(135deg, rgba(15, 118, 110, 0.10), rgba(255, 255, 255, 0.92));
+    border-color: rgba(15, 118, 110, 0.18);
 }}
 .metric-title {{
+    margin-bottom: 8px;
     font-size: 12px;
-    font-weight: 700;
     letter-spacing: 0.08em;
-    color: var(--muted);
     text-transform: uppercase;
-    margin-bottom: 10px;
+    color: #64748b;
+    font-weight: 700;
 }}
 .metric-body {{
-    font-size: 23px;
-    line-height: 1.3;
+    font-size: 22px;
+    line-height: 1.35;
     font-weight: 700;
-    color: #1c2a34;
+    color: #0f172a;
 }}
 .metric-detail {{
-    margin-top: 10px;
+    margin-top: 8px;
     font-size: 12px;
-    line-height: 1.65;
-    color: var(--muted);
+    line-height: 1.7;
+    color: #475569;
 }}
 .section-shell {{
-    padding: 20px 22px 22px 22px;
+    padding: 22px 24px;
     margin-bottom: 18px;
 }}
 .section-head {{
@@ -445,25 +620,27 @@ body {{
     align-items: baseline;
     justify-content: space-between;
     gap: 10px;
-    margin-bottom: 16px;
+    margin-bottom: 14px;
 }}
 .section-kicker {{
     font-size: 12px;
-    font-weight: 700;
     letter-spacing: 0.16em;
-    color: var(--accent);
     text-transform: uppercase;
+    font-weight: 700;
+    color: var(--accent);
 }}
 .section-head h2 {{
     margin: 4px 0 0 0;
-    font-size: 26px;
+    font-size: 28px;
     line-height: 1.2;
-    font-family: "Source Han Serif SC", "STSong", "SimSun", Georgia, serif;
+    color: #10233f;
+    font-family: "Georgia", "Source Han Serif SC", "STSong", serif;
 }}
 .section-footnote {{
-    margin-top: 14px;
+    margin-top: 12px;
     font-size: 12px;
-    color: var(--muted);
+    line-height: 1.8;
+    color: #64748b;
 }}
 .notes-list {{
     margin: 0;
@@ -477,72 +654,83 @@ body {{
 .analysis-grid {{
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 16px;
+    gap: 14px;
 }}
 .analysis-card {{
-    min-height: 190px;
+    min-height: 188px;
     padding: 18px;
-    border-radius: 20px;
-    background:
-        linear-gradient(180deg, rgba(248, 243, 232, 0.96), rgba(255, 253, 248, 0.98));
-    border: 1px solid rgba(222, 212, 196, 0.86);
+    border-radius: 18px;
+    background: linear-gradient(180deg, rgba(247, 249, 252, 0.96), rgba(255, 255, 255, 0.98));
+    border: 1px solid rgba(217, 226, 236, 0.92);
 }}
 .analysis-title {{
+    margin-bottom: 10px;
     font-size: 16px;
     font-weight: 700;
-    color: var(--accent);
-    margin-bottom: 10px;
+    color: #10233f;
 }}
 .analysis-body {{
     font-size: 14px;
-    line-height: 1.88;
-    color: #24323e;
+    line-height: 1.85;
+    color: #334155;
 }}
 .ai-empty,
 .empty-state {{
-    padding: 18px;
-    border-radius: 18px;
-    background: rgba(248, 243, 232, 0.92);
-    border: 1px dashed rgba(177, 109, 46, 0.42);
-    color: #5d6770;
+    padding: 16px 18px;
+    border-radius: 16px;
+    background: #f8fafc;
+    border: 1px dashed rgba(148, 163, 184, 0.55);
+    color: #475569;
     font-size: 14px;
-    line-height: 1.75;
-}}
-.grade-strip {{
-    padding: 14px 16px;
-    margin-bottom: 14px;
-    border-radius: 18px;
-    background: linear-gradient(135deg, rgba(36, 86, 79, 0.07), rgba(255, 255, 255, 0.78));
-    border: 1px solid rgba(36, 86, 79, 0.12);
-    font-size: 13px;
-    line-height: 2;
+    line-height: 1.8;
 }}
 .table-wrap {{
     overflow-x: auto;
 }}
 .clean-table {{
     width: 100%;
-    border-collapse: collapse;
+    border-collapse: separate;
+    border-spacing: 0;
     font-size: 13px;
 }}
-.clean-table th {{
+.clean-table thead th {{
+    position: sticky;
+    top: 0;
+    padding: 12px;
     text-align: left;
-    padding: 12px 12px;
-    background: rgba(36, 86, 79, 0.08);
-    color: #22313d;
-    border-bottom: 1px solid rgba(222, 212, 196, 0.95);
-    white-space: nowrap;
+    background: #eef3f8;
+    color: #173150;
+    font-weight: 700;
+    border-bottom: 1px solid var(--line);
 }}
-.clean-table td {{
-    padding: 11px 12px;
-    border-bottom: 1px solid rgba(232, 224, 212, 0.96);
+.clean-table tbody td {{
+    padding: 12px;
+    border-bottom: 1px solid rgba(217, 226, 236, 0.92);
+    color: #1e293b;
     white-space: nowrap;
 }}
 .clean-table tbody tr:nth-child(even) {{
-    background: rgba(248, 243, 232, 0.58);
+    background: rgba(248, 250, 252, 0.86);
 }}
 .clean-table tbody tr:hover {{
-    background: rgba(36, 86, 79, 0.05);
+    background: rgba(15, 118, 110, 0.06);
+}}
+.section-grid {{
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+}}
+.data-block {{
+    padding: 18px;
+    border-radius: 20px;
+    border: 1px solid rgba(217, 226, 236, 0.92);
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(247, 249, 252, 0.98));
+}}
+.data-block h3 {{
+    margin: 0 0 12px 0;
+    font-size: 20px;
+    color: #10233f;
+    font-family: "Georgia", "Source Han Serif SC", "STSong", serif;
 }}
 .collapsible {{
     margin-bottom: 18px;
@@ -553,11 +741,11 @@ body {{
     cursor: pointer;
     font-size: 18px;
     font-weight: 700;
-    color: #1f3a39;
-    background: linear-gradient(135deg, rgba(36, 86, 79, 0.07), rgba(255, 255, 255, 0.9));
+    color: #10233f;
+    background: linear-gradient(135deg, rgba(16, 35, 63, 0.04), rgba(15, 118, 110, 0.07));
 }}
 .collapsible-header.active {{
-    border-bottom: 1px solid rgba(222, 212, 196, 0.9);
+    border-bottom: 1px solid rgba(217, 226, 236, 0.92);
 }}
 .collapsible-body {{
     display: none;
@@ -569,13 +757,13 @@ body {{
 .charts-grid {{
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 18px;
+    gap: 16px;
 }}
 .chart-card {{
-    padding: 12px;
+    padding: 10px;
     border-radius: 20px;
-    background: linear-gradient(180deg, rgba(248, 243, 232, 0.92), rgba(255, 253, 248, 0.98));
-    border: 1px solid rgba(222, 212, 196, 0.82);
+    border: 1px solid rgba(217, 226, 236, 0.92);
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(247, 249, 252, 0.98));
 }}
 .chart-card .plotly-graph-div {{
     border-radius: 16px;
@@ -588,20 +776,18 @@ summary {{
     font-weight: 700;
     color: var(--accent);
 }}
-.muted {{
-    color: var(--muted);
-    font-size: 12px;
-}}
 code {{
     font-family: "Cascadia Code", "Consolas", monospace;
     font-size: 0.95em;
 }}
-@media (max-width: 1180px) {{
-    .hero {{
+@media (max-width: 1240px) {{
+    .masthead,
+    .overview-grid,
+    .section-grid {{
         grid-template-columns: 1fr;
     }}
-    .metrics-grid {{
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+    .overview-side {{
+        position: static;
     }}
     .analysis-grid,
     .charts-grid {{
@@ -610,9 +796,9 @@ code {{
 }}
 @media (max-width: 760px) {{
     .page {{
-        padding: 18px 12px 28px 12px;
+        padding: 16px 12px 28px 12px;
     }}
-    .hero-main h1 {{
+    .hero-panel h1 {{
         font-size: 32px;
     }}
     .metrics-grid {{
@@ -623,141 +809,191 @@ code {{
 </head>
 <body>
 <div class="page">
-    <div class="hero">
-        <div class="hero-main">
-            <div class="hero-kicker">Shenzhen Morning Brief</div>
-            <h1>美债与美元市场晨间报告</h1>
-            <div class="hero-lead">
-                围绕隔夜利率、美元、人民币与大宗商品的晨会观察。主观察区间覆盖上一中国收盘后至今日早会前，
-                页面同时保留纽约时段与滚动二十四小时的补充视角。
-            </div>
+    <header class="masthead">
+        <section class="hero-panel">
+            <div class="eyebrow">UST Morning Dashboard</div>
+            <h1>美债与美元晨间简报</h1>
+            <div class="hero-copy">{primary_message}</div>
             <div class="hero-meta">
+                <div class="hero-chip">报告时点：{windows.asof_dt.strftime('%Y-%m-%d %H:%M')} Asia/Shanghai</div>
+                <div class="hero-chip">对应美国市场日：{windows.prev_us_day.strftime('%Y-%m-%d')}</div>
                 <div class="hero-chip">主观察区间：{main_window_desc}</div>
-                <div class="hero-chip">纽约时段：{ny_window_desc}</div>
-                <div class="hero-chip">页面生成时间：{datetime.now(settings.REPORT_TZ).strftime('%Y-%m-%d %H:%M:%S')}</div>
+                <div class="hero-chip">页面生成时间：{generated_at.strftime('%Y-%m-%d %H:%M:%S')}</div>
             </div>
-        </div>
-        <div class="hero-side">
-            <div class="status-label">Data Status</div>
+        </section>
+        <aside class="status-panel">
+            <div class="status-label">Batch Status</div>
             <div class="status-summary">{status_summary_text}</div>
             <div class="status-grades">{grade_badges}</div>
-        </div>
-    </div>
+        </aside>
+    </header>
+
+    <nav class="section-nav">
+        <a class="nav-chip" href="#summary">摘要</a>
+        <a class="nav-chip" href="#analysis">分析</a>
+        <a class="nav-chip" href="#tables">主表</a>
+        <a class="nav-chip" href="#charts">图表</a>
+        <a class="nav-chip" href="#checks">数据检查</a>
+    </nav>
 
     {status_banner_html}
 
-    <div class="metrics-grid">{cards_html}</div>
+    <section class="overview-grid">
+        <div class="overview-main">
+            <section class="section-shell" id="summary">
+                <div class="section-head">
+                    <div class="section-kicker">Morning Brief</div>
+                    <h2>晨会摘要</h2>
+                </div>
+                {notes_html}
+            </section>
 
-    <div class="section-shell">
-        <div class="section-head">
-            <div class="section-kicker">Morning Brief</div>
-            <h2>晨会摘要</h2>
+            {ai_section}
         </div>
-        {notes_html}
-    </div>
 
-    {ai_section}
+        <aside class="overview-side">
+            <div class="side-card">
+                <h3>关键观察</h3>
+                <div class="metrics-grid">{metrics_html}</div>
+            </div>
 
-    <div class="section-shell">
+            <div class="side-card">
+                <h3>时间口径</h3>
+                <div class="mini-list">
+                    <div class="mini-row">
+                        <div class="mini-label">报告日期</div>
+                        <div class="mini-value">{windows.asof_date.strftime('%Y-%m-%d')}，对应上海早会使用时点。</div>
+                    </div>
+                    <div class="mini-row">
+                        <div class="mini-label">美国市场日</div>
+                        <div class="mini-value">对应 {windows.prev_us_day.strftime('%Y-%m-%d')}，外部公开网站核对时应以该日期为准。</div>
+                    </div>
+                    <div class="mini-row">
+                        <div class="mini-label">主窗口末端报价</div>
+                        <div class="mini-value">{main_quote_time}，表示主观察区间最后一个有效点，部分二十四小时交易品种可能与公开网站按日收盘或结算价存在时点差。</div>
+                    </div>
+                    <div class="mini-row">
+                        <div class="mini-label">纽约时段</div>
+                        <div class="mini-value">{ny_window_desc}</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="side-card">
+                <h3>数据时间与来源</h3>
+                <div class="table-wrap">{provenance_html}</div>
+                <div class="section-footnote">本表列出主观察区间内核心资产的最新展示值、最后报价时间，以及本批次命中的 RIC 与字段。</div>
+            </div>
+        </aside>
+    </section>
+
+    <section class="section-shell" id="tables">
         <div class="section-head">
             <div class="section-kicker">Primary Tables</div>
-            <h2>1. 利率与通胀补偿</h2>
+            <h2>主观察区间表格</h2>
         </div>
-        <div class="grade-strip">数据完整性与一致性：{grade_badges}</div>
-        <div class="table-wrap">{rates_tbl}</div>
-    </div>
+        <div class="section-grid">
+            <section class="data-block">
+                <h3>利率与通胀补偿</h3>
+                <div class="table-wrap">{rates_tbl}</div>
+            </section>
+            <section class="data-block">
+                <h3>美元、外汇与人民币</h3>
+                <div class="table-wrap">{usd_rmb_tbl}</div>
+            </section>
+            <section class="data-block">
+                <h3>美债期货与大宗商品</h3>
+                <div class="table-wrap">{fut_cmd_tbl}</div>
+            </section>
+        </div>
+        <div class="section-footnote">主表展示主观察区间的最新值和区间变化，适合用于晨会首屏阅读。</div>
+    </section>
 
-    <div class="section-shell">
-        <div class="section-head">
-            <div class="section-kicker">Primary Tables</div>
-            <h2>2. 美元、外汇与人民币</h2>
+    <div class="collapsible">
+        <div class="collapsible-header" onclick="this.classList.toggle('active')">滚动二十四小时补充区间</div>
+        <div class="collapsible-body">
+            <div class="section-grid">
+                <section class="data-block">
+                    <h3>利率与通胀补偿</h3>
+                    <div class="table-wrap">{rates_24h_tbl}</div>
+                </section>
+                <section class="data-block">
+                    <h3>美元、外汇与人民币</h3>
+                    <div class="table-wrap">{usd_rmb_24h_tbl}</div>
+                </section>
+            </div>
         </div>
-        <div class="table-wrap">{usd_rmb_tbl}</div>
-    </div>
-
-    <div class="section-shell">
-        <div class="section-head">
-            <div class="section-kicker">Primary Tables</div>
-            <h2>3. 美债期货与大宗商品</h2>
-        </div>
-        <div class="table-wrap">{fut_cmd_tbl}</div>
     </div>
 
     <div class="collapsible">
-        <div class="collapsible-header" onclick="this.classList.toggle('active')">滚动二十四小时</div>
+        <div class="collapsible-header" onclick="this.classList.toggle('active')">纽约交易时段补充区间</div>
         <div class="collapsible-body">
-            <div class="section-head">
-                <div class="section-kicker">Rolling Window</div>
-                <h2>补充区间观察</h2>
+            <div class="section-grid">
+                <section class="data-block">
+                    <h3>利率与通胀补偿</h3>
+                    <div class="table-wrap">{rates_ny_tbl}</div>
+                </section>
+                <section class="data-block">
+                    <h3>美元、外汇与人民币</h3>
+                    <div class="table-wrap">{usd_rmb_ny_tbl}</div>
+                </section>
+                <section class="data-block">
+                    <h3>美债期货与大宗商品</h3>
+                    <div class="table-wrap">{fut_cmd_ny_tbl}</div>
+                </section>
             </div>
-            <h3>利率与通胀补偿</h3>
-            <div class="table-wrap">{rates_24h_tbl}</div>
-            <h3>美元、外汇与人民币</h3>
-            <div class="table-wrap">{usd_rmb_24h_tbl}</div>
         </div>
     </div>
 
-    <div class="collapsible">
-        <div class="collapsible-header" onclick="this.classList.toggle('active')">纽约时段</div>
-        <div class="collapsible-body">
-            <div class="section-head">
-                <div class="section-kicker">New York Session</div>
-                <h2>纽约交易时段观察</h2>
-            </div>
-            <h3>利率与通胀补偿</h3>
-            <div class="table-wrap">{rates_ny_tbl}</div>
-            <h3>美元、外汇与人民币</h3>
-            <div class="table-wrap">{usd_rmb_ny_tbl}</div>
-            <h3>美债期货与大宗商品</h3>
-            <div class="table-wrap">{fut_cmd_ny_tbl}</div>
-        </div>
-    </div>
-
-    <div class="section-shell">
+    <section class="section-shell" id="charts">
         <div class="section-head">
             <div class="section-kicker">Charts</div>
-            <h2>4. 图表观察</h2>
+            <h2>图表观察</h2>
         </div>
         {figs_block}
-    </div>
+    </section>
 
-    <div class="section-shell">
+    <section class="section-shell">
         <div class="section-head">
             <div class="section-kicker">Reference</div>
-            <h2>5. 主要交易时段</h2>
+            <h2>主要交易时段</h2>
         </div>
         <div class="table-wrap">{trading_html}</div>
-    </div>
+    </section>
 
-    <div class="section-shell">
+    <section class="section-shell">
         <div class="section-head">
             <div class="section-kicker">Calendar</div>
-            <h2>6. 美国重要经济数据日程</h2>
+            <h2>美国重要经济数据日程</h2>
         </div>
         <div class="table-wrap">{events_html}</div>
         <div class="section-footnote">
-            维护方式：FOMC、CPI、PCE、NFP、GDP、Retail Sales 等高重要性日期可填写在
-            <code>config/settings.py</code> 的 <code>MANUAL_US_EVENTS</code>；周度初请仍按周四 08:30 ET 自动生成。
+            FOMC、CPI、PCE、NFP、GDP、Retail Sales 等高重要性日期可以维护在
+            <code>config/settings.py</code> 的 <code>MANUAL_US_EVENTS</code> 中；周度初请仍按周四 08:30 ET 自动生成。
         </div>
-    </div>
+    </section>
 
-    <div class="section-shell">
+    <section class="section-shell" id="checks">
         <div class="section-head">
             <div class="section-kicker">Diagnostics</div>
-            <h2>7. 数据检查</h2>
+            <h2>数据检查</h2>
         </div>
         <div class="table-wrap">{quality_html}</div>
         <details>
             <summary>查看 RIC 拉取日志</summary>
             <div class="table-wrap">{log_html}</div>
         </details>
-    </div>
+    </section>
 </div>
 <script>
-document.querySelectorAll('.collapsible-header').forEach(h => {{
-    if (!h.classList.contains('bound')) {{
-        h.classList.add('bound');
-    }}
+document.querySelectorAll('.collapsible-header').forEach(function (header) {{
+    header.addEventListener('keydown', function (event) {{
+        if (event.key === 'Enter' || event.key === ' ') {{
+            event.preventDefault();
+            header.click();
+        }}
+    }});
+    header.setAttribute('tabindex', '0');
 }});
 </script>
 </body>

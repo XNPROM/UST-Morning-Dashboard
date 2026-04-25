@@ -112,6 +112,7 @@ def main():
     windows = compute_report_windows(now)
     timestamp = build_artifact_timestamp(windows.asof_dt)
     print(f"As-of: {windows.asof_dt.strftime('%Y-%m-%d %H:%M %Z')}")
+    print(f"对应美国市场日: {windows.prev_us_day.strftime('%Y-%m-%d')}")
     print(f"主窗口: {windows.main_start.strftime('%m-%d %H:%M')} → {windows.main_end.strftime('%m-%d %H:%M')}")
     print(f"纽约窗口: {windows.ny_start.strftime('%m-%d %H:%M')} → {windows.ny_end.strftime('%m-%d %H:%M')}")
 

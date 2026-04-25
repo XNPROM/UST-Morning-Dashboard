@@ -7,12 +7,12 @@ from analytics.summary import rows_by_section
 
 
 CHART_COLORS = [
-    "#24564f",
-    "#b16d2e",
-    "#365f91",
-    "#8d3f33",
-    "#5c6b58",
-    "#7a5a9a",
+    "#0f766e",
+    "#10233f",
+    "#b45309",
+    "#2563eb",
+    "#b91c1c",
+    "#7c3aed",
 ]
 
 
@@ -23,48 +23,61 @@ def _apply_chart_style(fig: go.Figure, title: str, ytitle: str, height: int, bot
             x=0.02,
             xanchor="left",
             font=dict(
-                family='"Source Han Serif SC", "STSong", "SimSun", Georgia, serif',
-                size=18,
-                color="#1b3635",
+                family='"Georgia", "Source Han Serif SC", "STSong", serif',
+                size=17,
+                color="#10233f",
             ),
         ),
         template=settings.PLOTLY_TEMPLATE,
         colorway=CHART_COLORS,
         hovermode="x unified",
         height=height,
-        margin=dict(l=44, r=18, t=62, b=bottom_margin),
+        margin=dict(l=46, r=18, t=60, b=bottom_margin),
         legend=dict(
             orientation="h",
-            yanchor="bottom",
-            y=1.01,
+            yanchor="top",
+            y=-0.18,
             xanchor="left",
             x=0,
-            bgcolor="rgba(255,255,255,0.72)",
-            bordercolor="#d6ccb9",
+            bgcolor="rgba(255,255,255,0.95)",
+            bordercolor="#d9e2ec",
             borderwidth=1,
-            font=dict(family='"Bahnschrift", "Aptos", "PingFang SC", "Microsoft YaHei", sans-serif', size=11),
+            font=dict(
+                family='"Aptos", "Segoe UI Variable", "PingFang SC", "Microsoft YaHei", sans-serif',
+                size=11,
+                color="#334155",
+            ),
         ),
         font=dict(
-            family='"Bahnschrift", "Aptos", "PingFang SC", "Microsoft YaHei", sans-serif',
+            family='"Aptos", "Segoe UI Variable", "PingFang SC", "Microsoft YaHei", sans-serif',
             size=12,
-            color="#22313d",
+            color="#334155",
         ),
         paper_bgcolor="rgba(0,0,0,0)",
-        plot_bgcolor="#fbf7ef",
+        plot_bgcolor="#ffffff",
         yaxis_title=ytitle,
         xaxis_title="",
+        hoverlabel=dict(
+            bgcolor="#ffffff",
+            bordercolor="#cbd5e1",
+            font=dict(color="#0f172a"),
+        ),
     )
     fig.update_xaxes(
         showgrid=True,
-        gridcolor="#e2d8c7",
-        linecolor="#cfc4b2",
-        zerolinecolor="#cfc4b2",
+        gridcolor="#e5e7eb",
+        linecolor="#cbd5e1",
+        zerolinecolor="#cbd5e1",
+        tickfont=dict(color="#475569"),
+        title_font=dict(color="#475569"),
     )
     fig.update_yaxes(
         showgrid=True,
-        gridcolor="#e2d8c7",
-        linecolor="#cfc4b2",
-        zerolinecolor="#cfc4b2",
+        gridcolor="#e5e7eb",
+        linecolor="#cbd5e1",
+        zerolinecolor="#cbd5e1",
+        tickfont=dict(color="#475569"),
+        title_font=dict(color="#475569"),
     )
     return fig
 
@@ -118,7 +131,7 @@ def change_bar_fig(summary, sections: list[str], title: str) -> go.Figure:
         textposition="outside",
         hovertemplate="%{x}<br>%{y:.4f} %{customdata}<extra></extra>",
         customdata=df["Change Unit"],
-        marker=dict(color=marker_colors, line=dict(color="#f6f1e6", width=1)),
+        marker=dict(color=marker_colors, line=dict(color="#ffffff", width=1)),
     ))
     _apply_chart_style(fig, title, "Change", 380, bottom_margin=88)
     fig.update_xaxes(tickangle=-25)

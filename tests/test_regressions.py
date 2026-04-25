@@ -7,6 +7,7 @@ import sys
 import tempfile
 import unittest
 from datetime import datetime, date
+from pathlib import Path
 from unittest import mock
 from types import SimpleNamespace
 
@@ -22,6 +23,26 @@ from data.validation import cross_validate
 from push.push_report import push_report
 from report.html_report import generate_html_report
 from dates.windows import ReportWindows
+
+
+def make_windows() -> ReportWindows:
+    return ReportWindows(
+        asof_dt=datetime(2026, 4, 23, 9, 0, tzinfo=settings.REPORT_TZ),
+        asof_date=date(2026, 4, 23),
+        prev_cn_day=date(2026, 4, 22),
+        prev_us_day=date(2026, 4, 22),
+        main_start=datetime(2026, 4, 22, 16, 0, tzinfo=settings.REPORT_TZ),
+        main_end=datetime(2026, 4, 23, 9, 0, tzinfo=settings.REPORT_TZ),
+        ny_start=datetime(2026, 4, 22, 20, 0, tzinfo=settings.REPORT_TZ),
+        ny_end=datetime(2026, 4, 23, 5, 0, tzinfo=settings.REPORT_TZ),
+        rolling24_start=datetime(2026, 4, 22, 9, 0, tzinfo=settings.REPORT_TZ),
+        rolling24_end=datetime(2026, 4, 23, 9, 0, tzinfo=settings.REPORT_TZ),
+        intraday_start=datetime(2026, 4, 20, 9, 0, tzinfo=settings.REPORT_TZ),
+        intraday_end=datetime(2026, 4, 23, 9, 0, tzinfo=settings.REPORT_TZ),
+        daily_start=datetime(2025, 1, 1, 9, 0, tzinfo=settings.REPORT_TZ),
+        daily_end=datetime(2026, 4, 23, 9, 0, tzinfo=settings.REPORT_TZ),
+        target_fixing_date=date(2026, 4, 23),
+    )
 
 
 class RegressionTests(unittest.TestCase):
@@ -46,23 +67,7 @@ class RegressionTests(unittest.TestCase):
             old_output_dir = os.environ.get("OUTPUT_DIR")
             os.environ["OUTPUT_DIR"] = tmpdir
             try:
-                windows = ReportWindows(
-                    asof_dt=datetime(2026, 4, 23, 9, 0, tzinfo=settings.REPORT_TZ),
-                    asof_date=date(2026, 4, 23),
-                    prev_cn_day=date(2026, 4, 22),
-                    prev_us_day=date(2026, 4, 22),
-                    main_start=datetime(2026, 4, 22, 16, 0, tzinfo=settings.REPORT_TZ),
-                    main_end=datetime(2026, 4, 23, 9, 0, tzinfo=settings.REPORT_TZ),
-                    ny_start=datetime(2026, 4, 22, 20, 0, tzinfo=settings.REPORT_TZ),
-                    ny_end=datetime(2026, 4, 23, 5, 0, tzinfo=settings.REPORT_TZ),
-                    rolling24_start=datetime(2026, 4, 22, 9, 0, tzinfo=settings.REPORT_TZ),
-                    rolling24_end=datetime(2026, 4, 23, 9, 0, tzinfo=settings.REPORT_TZ),
-                    intraday_start=datetime(2026, 4, 20, 9, 0, tzinfo=settings.REPORT_TZ),
-                    intraday_end=datetime(2026, 4, 23, 9, 0, tzinfo=settings.REPORT_TZ),
-                    daily_start=datetime(2025, 1, 1, 9, 0, tzinfo=settings.REPORT_TZ),
-                    daily_end=datetime(2026, 4, 23, 9, 0, tzinfo=settings.REPORT_TZ),
-                    target_fixing_date=date(2026, 4, 23),
-                )
+                windows = make_windows()
 
                 html_path, csv_path, log_path = generate_html_report(
                     summary_main=pd.DataFrame(),
@@ -229,23 +234,7 @@ class RegressionTests(unittest.TestCase):
             old_output_dir = os.environ.get("OUTPUT_DIR")
             os.environ["OUTPUT_DIR"] = tmpdir
             try:
-                windows = ReportWindows(
-                    asof_dt=datetime(2026, 4, 23, 9, 0, tzinfo=settings.REPORT_TZ),
-                    asof_date=date(2026, 4, 23),
-                    prev_cn_day=date(2026, 4, 22),
-                    prev_us_day=date(2026, 4, 22),
-                    main_start=datetime(2026, 4, 22, 16, 0, tzinfo=settings.REPORT_TZ),
-                    main_end=datetime(2026, 4, 23, 9, 0, tzinfo=settings.REPORT_TZ),
-                    ny_start=datetime(2026, 4, 22, 20, 0, tzinfo=settings.REPORT_TZ),
-                    ny_end=datetime(2026, 4, 23, 5, 0, tzinfo=settings.REPORT_TZ),
-                    rolling24_start=datetime(2026, 4, 22, 9, 0, tzinfo=settings.REPORT_TZ),
-                    rolling24_end=datetime(2026, 4, 23, 9, 0, tzinfo=settings.REPORT_TZ),
-                    intraday_start=datetime(2026, 4, 20, 9, 0, tzinfo=settings.REPORT_TZ),
-                    intraday_end=datetime(2026, 4, 23, 9, 0, tzinfo=settings.REPORT_TZ),
-                    daily_start=datetime(2025, 1, 1, 9, 0, tzinfo=settings.REPORT_TZ),
-                    daily_end=datetime(2026, 4, 23, 9, 0, tzinfo=settings.REPORT_TZ),
-                    target_fixing_date=date(2026, 4, 23),
-                )
+                windows = make_windows()
 
                 html_path, _, _ = generate_html_report(
                     summary_main=pd.DataFrame(),
@@ -275,6 +264,128 @@ class RegressionTests(unittest.TestCase):
                     os.environ["OUTPUT_DIR"] = old_output_dir
 
         self.assertIn("本批次数据存在关键缺口", html)
+
+    def test_generate_html_report_surfaces_time_basis_and_us_market_date(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            old_output_dir = os.environ.get("OUTPUT_DIR")
+            os.environ["OUTPUT_DIR"] = tmpdir
+            try:
+                html_path, _, _ = generate_html_report(
+                    summary_main=pd.DataFrame(
+                        [
+                            {
+                                "Section": "A. Rates",
+                                "Group": "Nominal UST",
+                                "Asset": "UST 10Y",
+                                "Level": "4.3325%",
+                                "Change Text": "+3.39bp",
+                                "% Change Text": "",
+                                "High": 4.34,
+                                "Low": 4.29,
+                                "Obs": 164,
+                                "First Time": "2026-04-22 16:00",
+                                "Last Time": "2026-04-23 08:55",
+                            }
+                        ]
+                    ),
+                    summary_24h=pd.DataFrame(),
+                    summary_ny=pd.DataFrame(),
+                    morning_notes=["示例摘要。"],
+                    quality_df=pd.DataFrame([{"Severity": "OK", "Asset": "ALL", "Issue": "ok", "Detail": "ok"}]),
+                    figs=[go.Figure()],
+                    daily_panel=pd.DataFrame(),
+                    all_logs=pd.DataFrame(
+                        [
+                            {
+                                "freq": "5min",
+                                "section": "A. Rates",
+                                "group": "Nominal UST",
+                                "name": "UST 10Y",
+                                "ric": "US10YT=RR",
+                                "field": "MID_YLD_1",
+                                "rows": 164,
+                                "status": "ok",
+                                "error": "",
+                            }
+                        ]
+                    ),
+                    windows=make_windows(),
+                    trading_hours=pd.DataFrame(),
+                    event_calendar=pd.DataFrame(),
+                    interpretation=None,
+                    timestamp="20260423_2027",
+                )
+                html = Path(html_path).read_text(encoding="utf-8")
+            finally:
+                if old_output_dir is None:
+                    os.environ.pop("OUTPUT_DIR", None)
+                else:
+                    os.environ["OUTPUT_DIR"] = old_output_dir
+
+        self.assertIn("对应美国市场日", html)
+        self.assertIn("主窗口末端报价", html)
+        self.assertIn("2026-04-22", html)
+
+    def test_generate_html_report_lists_core_asset_provenance(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            old_output_dir = os.environ.get("OUTPUT_DIR")
+            os.environ["OUTPUT_DIR"] = tmpdir
+            try:
+                html_path, _, _ = generate_html_report(
+                    summary_main=pd.DataFrame(
+                        [
+                            {
+                                "Section": "A. Rates",
+                                "Group": "Nominal UST",
+                                "Asset": "UST 10Y",
+                                "Level": "4.3325%",
+                                "Change Text": "+3.39bp",
+                                "% Change Text": "",
+                                "High": 4.34,
+                                "Low": 4.29,
+                                "Obs": 164,
+                                "First Time": "2026-04-22 16:00",
+                                "Last Time": "2026-04-23 08:55",
+                            }
+                        ]
+                    ),
+                    summary_24h=pd.DataFrame(),
+                    summary_ny=pd.DataFrame(),
+                    morning_notes=["示例摘要。"],
+                    quality_df=pd.DataFrame([{"Severity": "OK", "Asset": "ALL", "Issue": "ok", "Detail": "ok"}]),
+                    figs=[go.Figure()],
+                    daily_panel=pd.DataFrame(),
+                    all_logs=pd.DataFrame(
+                        [
+                            {
+                                "freq": "5min",
+                                "section": "A. Rates",
+                                "group": "Nominal UST",
+                                "name": "UST 10Y",
+                                "ric": "US10YT=RR",
+                                "field": "MID_YLD_1",
+                                "rows": 164,
+                                "status": "ok",
+                                "error": "",
+                            }
+                        ]
+                    ),
+                    windows=make_windows(),
+                    trading_hours=pd.DataFrame(),
+                    event_calendar=pd.DataFrame(),
+                    interpretation=None,
+                    timestamp="20260423_2027",
+                )
+                html = Path(html_path).read_text(encoding="utf-8")
+            finally:
+                if old_output_dir is None:
+                    os.environ.pop("OUTPUT_DIR", None)
+                else:
+                    os.environ["OUTPUT_DIR"] = old_output_dir
+
+        self.assertIn("数据时间与来源", html)
+        self.assertIn("US10YT=RR", html)
+        self.assertIn("MID_YLD_1", html)
 
 
 if __name__ == "__main__":
