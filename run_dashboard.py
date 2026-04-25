@@ -29,7 +29,7 @@ from data.fetch import download_panel
 from data.derived import add_derived, slice_window
 from data.validation import cross_validate, detect_anomalies, sanity_check
 from analytics.summary import summarize_panel
-from analytics.quality import data_quality_checks
+from analytics.quality import data_quality_checks, find_blocking_quality_issues
 from analytics.notes import build_morning_notes
 from analytics.ai_interpreter import interpret_market
 from analytics.calendar import build_trading_hours, build_event_calendar
@@ -69,6 +69,16 @@ def main():
     parser = argparse.ArgumentParser(description="UST Morning Dashboard")
     parser.add_argument("--no-push", action="store_true", help="Skip GitHub push")
     parser.add_argument("--date", type=str, default=None, help="Override as-of date (YYYY-MM-DD) for debugging")
+    parser.add_argument(
+        "--allow-blocking-quality",
+        action="store_true",
+        help="Allow GitHub push even when blocking quality issues are detected",
+    )
+    parser.add_argument(
+        "--fail-on-blocking-quality",
+        action="store_true",
+        help="Exit with a non-zero code when blocking quality issues are detected",
+    )
     args = parser.parse_args()
 
     print("=" * 60)
@@ -160,6 +170,11 @@ def main():
             intraday_log, daily_log, main_panel, daily_panel,
             windows.target_fixing_date, all_validation_issues,
         )
+        blocking_quality_issues = find_blocking_quality_issues(quality_df)
+        if not blocking_quality_issues.empty:
+            print("Blocking quality issues detected:")
+            for _, row in blocking_quality_issues.head(5).iterrows():
+                print(f"  - [{row['Severity']}] {row['Asset']}: {row['Issue']}")
 
         # 9. Morning notes
         morning_notes = build_morning_notes(summary_main)
@@ -216,12 +231,20 @@ def main():
 
         # 15. Push to GitHub
         if not args.no_push:
-            print("Pushing to GitHub...")
-            success = push_report(html_path)
-            if not success:
-                print("Warning: GitHub push failed. Report files are still on disk.")
+            if not blocking_quality_issues.empty and not args.allow_blocking_quality:
+                print("Skipping GitHub push because blocking quality issues were detected.")
+                print("Re-run with --allow-blocking-quality if you really want to publish this report.")
+            else:
+                print("Pushing to GitHub...")
+                success = push_report(html_path)
+                if not success:
+                    print("Warning: GitHub push failed. Report files are still on disk.")
         else:
             print("Skipping GitHub push (--no-push).")
+
+        if not blocking_quality_issues.empty and args.fail_on_blocking_quality:
+            print("Failing run because blocking quality issues were detected.")
+            sys.exit(2)
 
         print("\nDone!")
 

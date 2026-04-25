@@ -6,6 +6,15 @@ from config.assets import SECTION_BY_NAME
 from analytics.summary import latest_fixing_info
 
 
+def find_blocking_quality_issues(
+    quality_df: pd.DataFrame,
+    blocking_severities: tuple[str, ...] = ("HIGH",),
+) -> pd.DataFrame:
+    if quality_df.empty or "Severity" not in quality_df.columns:
+        return pd.DataFrame(columns=getattr(quality_df, "columns", []))
+    return quality_df[quality_df["Severity"].isin(blocking_severities)].copy()
+
+
 def data_quality_checks(
     intraday_log: pd.DataFrame,
     daily_log: pd.DataFrame,

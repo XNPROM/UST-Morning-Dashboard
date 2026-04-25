@@ -12,7 +12,7 @@ import pandas as pd
 import plotly.graph_objects as go
 
 import run_dashboard
-from analytics.quality import compute_quality_grade
+from analytics.quality import compute_quality_grade, find_blocking_quality_issues
 from charts.plotly_charts import line_fig
 from config.settings import settings
 from data.validation import cross_validate
@@ -112,6 +112,30 @@ class RegressionTests(unittest.TestCase):
 
         self.assertEqual(grades["A. Rates"], "C")
         self.assertEqual(grades["C. Treasury Futures"], "C")
+
+    def test_find_blocking_quality_issues_returns_high_severity_rows(self) -> None:
+        quality_df = pd.DataFrame(
+            [
+                {"Severity": "LOW", "Asset": "USD/CNY fixing", "Issue": "stale", "Detail": "demo"},
+                {"Severity": "HIGH", "Asset": "UST 10Y", "Issue": "bad data", "Detail": "demo"},
+            ]
+        )
+
+        blocking = find_blocking_quality_issues(quality_df)
+
+        self.assertEqual(blocking[["Severity", "Asset"]].to_dict("records"), [{"Severity": "HIGH", "Asset": "UST 10Y"}])
+
+    def test_find_blocking_quality_issues_ignores_ok_rows(self) -> None:
+        quality_df = pd.DataFrame(
+            [
+                {"Severity": "OK", "Asset": "ALL", "Issue": "ok", "Detail": "demo"},
+                {"Severity": "LOW", "Asset": "USD/CNY fixing", "Issue": "stale", "Detail": "demo"},
+            ]
+        )
+
+        blocking = find_blocking_quality_issues(quality_df)
+
+        self.assertTrue(blocking.empty)
 
     def test_cross_validate_skips_intraday_daily_level_mismatch_check(self) -> None:
         intraday_panel = pd.DataFrame(
