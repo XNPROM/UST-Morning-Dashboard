@@ -1,0 +1,173 @@
+你是深圳某券商固定收益研究团队的晨报分析师。你只基于提供的数据进行分析，不编造任何数字。如果数据不足以得出结论，明确说明。
+
+严格规则：
+- 引用任何数字时，必须与提供的数据完全一致，不得四舍五入或近似（如数据写3.57bp就不能写成3.6bp）
+- 不得声称某个资产"突破"了某个点位，除非数据中的实际Level或High确实越过了该点位
+- 不得推测数据中未出现的极值（如数据中USDJPY最高159.84，不能说"触及160"）
+- 对每个关键判断，在括号中标注数据来源值，如"10Y收益率突破4.30%（4.3325%）"
+
+你的分析风格：简洁、有观点、逻辑清晰。用中文撰写。
+
+## 报告时间
+锚定时间：2026-04-23 09:00 CST
+主窗口：04-22 16:00 → 04-23 09:00
+
+## 今日数据概览（主窗口）
+UST 2Y: 3.8104%（+1.35bp）
+UST 5Y: 3.9387%（+2.29bp）
+UST 10Y: 4.3184%（+2.78bp）
+UST 30Y: 4.9229%（+3.01bp）
+UST 2s10s spread: 50.80bp（+1.43bp）
+UST 5s10s spread: 37.97bp（+0.49bp）
+UST 5s30s spread: 98.47bp（+0.77bp）
+TIPS real 5Y: 1.2510%（+2.50bp）
+TIPS real 10Y: 1.9255%（+3.00bp）
+TIPS real 30Y: 2.6830%（+3.50bp）
+BEI 5Y: 2.6877%（-0.21bp）
+BEI 10Y: 2.3929%（-0.22bp）
+BEI 30Y: 2.2399%（-0.49bp）
+TU 2Y Treasury Fut: 103.6953（-0.0312）
+FV 5Y Treasury Fut: 108.1641（-0.1016）
+TY 10Y Treasury Fut: 111.0781（-0.1875）
+US 30Y Treasury Fut: 113.7500（-0.5000）
+DXY: 98.6460（+0.0920）
+EURUSD: 1.1702（-12.50pips）
+USDJPY: 159.695（+21.50pips）
+GBPUSD: 1.3504（+1.00pips）
+AUDUSD: 0.7154（-7.50pips）
+USDCNY: 6.8346（+104.00pips）
+USDCNH: 6.8371（+63.00pips）
+CNH-CNY spread: 25.0pips（-13.00pips）
+Brent crude: 103.9400（+2.2600）
+WTI crude: 94.9000（+1.9400）
+Gold: 4703.4400（-27.3950）
+Copper: 6.0270（+0.0060）
+
+## 滚动24小时概览
+UST 2Y: 3.8104%（+3.68bp）
+UST 5Y: 3.9387%（+3.52bp）
+UST 10Y: 4.3184%（+2.98bp）
+UST 30Y: 4.9229%（+2.20bp）
+UST 2s10s spread: 50.80bp（-0.69bp）
+UST 5s10s spread: 37.97bp（-0.54bp）
+UST 5s30s spread: 98.47bp（-1.27bp）
+TIPS real 5Y: 1.2510%（+2.25bp）
+TIPS real 10Y: 1.9255%（+2.10bp）
+TIPS real 30Y: 2.6830%（+1.80bp）
+BEI 5Y: 2.6877%（+1.27bp）
+BEI 10Y: 2.3929%（+1.08bp）
+BEI 30Y: 2.2399%（+0.40bp）
+TU 2Y Treasury Fut: 103.6953（-0.0742）
+FV 5Y Treasury Fut: 108.1641（-0.1719）
+TY 10Y Treasury Fut: 111.0781（-0.2344）
+US 30Y Treasury Fut: 113.7500（-0.4375）
+DXY: 98.6460（+0.3590）
+EURUSD: 1.1702（-51.00pips）
+USDJPY: 159.695（+34.00pips）
+GBPUSD: 1.3504（-26.00pips）
+AUDUSD: 0.7154（-11.50pips）
+USDCNY: 6.8346（+123.50pips）
+USDCNH: 6.8371（+125.00pips）
+CNH-CNY spread: 25.0pips（+1.50pips）
+Brent crude: 103.9400（+4.3400）
+WTI crude: 94.9000（+4.1900）
+Gold: 4703.4400（-56.6950）
+Copper: 6.0270（-0.0885）
+
+## 近60天走势摘要
+UST 2Y: 当前3.8295%，5d变化12.5bp，20d变化-8.2bp，60d百分位85%
+UST 5Y: 当前3.9545%，5d变化11.1bp，20d变化-11.3bp，60d百分位83%
+UST 10Y: 当前4.3224%，5d变化7.5bp，20d变化-10.4bp，60d百分位85%
+UST 30Y: 当前4.9112%，5d变化2.7bp，20d变化-5.3bp，60d百分位86%
+UST 2s10s spread: 当前49.29bp，5d变化-5.0bp，20d变化-2.2bp，60d百分位14%
+UST 5s10s spread: 当前36.79bp，5d变化-3.6bp，20d变化0.9bp，60d百分位17%
+UST 5s30s spread: 当前95.67bp，5d变化-8.4bp，20d变化6.0bp，60d百分位22%
+TIPS real 5Y: 当前1.2080%，5d变化-0.3bp，20d变化-22.1bp，60d百分位49%
+TIPS real 10Y: 当前1.8925%，5d变化1.0bp，20d变化-21.6bp，60d百分位56%
+TIPS real 30Y: 当前2.6435%，5d变化-1.8bp，20d变化-13.2bp，60d百分位58%
+BEI 5Y: 当前2.7465%，5d变化11.4bp，20d变化10.8bp，60d百分位100%
+BEI 10Y: 当前2.4299%，5d变化6.5bp，20d变化11.2bp，60d百分位100%
+BEI 30Y: 当前2.2677%，5d变化4.5bp，20d变化8.0bp，60d百分位93%
+TU 2Y Treasury Fut: 当前103.6562，5d变化-0.24pts，20d变化0.32pts，60d百分位16%
+FV 5Y Treasury Fut: 当前108.0859，5d变化-0.52pts，20d变化0.48pts，60d百分位14%
+TY 10Y Treasury Fut: 当前111.0156，5d变化-0.62pts，20d变化0.83pts，60d百分位19%
+US 30Y Treasury Fut: 当前113.8438，5d变化-0.72pts，20d变化1.44pts，60d百分位22%
+DXY: 当前98.7700，5d变化0.67pts，20d变化-1.38pts，60d百分位55%
+EURUSD: 当前1.1683，5d变化-80.0pips，20d变化173.5pips，60d百分位47%
+USDJPY: 当前159.725，5d变化109.0pips，20d变化-60.0pips，60d百分位92%
+GBPUSD: 当前1.3467，5d变化-49.0pips，20d变化208.0pips，60d百分位53%
+AUDUSD: 当前0.7128，5d变化-39.5pips，20d变化255.5pips，60d百分位88%
+USDCNY: 当前6.8265，5d变化88.5pips，20d变化-853.0pips，60d百分位12%
+USDCNH: 当前6.8358，5d变化209.0pips，20d变化-839.0pips，60d百分位20%
+USD/CNY fixing: 当前6.8650，5d变化28.0pips，20d变化-406.0pips，60d百分位17%
+CNH-CNY spread: 当前93.0pips，5d变化120.5pips，20d变化14.0pips，60d百分位87%
+USDCNY - fixing: 当前-385.0pips，5d变化60.5pips，20d变化-443.5pips，60d百分位23%
+USDCNH - fixing: 当前-292.0pips，5d变化181.0pips，20d变化-434.5pips，60d百分位45%
+Brent crude: 当前106.0100，5d变化13.59pts，20d变化0.06pts，60d百分位86%
+WTI crude: 当前97.0000，5d变化11.43pts，20d变化-4.18pts，60d百分位78%
+Gold: 当前4693.8750，5d变化-136.56pts，20d变化313.85pts，60d百分位22%
+Copper: 当前6.0270，5d变化-0.05pts，20d变化0.57pts，60d百分位90%
+
+## 数据质量检查
+[LOW] USD/CNY fixing: 中间价日期非目标日期 — latest=2026-04-23, target=2026-04-22, level=6.8650；9:15前运行通常显示上一交易日中间价。
+[MEDIUM] Brent crude: 5min与daily最后值偏差较大 — intraday_last=103.9400, daily_last=106.0100, diff=2.0700, threshold=1.0
+[MEDIUM] WTI crude: 5min与daily最后值偏差较大 — intraday_last=94.9000, daily_last=97.0000, diff=2.1000, threshold=1.0
+[MEDIUM] Gold: 5min与daily最后值偏差较大 — intraday_last=4703.4400, daily_last=4693.8750, diff=9.5650, threshold=1.0
+[MEDIUM] UST 5s30s spread: 5min与daily最后值偏差较大 — intraday_last=98.4750, daily_last=95.6650, diff=2.8100, threshold=2.0
+[MEDIUM] BEI 5Y: 5min与daily最后值偏差较大 — intraday_last=2.6877, daily_last=2.7465, diff=0.0588, threshold=0.05
+[MEDIUM] CNH-CNY spread: 5min与daily最后值偏差较大 — intraday_last=0.0025, daily_last=0.0093, diff=0.0068, threshold=0.005
+[LOW] UST 2Y: 检测到2个3σ以上跳变点 — max_jump=0.0095, 3σ=0.0065
+[LOW] UST 5Y: 检测到2个3σ以上跳变点 — max_jump=0.0141, 3σ=0.0075
+[LOW] UST 10Y: 检测到3个3σ以上跳变点 — max_jump=0.0139, 3σ=0.0077
+[LOW] UST 30Y: 检测到3个3σ以上跳变点 — max_jump=0.0138, 3σ=0.0068
+[LOW] TIPS real 5Y: 检测到3个3σ以上跳变点 — max_jump=0.0110, 3σ=0.0066
+[LOW] TIPS real 10Y: 检测到3个3σ以上跳变点 — max_jump=0.0130, 3σ=0.0068
+[LOW] TIPS real 30Y: 检测到3个3σ以上跳变点 — max_jump=0.0120, 3σ=0.0064
+[LOW] TU 2Y Treasury Fut: 检测到3个3σ以上跳变点 — max_jump=0.0195, 3σ=0.0125
+[LOW] FV 5Y Treasury Fut: 检测到3个3σ以上跳变点 — max_jump=0.0547, 3σ=0.0315
+[LOW] TY 10Y Treasury Fut: 检测到3个3σ以上跳变点 — max_jump=0.1094, 3σ=0.0523
+[LOW] US 30Y Treasury Fut: 检测到3个3σ以上跳变点 — max_jump=0.2188, 3σ=0.1104
+[LOW] DXY: 检测到2个3σ以上跳变点 — max_jump=0.1050, 3σ=0.0436
+[LOW] EURUSD: 检测到3个3σ以上跳变点 — max_jump=0.0013, 3σ=0.0005
+[LOW] USDJPY: 检测到3个3σ以上跳变点 — max_jump=0.1600, 3σ=0.0691
+[LOW] GBPUSD: 检测到3个3σ以上跳变点 — max_jump=0.0015, 3σ=0.0007
+[LOW] AUDUSD: 检测到2个3σ以上跳变点 — max_jump=0.0015, 3σ=0.0006
+[LOW] USDCNY: 检测到2个3σ以上跳变点 — max_jump=0.0025, 3σ=0.0022
+[LOW] USDCNH: 检测到4个3σ以上跳变点 — max_jump=0.0028, 3σ=0.0018
+[LOW] Brent crude: 检测到2个3σ以上跳变点 — max_jump=1.9200, 3σ=0.7907
+[LOW] WTI crude: 检测到2个3σ以上跳变点 — max_jump=2.0800, 3σ=0.7593
+[LOW] Gold: 检测到3个3σ以上跳变点 — max_jump=23.8350, 3σ=11.2250
+[LOW] UST 2s10s spread: 检测到2个3σ以上跳变点 — max_jump=0.7150, 3σ=0.5455
+[LOW] UST 5s10s spread: 检测到1个3σ以上跳变点 — max_jump=0.4750, 3σ=0.4135
+[LOW] UST 5s30s spread: 检测到2个3σ以上跳变点 — max_jump=0.4350, 3σ=0.3712
+[LOW] BEI 10Y: 检测到1个3σ以上跳变点 — max_jump=0.0054, 3σ=0.0039
+[LOW] BEI 30Y: 检测到2个3σ以上跳变点 — max_jump=0.0025, 3σ=0.0021
+[LOW] CNH-CNY spread: 检测到2个3σ以上跳变点 — max_jump=0.0015, 3σ=0.0012
+
+---
+
+请从以下四个维度分析，每个维度 150-250 字，直接给出分析结论，不要重复数据：
+
+### 1. 驱动因素归因
+分析收益率变动的驱动来源：
+- 实际利率 vs 通胀预期的贡献拆分（用 TIPS 和 BEI 数据）
+- 风险偏好变化（用曲线形态、商品、汇率联动推断）
+- 主要驱动因素排序
+
+### 2. 关键点位与信号
+识别需要关注的技术/结构信号：
+- 收益率是否突破关键整数位或历史极值
+- 曲线形态变化（倒挂、走陡、转折信号）
+- 汇率关键位突破或回踩
+
+### 3. 历史情景类比
+在近60天数据中寻找类似形态：
+- 当前曲线斜率/BEI 组合与近期历史对比
+- 类似波动幅度和方向的历史案例
+- 类似案例后的后续走势参考
+
+### 4. 前瞻观点
+今日需关注：
+- 短期（1-3日）方向判断及置信度
+- 人民币中间价预期（基于CNH和市场情绪）
+- 需要关注的风险点

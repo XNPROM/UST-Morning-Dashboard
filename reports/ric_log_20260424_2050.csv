@@ -1,0 +1,46 @@
+﻿key,section,group,name,unit,ric,field,rows,status,error,freq
+ust2y,A. Rates,Nominal UST,UST 2Y,yield_pct,US2YT=RR,MID_YLD_1,724,ok,,5min
+ust5y,A. Rates,Nominal UST,UST 5Y,yield_pct,US5YT=RR,MID_YLD_1,751,ok,,5min
+ust10y,A. Rates,Nominal UST,UST 10Y,yield_pct,US10YT=RR,MID_YLD_1,743,ok,,5min
+ust30y,A. Rates,Nominal UST,UST 30Y,yield_pct,US30YT=RR,MID_YLD_1,769,ok,,5min
+tips5y,B. Real & Inflation,Real Yield / TIPS,TIPS real 5Y,yield_pct,US5YTIP=RR,MID_YLD_1,650,ok,,5min
+tips10y,B. Real & Inflation,Real Yield / TIPS,TIPS real 10Y,yield_pct,US10YTIP=RR,MID_YLD_1,736,ok,,5min
+tips30y,B. Real & Inflation,Real Yield / TIPS,TIPS real 30Y,yield_pct,US30YTIP=RR,MID_YLD_1,754,ok,,5min
+tu,C. Treasury Futures,Treasury Futures,TU 2Y Treasury Fut,futures_price,TUc1,TRDPRC_1,822,ok,,5min
+fv,C. Treasury Futures,Treasury Futures,FV 5Y Treasury Fut,futures_price,FVc1,TRDPRC_1,819,ok,,5min
+ty,C. Treasury Futures,Treasury Futures,TY 10Y Treasury Fut,futures_price,TYc1,TRDPRC_1,819,ok,,5min
+us,C. Treasury Futures,Treasury Futures,US 30Y Treasury Fut,futures_price,USc1,TRDPRC_1,815,ok,,5min
+dxy,D. USD & FX,USD,DXY,index,.DXY,TRDPRC_1,806,ok,,5min
+eurusd,D. USD & FX,FX,EURUSD,fx,EUR=,MID_PRICE,864,ok,,5min
+usdjpy,D. USD & FX,FX,USDJPY,fx_jpy,JPY=,MID_PRICE,864,ok,,5min
+gbpusd,D. USD & FX,FX,GBPUSD,fx,GBP=,MID_PRICE,863,ok,,5min
+audusd,D. USD & FX,FX,AUDUSD,fx,AUD=,MID_PRICE,864,ok,,5min
+usdcny,E. RMB,RMB,USDCNY,fx,CNY=,MID_PRICE,400,ok,,5min
+usdcnh,E. RMB,RMB,USDCNH,fx,CNH=,MID_PRICE,859,ok,,5min
+brent,F. Commodities,Commodities,Brent crude,commodity,LCOc1,TRDPRC_1,791,ok,,5min
+wti,F. Commodities,Commodities,WTI crude,commodity,CLc1,TRDPRC_1,751,ok,,5min
+gold,F. Commodities,Commodities,Gold,commodity,XAU=,MID_PRICE,833,ok,,5min
+copper,F. Commodities,Commodities,Copper,commodity,HGc1,TRDPRC_1,8,ok,,5min
+ust2y,A. Rates,Nominal UST,UST 2Y,yield_pct,US2YT=RR,MID_YLD_1,274,ok,,daily
+ust5y,A. Rates,Nominal UST,UST 5Y,yield_pct,US5YT=RR,MID_YLD_1,274,ok,,daily
+ust10y,A. Rates,Nominal UST,UST 10Y,yield_pct,US10YT=RR,MID_YLD_1,274,ok,,daily
+ust30y,A. Rates,Nominal UST,UST 30Y,yield_pct,US30YT=RR,MID_YLD_1,274,ok,,daily
+tips5y,B. Real & Inflation,Real Yield / TIPS,TIPS real 5Y,yield_pct,US5YTIP=RR,"mid(B_YLD_1,A_YLD_1)",276,ok,,daily
+tips10y,B. Real & Inflation,Real Yield / TIPS,TIPS real 10Y,yield_pct,US10YTIP=RR,"mid(B_YLD_1,A_YLD_1)",276,ok,,daily
+tips30y,B. Real & Inflation,Real Yield / TIPS,TIPS real 30Y,yield_pct,US30YTIP=RR,"mid(B_YLD_1,A_YLD_1)",276,ok,,daily
+tu,C. Treasury Futures,Treasury Futures,TU 2Y Treasury Fut,futures_price,TUc1,TRDPRC_1,263,ok,,daily
+fv,C. Treasury Futures,Treasury Futures,FV 5Y Treasury Fut,futures_price,FVc1,TRDPRC_1,266,ok,,daily
+ty,C. Treasury Futures,Treasury Futures,TY 10Y Treasury Fut,futures_price,TYc1,TRDPRC_1,276,ok,,daily
+us,C. Treasury Futures,Treasury Futures,US 30Y Treasury Fut,futures_price,USc1,TRDPRC_1,274,ok,,daily
+dxy,D. USD & FX,USD,DXY,index,.DXY,TRDPRC_1,283,ok,,daily
+eurusd,D. USD & FX,FX,EURUSD,fx,EUR=,MID_PRICE,286,ok,,daily
+usdjpy,D. USD & FX,FX,USDJPY,fx_jpy,JPY=,MID_PRICE,286,ok,,daily
+gbpusd,D. USD & FX,FX,GBPUSD,fx,GBP=,MID_PRICE,286,ok,,daily
+audusd,D. USD & FX,FX,AUDUSD,fx,AUD=,MID_PRICE,286,ok,,daily
+usdcny,E. RMB,RMB,USDCNY,fx,CNY=,MID_PRICE,286,ok,,daily
+usdcnh,E. RMB,RMB,USDCNH,fx,CNH=,MID_PRICE,287,ok,,daily
+cnyfix,E. RMB,RMB,USD/CNY fixing,fixing_fx,CNY=PBOC,MID_PRICE,266,ok,,daily
+brent,F. Commodities,Commodities,Brent crude,commodity,LCOc1,TRDPRC_1,282,ok,,daily
+wti,F. Commodities,Commodities,WTI crude,commodity,CLc1,TRDPRC_1,276,ok,,daily
+gold,F. Commodities,Commodities,Gold,commodity,XAU=,MID_PRICE,282,ok,,daily
+copper,F. Commodities,Commodities,Copper,commodity,HGc1,TRDPRC_1,273,ok,,daily

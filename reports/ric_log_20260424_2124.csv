@@ -1,0 +1,46 @@
+﻿key,section,group,name,unit,ric,field,rows,status,error,freq
+ust2y,A. Rates,Nominal UST,UST 2Y,yield_pct,US2YT=X,None,0,failed,Session is not opened. Can't send any request,5min
+ust5y,A. Rates,Nominal UST,UST 5Y,yield_pct,US5YT=X,None,0,failed,Session is not opened. Can't send any request,5min
+ust10y,A. Rates,Nominal UST,UST 10Y,yield_pct,US10YT=X,None,0,failed,Session is not opened. Can't send any request,5min
+ust30y,A. Rates,Nominal UST,UST 30Y,yield_pct,US30YT=X,None,0,failed,Session is not opened. Can't send any request,5min
+tips5y,B. Real & Inflation,Real Yield / TIPS,TIPS real 5Y,yield_pct,US5YTIPS=RR,None,0,failed,Session is not opened. Can't send any request,5min
+tips10y,B. Real & Inflation,Real Yield / TIPS,TIPS real 10Y,yield_pct,US10YTIPS=RR,None,0,failed,Session is not opened. Can't send any request,5min
+tips30y,B. Real & Inflation,Real Yield / TIPS,TIPS real 30Y,yield_pct,US30YTIPS=RR,None,0,failed,Session is not opened. Can't send any request,5min
+tu,C. Treasury Futures,Treasury Futures,TU 2Y Treasury Fut,futures_price,TUc1,None,0,failed,Session is not opened. Can't send any request,5min
+fv,C. Treasury Futures,Treasury Futures,FV 5Y Treasury Fut,futures_price,FVc1,None,0,failed,Session is not opened. Can't send any request,5min
+ty,C. Treasury Futures,Treasury Futures,TY 10Y Treasury Fut,futures_price,TYc1,None,0,failed,Session is not opened. Can't send any request,5min
+us,C. Treasury Futures,Treasury Futures,US 30Y Treasury Fut,futures_price,USc1,None,0,failed,Session is not opened. Can't send any request,5min
+dxy,D. USD & FX,USD,DXY,index,.DXY,None,0,failed,Session is not opened. Can't send any request,5min
+eurusd,D. USD & FX,FX,EURUSD,fx,EUR=,None,0,failed,Session is not opened. Can't send any request,5min
+usdjpy,D. USD & FX,FX,USDJPY,fx_jpy,JPY=,None,0,failed,Session is not opened. Can't send any request,5min
+gbpusd,D. USD & FX,FX,GBPUSD,fx,GBP=,None,0,failed,Session is not opened. Can't send any request,5min
+audusd,D. USD & FX,FX,AUDUSD,fx,AUD=,None,0,failed,Session is not opened. Can't send any request,5min
+usdcny,E. RMB,RMB,USDCNY,fx,CNY=,None,0,failed,Session is not opened. Can't send any request,5min
+usdcnh,E. RMB,RMB,USDCNH,fx,CNH=,None,0,failed,Session is not opened. Can't send any request,5min
+brent,F. Commodities,Commodities,Brent crude,commodity,LCOc1,None,0,failed,Session is not opened. Can't send any request,5min
+wti,F. Commodities,Commodities,WTI crude,commodity,CLc1,None,0,failed,Session is not opened. Can't send any request,5min
+gold,F. Commodities,Commodities,Gold,commodity,GCc1,None,0,failed,Session is not opened. Can't send any request,5min
+copper,F. Commodities,Commodities,Copper,commodity,HGc1,None,0,failed,Session is not opened. Can't send any request,5min
+ust2y,A. Rates,Nominal UST,UST 2Y,yield_pct,US2YT=X,None,0,failed,Session is not opened. Can't send any request,daily
+ust5y,A. Rates,Nominal UST,UST 5Y,yield_pct,US5YT=X,None,0,failed,Session is not opened. Can't send any request,daily
+ust10y,A. Rates,Nominal UST,UST 10Y,yield_pct,US10YT=X,None,0,failed,Session is not opened. Can't send any request,daily
+ust30y,A. Rates,Nominal UST,UST 30Y,yield_pct,US30YT=X,None,0,failed,Session is not opened. Can't send any request,daily
+tips5y,B. Real & Inflation,Real Yield / TIPS,TIPS real 5Y,yield_pct,US5YTIPS=RR,None,0,failed,Session is not opened. Can't send any request,daily
+tips10y,B. Real & Inflation,Real Yield / TIPS,TIPS real 10Y,yield_pct,US10YTIPS=RR,None,0,failed,Session is not opened. Can't send any request,daily
+tips30y,B. Real & Inflation,Real Yield / TIPS,TIPS real 30Y,yield_pct,US30YTIPS=RR,None,0,failed,Session is not opened. Can't send any request,daily
+tu,C. Treasury Futures,Treasury Futures,TU 2Y Treasury Fut,futures_price,TUc1,None,0,failed,Session is not opened. Can't send any request,daily
+fv,C. Treasury Futures,Treasury Futures,FV 5Y Treasury Fut,futures_price,FVc1,None,0,failed,Session is not opened. Can't send any request,daily
+ty,C. Treasury Futures,Treasury Futures,TY 10Y Treasury Fut,futures_price,TYc1,None,0,failed,Session is not opened. Can't send any request,daily
+us,C. Treasury Futures,Treasury Futures,US 30Y Treasury Fut,futures_price,USc1,None,0,failed,Session is not opened. Can't send any request,daily
+dxy,D. USD & FX,USD,DXY,index,.DXY,None,0,failed,Session is not opened. Can't send any request,daily
+eurusd,D. USD & FX,FX,EURUSD,fx,EUR=,None,0,failed,Session is not opened. Can't send any request,daily
+usdjpy,D. USD & FX,FX,USDJPY,fx_jpy,JPY=,None,0,failed,Session is not opened. Can't send any request,daily
+gbpusd,D. USD & FX,FX,GBPUSD,fx,GBP=,None,0,failed,Session is not opened. Can't send any request,daily
+audusd,D. USD & FX,FX,AUDUSD,fx,AUD=,None,0,failed,Session is not opened. Can't send any request,daily
+usdcny,E. RMB,RMB,USDCNY,fx,CNY=,None,0,failed,Session is not opened. Can't send any request,daily
+usdcnh,E. RMB,RMB,USDCNH,fx,CNH=,None,0,failed,Session is not opened. Can't send any request,daily
+cnyfix,E. RMB,RMB,USD/CNY fixing,fixing_fx,CNY=SAEC,None,0,failed,Session is not opened. Can't send any request,daily
+brent,F. Commodities,Commodities,Brent crude,commodity,LCOc1,None,0,failed,Session is not opened. Can't send any request,daily
+wti,F. Commodities,Commodities,WTI crude,commodity,CLc1,None,0,failed,Session is not opened. Can't send any request,daily
+gold,F. Commodities,Commodities,Gold,commodity,GCc1,None,0,failed,Session is not opened. Can't send any request,daily
+copper,F. Commodities,Commodities,Copper,commodity,HGc1,None,0,failed,Session is not opened. Can't send any request,daily
