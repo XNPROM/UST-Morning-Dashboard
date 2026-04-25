@@ -1,97 +1,144 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+本文件为 Claude Code 在当前仓库内协作时提供约束与说明。
 
-## Project Overview
+## 项目概览
 
-UST Morning Dashboard — 每日深圳早9点复盘美债/汇率市场的晨间看板。从 LSEG Data Platform 拉取数据，生成 HTML 报告，AI 辅助解读，推送 GitHub。
+UST Morning Dashboard 用于每日深圳早 9 点复盘美债、美元、人民币与相关市场表现。
 
-## Commands
+数据来源为 LSEG Data Platform，输出物包括：
+
+1. HTML 报告
+2. CSV 摘要
+3. AI 解读上下文文件
+4. 人工补写后的 AI 解读 JSON
+
+## 常用命令
 
 ```bash
-# 完整运行（拉数据+生成报告+推送）
+# 完整运行
 python run_dashboard.py
 
 # 运行但不推送
 python run_dashboard.py --no-push
 
-# 指定日期运行（调试用，anchor 到该日 09:00 CST）
-python run_dashboard.py --date 2026-04-24
+# 指定业务日期调试
+python run_dashboard.py --date 2026-04-24 --no-push
 
 # 安装依赖
 pip install -r requirements.txt
 ```
 
-## Workflow
+## 每日执行顺序
 
-每天早会的完整流程：
-1. `python run_dashboard.py --no-push` → 拉数据、生成报告、保存 AI 上下文文件
-2. Claude Code 读取 `reports/ai_context_YYYYMMDD*.txt`，生成四维解读（归因/信号/类比/前瞻）
-3. 将解读保存到 `reports/ai_interpretation_YYYYMMDD.json`
-4. `python run_dashboard.py` → 报告带 AI 解读 + 自动推 GitHub
+1. 运行 `python run_dashboard.py --no-push`
+2. 阅读 `reports/ai_context_YYYYMMDD_HHMM.txt`
+3. 生成人工 AI 解读
+4. 保存为 `reports/ai_interpretation_YYYYMMDD_HHMM.json`
+5. 再次运行 `python run_dashboard.py`
 
-## Architecture
+## 架构说明
 
-`run_dashboard.py` 是唯一入口，按顺序调用 15 步：
+`run_dashboard.py` 是唯一入口，按顺序调用以下模块：
 
-1. `dates/windows.py` — `ReportWindows` dataclass，anchor 到 09:00 CST，自动回退到最近 CN 交易日
-2. `auth/lseg_session.py` — `.env` 读 LSEG 凭据，platform 模式（非 desktop），3 次重试
-3. `data/fetch.py` — RIC x Field-Set 笛卡尔积回退（详见下文）
-4. `data/derived.py` — 9 个衍生指标（2s10s/5s10s/5s30s 利差、BEI 5Y/10Y/30Y、CNH-CNY、CNY/CNH 偏离中间价）
-5. `data/validation.py` — 三层校验：cross_validate / detect_anomalies / sanity_check
-6. `analytics/summary.py` — unit-aware 格式化（详见下文）
-7. `analytics/quality.py` — 按 section 评 A/B/C 级
-8. `analytics/notes.py` — 一屏结论文字
-9. `analytics/ai_interpreter.py` — 两阶段：保存上下文 / 按日期加载已有解读 JSON
-10. `analytics/calendar.py` — 交易时段表、经济数据日历
-11. `charts/plotly_charts.py` — Plotly 图表（主面板 ~10 图 + 24h/NY 各 2 图）
-12. `report/html_report.py` — HTML + CSV，含 AI 解读区块、折叠区、质量评级
-13. `push/push_report.py` — `git push origin HEAD`，失败不致命
-14. 清理 >14 天旧报告
-15. Push（`--no-push` 时跳过）
+1. `dates/windows.py`：计算报告时间窗口，返回 `ReportWindows`
+2. `auth/lseg_session.py`：从 `.env` 读取 LSEG 凭据并管理 session
+3. `data/fetch.py`：按 RIC 与 field 回退顺序拉取数据
+4. `data/derived.py`：计算衍生指标
+5. `data/validation.py`：执行交叉校验、异常检测与合理性判断
+6. `analytics/summary.py`：生成摘要表
+7. `analytics/quality.py`：生成质量检查结果与分区评级
+8. `analytics/notes.py`：生成一屏结论
+9. `analytics/ai_interpreter.py`：保存上下文或读取已有 AI 解读
+10. `analytics/calendar.py`：生成交易时段表与经济事件日历
+11. `charts/plotly_charts.py`：生成 Plotly 图表
+12. `report/html_report.py`：输出 HTML 与 CSV
+13. `push/push_report.py`：将报告提交并推送到 GitHub
 
-## Key Design Decisions
+## 关键约束
 
-### RIC x Field-Set 笛卡尔积回退
+1. `config/assets.py` 中的 `ASSETS` 与 `FIELD_SETS_BY_UNIT` 是数据拉取核心，RIC 回退顺序保持不变。
+2. `data/fetch.py` 中的 `looks_valid()` 与 `_series_from_history()` 校验逻辑保持不变。
+3. 所有时间统一使用 `Asia/Shanghai`，`ensure_dt_index()` 中的时区处理逻辑保持不变。
+4. AI 解读采用人工补写方式，不调用外部大模型接口。
+5. `load_dotenv()` 仅在 `run_dashboard.py` 调用一次。
+6. LSEG session 必须在 `try/finally` 中关闭，避免资源泄漏。
+7. 日志 DataFrame 的合并仅在 `run_dashboard.py` 内执行一次，再传入报告生成模块。
 
-`config/assets.py` 中每个 `AssetConfig.rics` 是有序回退链（如 `cnyfix` 有 5 个 RIC），`FIELD_SETS_BY_UNIT` 按 unit 定义有序 field-set 列表（如 `yield_pct` 有 8 级）。`data/fetch.py` 的 `fetch_one()` 遍历所有组合，每次用 `looks_valid()` 验证中位数合理性。最坏情况一个 asset 调 16 次 LSEG API。**不要修改 RIC 回退顺序或删减 field-set 级别**。
+## 凭据
 
-### Unit-Aware 格式化
+`.env` 文件中包含以下字段：
 
-`unit` 字符串贯穿整个格式化链：`FIELD_SETS_BY_UNIT` → `looks_valid()` → `change_display()` → `format_level()` → 验证阈值。添加新 unit 类型需同时改这五处。现有 unit 及格式：
-- `yield_pct` / `bei_pct`: level `4.3325%`, change `+12.50bp`（raw × 100）
-- `spread_bp`: level `25.00bp`, change `+3.20bp`（raw 即 bp）
-- `fx` / `fixing_fx`: level `7.2450`, change `+15.0pips`（raw × 10000）
-- `fx_jpy`: change raw × 100
-- `fx_spread`: level `150.0pips`, change raw × 10000
-- `futures_price` / `commodity` / `index`: change `+1.2500pts`（raw）
+1. `LSEG_APP_KEY`
+2. `LSEG_LDP_LOGIN`
+3. `LSEG_LDP_PASSWORD`
 
-### 时区纪律
+## Windows 定时任务
 
-所有时间统一 `Asia/Shanghai`，`ensure_dt_index` 处理 DST（`nonexistent="shift_forward"`, `ambiguous="NaT"`）。**tz_localize/tz_convert 逻辑不可修改**。
+`run_dashboard_9am.bat` 供 Windows Task Scheduler 在每日 09:00 调用，日志写入 `logs/dashboard.log`。
 
-### 解耦 AI 解读
+## 回复规范
 
-Dashboard 不调 LLM API。`ai_interpreter.py` 要么加载已有 JSON，要么保存 context txt 等人工用 Claude Code 生成。解读 JSON 4 key: `attribution`, `key_levels`, `historical_analogy`, `outlook`。文件按日期前缀匹配，同一天取最新。
+### Communication & Language
 
-### 交易日历
+1. 默认语言使用简体中文；如需切换语言，回复中明确说明。
+2. 代码标识符、CLI 命令、日志和错误消息保留原始语言；必要时附简洁中文解释。
+3. 禁止在代码和文档中使用 Emoji。
+4. 未获得明确许可前，禁止创建文档。
+5. 用语通俗易懂，句子完整连贯，避免缩写、略写和过短句。
+6. 充分使用 Markdown，通过标题、段落、表格、代码块等方式增强可读性。
+7. 陈述内容时保留上下文场景，避免脱离背景单独给出片段化信息。
 
-`dates/windows.py` 用 `pandas_market_calendars`（XSHG/XNYS），支持 `CN_EXTRA_WORKDAYS`（调休补班）和 `CN_HOLIDAY_OVERRIDES`。`prev_market_day()` 最多回搜 30 天。库不可用时退化为 Mon-Fri。
+### 风格锚定
 
-### 其他约束
+使用规范的现代书面中文进行回复，语感接近技术文档编写者之间的同行讨论。句式结构完整，论述平实克制，信息密度高。段落之间以逻辑关系自然衔接，陈述事实、给出分析、提供方案，让信息本身承载说服力。
 
-- `load_dotenv()` 只在 `run_dashboard.py` 调一次
-- LSEG session 必须在 `try/finally` 中关闭，`session = None` 初始化防 UnboundLocalError
-- 日志 DataFrame 合并只做一次，传入 `generate_html_report` 复用
-- `_series_from_history()` 对 yield 优先取 bid/ask mid，对非 yield 优先取 BID/ASK
-- `_flatten_columns()` 处理 LSEG SDK 返回 MultiIndex 和 flat column 两种情况
-- 多处 `try/except` 兼容不同 LSEG SDK 版本（`signon_control`、`set_default()`）
+回复第一句话直接进入正文，后续段落再展开背景与原因。篇幅根据问题复杂度自然伸缩。语气保持专业、平等、克制、有条理。
 
-## Credentials
+### 意图边界与人称规范
 
-`.env` 文件（gitignored）包含：
-- `LSEG_APP_KEY`, `LSEG_LDP_LOGIN`, `LSEG_LDP_PASSWORD` — LSEG 数据平台
+1. 不得臆测或补全协作者意图，不得代替协作者做决定。
+2. 严禁使用拟人视角和词语沟通。
+3. 回复中避免使用“你”“我”“他”等任何人称代词。
 
-## Windows Scheduling
+### 禁止元分析与情绪揣测
 
-`run_dashboard_9am.bat` 激活 `D:\9amust\venv`，日志追加到 `logs\dashboard.log`。供 Task Scheduler 每天 09:00 调用。
+1. 除非有明确要求，禁止解析、揣测、评价协作者或文本的情绪、心理、观点、环境。
+2. 禁止揣测对话意图与目标。
+3. 禁止进行升维、元分析、文本解构、情绪解构。
+4. 除非明确要求，禁止重复叙述已经表达过的观点与事实。
+
+### 回复开头规范
+
+除非有明确要求，回复开头直接进入答案本身，避免重复协作者提问。
+
+### 语体与表达层次
+
+1. 正面回应指正，避免逃避式表达。
+2. 使用低认知复杂度的规范书面用语。
+3. 被指正时，直接承认并给出修正内容，然后继续推进。
+
+### 禁用词汇与句式
+
+严禁使用互联网黑话及排比句式。禁用词汇包括但不限于：
+
+`结论`、`口径`、`稳`、`坑`、`走`、`风险`、`抓手`、`路径`、`落地`、`定性`、`直接`、`倒逼`、`复现`、`落盘`、`落成`、`粒度`、`收敛`、`收紧`、`收束`、`聚焦`、`工作流`、`赋能`、`拉齐`、`对齐`、`打通`、`闭环`、`沉淀`、`透出`、`链路`、`心智`、`感知`、`触达`、`迭代`
+
+### 正向表达与措辞禁区
+
+1. 使用正向表达进行沟通，严格控制否定表达。
+2. 避免“这不是……而是……”等反转句式。
+
+### 句法完整性要求
+
+确保句法结构完整、语义逻辑显性、论元结构完备，避免使用单字替代完整短语。
+
+### 排版与格式规范
+
+1. 善用标题、段落、加粗、代码块、空白行等格式增强可读性。
+2. 避免无意义罗列。
+3. 表格内容保持清晰、简洁、易读。
+
+### 结尾规范
+
+回复以陈述直接结尾，避免反问、追问、选项式提问；如需澄清，仅围绕当前问题提出必要澄清。
