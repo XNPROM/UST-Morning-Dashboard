@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import os
+import time
 
 
 def get_credentials() -> tuple[str, str, str]:
@@ -41,6 +42,22 @@ def open_lseg_session():
 
     session = definition.get_session()
     session.open()
+    deadline = time.monotonic() + 8.0
+    state_name = getattr(getattr(session, "open_state", None), "name", "Unknown")
+    while time.monotonic() < deadline:
+        state_name = getattr(getattr(session, "open_state", None), "name", "Unknown")
+        if state_name == "Opened":
+            break
+        if state_name in {"Closed", "Error"}:
+            break
+        time.sleep(0.1)
+
+    if state_name != "Opened":
+        try:
+            session.close()
+        except Exception:
+            pass
+        raise RuntimeError(f"LSEG session did not open successfully (state={state_name})")
 
     try:
         ld.session.set_default(session)

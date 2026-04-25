@@ -3,15 +3,18 @@ from __future__ import annotations
 import inspect
 import os
 import subprocess
+import sys
 import tempfile
 import unittest
 from datetime import datetime, date
 from unittest import mock
+from types import SimpleNamespace
 
 import pandas as pd
 import plotly.graph_objects as go
 
 import run_dashboard
+from auth.lseg_session import open_lseg_session
 from analytics.quality import compute_quality_grade, find_blocking_quality_issues
 from charts.plotly_charts import line_fig
 from config.settings import settings
@@ -186,6 +189,92 @@ class RegressionTests(unittest.TestCase):
         self.assertIn("--only", commit_cmd)
         self.assertIn("--", commit_cmd)
         self.assertEqual(commit_cmd[-1], "report.html")
+
+    def test_open_lseg_session_raises_when_session_never_opens(self) -> None:
+        class FakeSession:
+            def __init__(self) -> None:
+                self.open_state = SimpleNamespace(name="Closed")
+
+            def open(self) -> None:
+                self.open_state = SimpleNamespace(name="Closed")
+
+            def close(self) -> None:
+                return None
+
+        fake_session = FakeSession()
+        fake_definition = SimpleNamespace(get_session=lambda: fake_session)
+        fake_ld = SimpleNamespace(
+            session=SimpleNamespace(
+                platform=SimpleNamespace(
+                    Definition=lambda **kwargs: fake_definition,
+                    GrantPassword=lambda username, password: (username, password),
+                ),
+                set_default=lambda session: None,
+            )
+        )
+
+        with mock.patch.dict(sys.modules, {"lseg.data": fake_ld}):
+            with self.assertRaisesRegex(RuntimeError, "did not open successfully"):
+                open_lseg_session()
+
+    def test_should_load_interpretation_requires_data_and_no_blockers(self) -> None:
+        blocking = pd.DataFrame([{"Severity": "HIGH", "Asset": "UST 10Y"}])
+
+        self.assertFalse(run_dashboard.should_load_interpretation(pd.DataFrame(), pd.DataFrame()))
+        self.assertFalse(run_dashboard.should_load_interpretation(pd.DataFrame([{"Asset": "UST 10Y"}]), blocking))
+        self.assertTrue(run_dashboard.should_load_interpretation(pd.DataFrame([{"Asset": "UST 10Y"}]), pd.DataFrame()))
+
+    def test_generate_html_report_surfaces_blocking_data_banner(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            old_output_dir = os.environ.get("OUTPUT_DIR")
+            os.environ["OUTPUT_DIR"] = tmpdir
+            try:
+                windows = ReportWindows(
+                    asof_dt=datetime(2026, 4, 23, 9, 0, tzinfo=settings.REPORT_TZ),
+                    asof_date=date(2026, 4, 23),
+                    prev_cn_day=date(2026, 4, 22),
+                    prev_us_day=date(2026, 4, 22),
+                    main_start=datetime(2026, 4, 22, 16, 0, tzinfo=settings.REPORT_TZ),
+                    main_end=datetime(2026, 4, 23, 9, 0, tzinfo=settings.REPORT_TZ),
+                    ny_start=datetime(2026, 4, 22, 20, 0, tzinfo=settings.REPORT_TZ),
+                    ny_end=datetime(2026, 4, 23, 5, 0, tzinfo=settings.REPORT_TZ),
+                    rolling24_start=datetime(2026, 4, 22, 9, 0, tzinfo=settings.REPORT_TZ),
+                    rolling24_end=datetime(2026, 4, 23, 9, 0, tzinfo=settings.REPORT_TZ),
+                    intraday_start=datetime(2026, 4, 20, 9, 0, tzinfo=settings.REPORT_TZ),
+                    intraday_end=datetime(2026, 4, 23, 9, 0, tzinfo=settings.REPORT_TZ),
+                    daily_start=datetime(2025, 1, 1, 9, 0, tzinfo=settings.REPORT_TZ),
+                    daily_end=datetime(2026, 4, 23, 9, 0, tzinfo=settings.REPORT_TZ),
+                    target_fixing_date=date(2026, 4, 23),
+                )
+
+                html_path, _, _ = generate_html_report(
+                    summary_main=pd.DataFrame(),
+                    summary_24h=pd.DataFrame(),
+                    summary_ny=pd.DataFrame(),
+                    morning_notes=[],
+                    quality_df=pd.DataFrame(
+                        [{"Severity": "HIGH", "Asset": "UST 10Y", "Issue": "fetch failed", "Detail": "demo"}]
+                    ),
+                    figs=[go.Figure()],
+                    daily_panel=pd.DataFrame(),
+                    all_logs=pd.DataFrame(
+                        columns=["freq", "section", "group", "name", "ric", "field", "rows", "status", "error"]
+                    ),
+                    windows=windows,
+                    trading_hours=pd.DataFrame(),
+                    event_calendar=pd.DataFrame(),
+                    interpretation=None,
+                    timestamp="20260423_2027",
+                )
+                with open(html_path, "r", encoding="utf-8") as f:
+                    html = f.read()
+            finally:
+                if old_output_dir is None:
+                    os.environ.pop("OUTPUT_DIR", None)
+                else:
+                    os.environ["OUTPUT_DIR"] = old_output_dir
+
+        self.assertIn("本批次数据存在关键缺口", html)
 
 
 if __name__ == "__main__":

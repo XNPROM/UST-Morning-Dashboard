@@ -53,6 +53,17 @@ def build_artifact_timestamp(asof_dt: datetime, now: datetime | None = None) -> 
     return f"{asof_dt.strftime('%Y%m%d')}_{run_now.strftime('%H%M')}"
 
 
+def should_load_interpretation(
+    summary_main: pd.DataFrame,
+    blocking_quality_issues: pd.DataFrame,
+) -> bool:
+    if summary_main.empty:
+        return False
+    if blocking_quality_issues is not None and not blocking_quality_issues.empty:
+        return False
+    return True
+
+
 def cleanup_old_reports(report_dir: str, keep_days: int = 14) -> None:
     """Delete report files older than keep_days."""
     cutoff = datetime.now() - timedelta(days=keep_days)
@@ -181,15 +192,19 @@ def main():
 
         # 10. AI interpretation (two-phase: load existing or save context for later)
         print("Checking AI interpretation...")
-        interpretation = interpret_market(
-            summary_main, summary_24h, daily_panel, quality_df, windows,
-            timestamp=timestamp,
-        )
-        if interpretation:
-            print("AI interpretation loaded.")
+        if should_load_interpretation(summary_main, blocking_quality_issues):
+            interpretation = interpret_market(
+                summary_main, summary_24h, daily_panel, quality_df, windows,
+                timestamp=timestamp,
+            )
+            if interpretation:
+                print("AI interpretation loaded.")
+            else:
+                print("AI interpretation not yet generated. Context file saved.")
+                print("  -> In Claude Code: read the context file and generate interpretation")
         else:
-            print("AI interpretation not yet generated. Context file saved.")
-            print("  -> In Claude Code: read the context file and generate interpretation")
+            interpretation = None
+            print("Skipping AI interpretation because the current batch is not suitable for analysis text.")
 
         # 11. Charts (include rolling24h and NY panels)
         print("Generating charts...")

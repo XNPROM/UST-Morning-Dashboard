@@ -6,6 +6,69 @@ from config.settings import settings
 from analytics.summary import rows_by_section
 
 
+CHART_COLORS = [
+    "#24564f",
+    "#b16d2e",
+    "#365f91",
+    "#8d3f33",
+    "#5c6b58",
+    "#7a5a9a",
+]
+
+
+def _apply_chart_style(fig: go.Figure, title: str, ytitle: str, height: int, bottom_margin: int = 40) -> go.Figure:
+    fig.update_layout(
+        title=dict(
+            text=title,
+            x=0.02,
+            xanchor="left",
+            font=dict(
+                family='"Source Han Serif SC", "STSong", "SimSun", Georgia, serif',
+                size=18,
+                color="#1b3635",
+            ),
+        ),
+        template=settings.PLOTLY_TEMPLATE,
+        colorway=CHART_COLORS,
+        hovermode="x unified",
+        height=height,
+        margin=dict(l=44, r=18, t=62, b=bottom_margin),
+        legend=dict(
+            orientation="h",
+            yanchor="bottom",
+            y=1.01,
+            xanchor="left",
+            x=0,
+            bgcolor="rgba(255,255,255,0.72)",
+            bordercolor="#d6ccb9",
+            borderwidth=1,
+            font=dict(family='"Bahnschrift", "Aptos", "PingFang SC", "Microsoft YaHei", sans-serif', size=11),
+        ),
+        font=dict(
+            family='"Bahnschrift", "Aptos", "PingFang SC", "Microsoft YaHei", sans-serif',
+            size=12,
+            color="#22313d",
+        ),
+        paper_bgcolor="rgba(0,0,0,0)",
+        plot_bgcolor="#fbf7ef",
+        yaxis_title=ytitle,
+        xaxis_title="",
+    )
+    fig.update_xaxes(
+        showgrid=True,
+        gridcolor="#e2d8c7",
+        linecolor="#cfc4b2",
+        zerolinecolor="#cfc4b2",
+    )
+    fig.update_yaxes(
+        showgrid=True,
+        gridcolor="#e2d8c7",
+        linecolor="#cfc4b2",
+        zerolinecolor="#cfc4b2",
+    )
+    return fig
+
+
 def existing(panel, cols: list[str]) -> list[str]:
     return [c for c in cols if c in panel.columns and panel[c].dropna().shape[0] >= 2]
 
@@ -17,7 +80,7 @@ def line_fig(
     cols = existing(panel, cols)
     fig = go.Figure()
     if not cols:
-        fig.update_layout(title=f"{title}（无可用数据）", template=settings.PLOTLY_TEMPLATE, height=height)
+        _apply_chart_style(fig, f"{title}（无可用数据）", ytitle, height)
         return fig
 
     for col in cols:
@@ -32,30 +95,22 @@ def line_fig(
             y=y,
             mode="lines",
             name=col,
+            line=dict(width=2.4),
             hovertemplate="%{x}<br>%{y:.4f}<extra>%{fullData.name}</extra>",
         ))
 
-    fig.update_layout(
-        title=title,
-        template=settings.PLOTLY_TEMPLATE,
-        hovermode="x unified",
-        height=height,
-        margin=dict(l=40, r=20, t=60, b=40),
-        legend=dict(orientation="h", yanchor="bottom", y=1.01, xanchor="left", x=0),
-        yaxis_title=ytitle,
-        xaxis_title="",
-    )
-    return fig
+    return _apply_chart_style(fig, title, ytitle, height)
 
 
 def change_bar_fig(summary, sections: list[str], title: str) -> go.Figure:
     df = rows_by_section(summary, sections)
     if df.empty:
         fig = go.Figure()
-        fig.update_layout(title=f"{title}（无可用数据）", template=settings.PLOTLY_TEMPLATE, height=360)
+        _apply_chart_style(fig, f"{title}（无可用数据）", "Change", 360, bottom_margin=80)
         return fig
 
     df = df.copy().dropna(subset=["Change Display"])
+    marker_colors = ["#24564f" if val >= 0 else "#b16d2e" for val in df["Change Display"]]
     fig = go.Figure(go.Bar(
         x=df["Asset"],
         y=df["Change Display"],
@@ -63,15 +118,10 @@ def change_bar_fig(summary, sections: list[str], title: str) -> go.Figure:
         textposition="outside",
         hovertemplate="%{x}<br>%{y:.4f} %{customdata}<extra></extra>",
         customdata=df["Change Unit"],
+        marker=dict(color=marker_colors, line=dict(color="#f6f1e6", width=1)),
     ))
-    fig.update_layout(
-        title=title,
-        template=settings.PLOTLY_TEMPLATE,
-        height=380,
-        margin=dict(l=40, r=20, t=60, b=80),
-        yaxis_title="Change",
-        xaxis_tickangle=-25,
-    )
+    _apply_chart_style(fig, title, "Change", 380, bottom_margin=88)
+    fig.update_xaxes(tickangle=-25)
     fig.add_hline(y=0, line_width=1)
     return fig
 
