@@ -73,9 +73,20 @@ def generate_html_report(
     # AI section
     if interpretation:
         ai_html = '<div class="ai-grid">'
-        dim_titles = {'changes': '变动', 'reasons': '原因', 'synthesis': '综合'}
+        dim_titles = {
+            'conclusion': '一、核心结论',
+            'performance': '二、市场表现',
+            'causes': '三、原因分析',
+            'watchlist': '四、后续观察',
+            'corrections': '五、错误检查',
+        }
+        # Fall back to old keys if new keys missing
+        if 'conclusion' not in interpretation and 'changes' in interpretation:
+            dim_titles = {'changes': '变动', 'reasons': '原因', 'synthesis': '综合'}
         for key, title in dim_titles.items():
-            content = interpretation.get(key, '数据不足，当前无法生成解读。')
+            content = interpretation.get(key, '')
+            if not content or key.startswith('_'):
+                continue
             ai_html += f'<div class="ai-card"><div class="ai-card-title">{title}</div><div class="ai-card-body">{content}</div></div>'
         ai_html += '</div>'
     else:
