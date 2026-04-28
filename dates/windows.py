@@ -23,11 +23,11 @@ class ReportWindows:
 
 
 def _get_prev_trading_date(asof_dt):
-    """Get the previous trading date using the China calendar."""
+    """Get the previous trading date using the NYSE calendar (US markets)."""
     try:
-        china_cal = mcal.get_calendar('SSE')
+        us_cal = mcal.get_calendar('NYSE')
         asof_date = asof_dt.date()
-        schedule = china_cal.schedule(start_date=asof_date - timedelta(days=10), end_date=asof_date)
+        schedule = us_cal.schedule(start_date=asof_date - timedelta(days=10), end_date=asof_date)
         if schedule.empty:
             return asof_date - timedelta(days=1)
         dates = pd.to_datetime(schedule.index).date

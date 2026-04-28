@@ -51,7 +51,7 @@ def clean_panel(panel, freq_minutes=5):
     out = panel.copy()
 
     # --- Step 1: forward-fill small gaps ---
-    out = out.ffill(limit=3)
+    out = out.ffill(limit=12)
 
     # --- Step 2: rolling-median spike removal ---
     window = 13  # ~1 hour for 5-min bars

@@ -52,7 +52,7 @@ def line_fig(panel, cols=None, title=None, ytitle=None, normalize=False, height=
             y = s if base == 0 else (s / base) * 100
         else:
             y = s
-        fig.add_trace(Scatter(x=s.index.tz_convert(settings.REPORT_TZ), y=y, mode='lines', name=col, line=dict(width=2), connectgaps=False, hovertemplate='%{x}<br>%{y:.4f}<extra>%{fullData.name}</extra>'))
+        fig.add_trace(Scatter(x=s.index.tz_convert(settings.REPORT_TZ), y=y, mode='lines', name=col, line=dict(width=2), connectgaps=True, hovertemplate='%{x}<br>%{y:.4f}<extra>%{fullData.name}</extra>'))
     return _apply_chart_style(fig, title, ytitle, height)
 
 
