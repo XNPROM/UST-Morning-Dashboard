@@ -20,6 +20,7 @@ class ReportWindows:
     ny_start: datetime
     ny_end: datetime
     target_fixing_date: date
+    history_start: date  # ~2 years back for daily/weekly/monthly panels
 
 
 def _get_prev_trading_date(asof_dt):
@@ -65,6 +66,8 @@ def compute_report_windows(asof_dt = None):
     ny_end = ny_end_et.astimezone(settings.REPORT_TZ)
     # Target fixing date is the previous trading date
     target_fixing_date = prev_trade
+    # History start for daily/weekly/monthly panels (~2 years)
+    history_start = asof_dt.date() - timedelta(days=730)
     return ReportWindows(
         asof_dt=asof_dt,
         main_start=main_start,
@@ -75,4 +78,5 @@ def compute_report_windows(asof_dt = None):
         ny_start=ny_start,
         ny_end=ny_end,
         target_fixing_date=target_fixing_date,
+        history_start=history_start,
     )

@@ -84,3 +84,21 @@ def slice_window(panel = None, start = None, end = None):
         return panel.copy()
     tz = settings.REPORT_TZ
     return panel.loc[(panel.index >= start.astimezone(tz)) & (panel.index <= end.astimezone(tz))].copy()
+
+
+def resample_panel(daily_panel, rule='W-FRI'):
+    """Resample a daily panel to weekly/monthly frequency using last valid value.
+
+    Parameters
+    ----------
+    daily_panel : DataFrame with DatetimeIndex (daily bars)
+    rule : str – pandas offset alias, e.g. 'W-FRI' for weekly (Friday close),
+           'ME' for month-end, 'YE' for year-end.
+
+    Returns
+    -------
+    DataFrame resampled to the given frequency (last observation carried forward).
+    """
+    if daily_panel is None or daily_panel.empty:
+        return daily_panel
+    return daily_panel.resample(rule).last().dropna(how='all')

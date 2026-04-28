@@ -158,11 +158,40 @@ def generate_html_report(
         cols = ['Group', 'Asset', 'Level', 'Change Text', '% Change Text', 'High', 'Low', 'Obs']
         sections_ny_html += f'<h3>{sec_label}</h3>{html_table(combined, cols)}'
 
-    # Charts HTML
-    charts_parts = []
+    # Charts HTML - group by time dimension
+    def _fig_to_html(fig):
+        return fig.to_html(full_html=False, include_plotlyjs=False)
+
+    chart_groups = {
+        'charts': ('主窗口 & 日内图表', []),
+        'daily': ('日线图表', []),
+        'weekly': ('周线图表', []),
+        'monthly': ('月线图表', []),
+        'yearly': ('全周期图表', []),
+    }
     for fig in figs:
-        charts_parts.append(fig.to_html(full_html=False, include_plotlyjs='cdn'))
-    charts_html = ''.join(charts_parts) if charts_parts else ''
+        title = fig.layout.title.text if fig.layout.title and fig.layout.title.text else ''
+        if '日线' in title:
+            chart_groups['daily'][1].append(fig)
+        elif '周线' in title:
+            chart_groups['weekly'][1].append(fig)
+        elif '月线' in title:
+            chart_groups['monthly'][1].append(fig)
+        elif '全周期' in title:
+            chart_groups['yearly'][1].append(fig)
+        else:
+            chart_groups['charts'][1].append(fig)
+
+    charts_sections_html = ''
+    for grp_id, (grp_title, grp_figs) in chart_groups.items():
+        if not grp_figs:
+            continue
+        inner = ''.join(_fig_to_html(f) for f in grp_figs)
+        charts_sections_html += f'''
+    <div class="collapsible" id="{grp_id}">
+        <div class="collapsible-header active" onclick="this.classList.toggle('active')">{grp_title}</div>
+        <div class="collapsible-body" style="display:block">{inner}</div>
+    </div>'''
 
     # Notes
     notes_html = ''
@@ -276,7 +305,11 @@ ul li {{ margin-bottom: 4px; }}
     <a href="#quality">Quality</a>
     <a href="#24h">24h</a>
     <a href="#ny">NY</a>
-    <a href="#charts">Charts</a>
+    <a href="#charts">Intraday</a>
+    <a href="#daily">Daily</a>
+    <a href="#weekly">Weekly</a>
+    <a href="#monthly">Monthly</a>
+    <a href="#yearly">Yearly</a>
     <a href="#sessions">Sessions</a>
     <a href="#calendar">Calendar</a>
 </nav>
@@ -317,10 +350,11 @@ ul li {{ margin-bottom: 4px; }}
         <div class="collapsible-body">{sections_ny_html}</div>
     </div>
 
-    <div class="section" id="charts">
+    <div class="section" id="charts-wrapper">
         <h2>4. 图表</h2>
-        {charts_html}
     </div>
+    <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+    {charts_sections_html}
 
     <div class="section" id="sessions">
         <h2>5. 交易时段对照</h2>

@@ -19,7 +19,7 @@ from config.settings import settings
 from config.assets import wanted_assets
 from dates.windows import compute_report_windows
 from data.fetch import download_panel
-from data.derived import add_derived, slice_window, clean_panel
+from data.derived import add_derived, slice_window, clean_panel, resample_panel
 from data.validation import cross_validate, detect_anomalies, sanity_check
 from analytics.summary import summarize_panel
 from analytics.quality import data_quality_checks, find_blocking_quality_issues
@@ -90,8 +90,11 @@ def main():
         fetch_start = min(windows.rolling_24h_start, windows.main_start)
         print('Fetching intraday data...')
         intraday_panel, intraday_logs = download_panel(assets_intra, fetch_start, windows.main_end, session=session)
-        print('Fetching daily data...')
-        daily_panel, daily_logs = download_panel(assets_daily, windows.daily_start, windows.daily_end, session=session)
+        print('Fetching daily data (2-year history)...')
+        from datetime import date as date_cls
+        history_start_dt = datetime(windows.history_start.year, windows.history_start.month, windows.history_start.day, tzinfo=settings.REPORT_TZ)
+        history_end_dt = windows.asof_dt.replace(hour=23, minute=59, second=59, microsecond=0)
+        daily_panel, daily_logs = download_panel(assets_daily, history_start_dt, history_end_dt, interval='daily', session=session)
     finally:
         if session is not None:
             try:
@@ -102,6 +105,9 @@ def main():
     print('Computing derived metrics...')
     intraday_panel = add_derived(intraday_panel)
     daily_panel = add_derived(daily_panel)
+    print('Resampling daily panel to weekly / monthly...')
+    weekly_panel = resample_panel(daily_panel, rule='W-FRI')
+    monthly_panel = resample_panel(daily_panel, rule='ME')
     print('Cleaning data (ffill gaps, remove spikes)...')
     intraday_panel = clean_panel(intraday_panel)
     main_panel = slice_window(intraday_panel, windows.main_start, windows.main_end)
@@ -138,7 +144,8 @@ def main():
     ai_result = interpret_market(summary_main, summary_24h, daily_panel, quality_df, windows, timestamp)
     interpretation = ai_result if isinstance(ai_result, dict) else None
     print('Generating charts...')
-    figs = make_figures(main_panel, summary_main, daily_panel, rolling24_panel, ny_panel)
+    figs = make_figures(main_panel, summary_main, daily_panel, rolling24_panel, ny_panel,
+                        weekly_panel=weekly_panel, monthly_panel=monthly_panel)
     print('Generating HTML report...')
     trading_hours = build_trading_hours()
     event_calendar = build_event_calendar(windows)
