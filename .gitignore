@@ -1,4 +1,29 @@
+# Credentials
 .env
+
+# Python
 __pycache__/
 *.pyc
+.pytest_cache/
+
+# Logs
 logs/
+
+# Report artifacts (generated each run, pushed via git add -f)
+reports/*.html
+reports/*.csv
+reports/*.txt
+reports/*.json
+
+# Windows junk
+nul
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Old / temporary files
+latest_dashboard.html
+*.ipynb
+debug_*.py
