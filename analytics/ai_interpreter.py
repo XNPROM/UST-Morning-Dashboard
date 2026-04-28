@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 import json
+import hashlib
 import os
 from datetime import datetime
 import numpy as np
@@ -113,16 +114,34 @@ def save_context(context = None, timestamp = None):
     return path
 
 
-def load_interpretation(date_str = None):
-    """Load pre-generated interpretation from JSON file. Matches by date prefix (YYYYMMDD)."""
+def _summary_fingerprint(summary_main):
+    """Create a short hash of summary data to detect stale interpretations."""
+    if summary_main is None or summary_main.empty:
+        return ''
+    key_cols = ['Asset', 'Level', 'Change Text']
+    cols = [c for c in key_cols if c in summary_main.columns]
+    raw = summary_main[cols].to_csv(index=False)
+    return hashlib.md5(raw.encode()).hexdigest()[:12]
+
+
+def load_interpretation(date_str=None, fingerprint=None):
+    """Load pre-generated interpretation from JSON file. Matches by date prefix (YYYYMMDD).
+    If fingerprint is provided, checks that the saved fingerprint matches."""
     if not os.path.exists(settings.OUTPUT_DIR):
         return None
-    for fname in os.listdir(settings.OUTPUT_DIR):
+    for fname in sorted(os.listdir(settings.OUTPUT_DIR), reverse=True):
         if fname.startswith('ai_interpretation_') and fname.endswith('.json'):
             if date_str and fname.startswith('ai_interpretation_' + date_str[:8]):
                 path = os.path.join(settings.OUTPUT_DIR, fname)
                 with open(path, 'r', encoding='utf-8') as f:
-                    return json.load(f)
+                    data = json.load(f)
+                # If fingerprint checking is enabled and the file has a fingerprint, verify it
+                if fingerprint and isinstance(data, dict):
+                    saved_fp = data.get('_fingerprint', '')
+                    if saved_fp and saved_fp != fingerprint:
+                        print(f'[AI] Interpretation fingerprint mismatch (saved={saved_fp}, current={fingerprint}), treating as stale.')
+                        continue
+                return data
     return None
 
 
@@ -136,9 +155,10 @@ def save_interpretation(interpretation = None, timestamp = None):
 
 
 def interpret_market(summary_main, summary_24h = None, daily_panel = None, quality_df = None, windows = None, timestamp = None):
-    """Try to load pre-generated interpretation. If not found, save context for later."""
+    """Try to load pre-generated interpretation. If not found or stale, save context for later."""
     if timestamp:
-        result = load_interpretation(timestamp)
+        fp = _summary_fingerprint(summary_main)
+        result = load_interpretation(timestamp, fingerprint=fp)
         if result:
             return result
         context = build_context(summary_main, summary_24h, daily_panel, quality_df, windows)
