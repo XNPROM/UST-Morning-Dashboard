@@ -5,20 +5,42 @@ from __future__ import annotations
 import json
 import hashlib
 import os
-from datetime import datetime
+import sqlite3
+from datetime import datetime, timedelta
 import numpy as np
 import pandas as pd
 from config.settings import settings
 from analytics.summary import format_level, get_unit, get_order
 from dates.windows import ReportWindows
-SYSTEM_PROMPT = '你是深圳某券商固定收益研究团队的晨报分析师。你只基于提供的数据进行分析，不编造任何数字。如果数据不足以支持明确判断，应当明确说明数据仍需继续观察。\n\n严格规则：\n- 引用任何数字时，必须与提供的数据完全一致，不得四舍五入或近似（如数据写3.57bp就不能写成3.6bp）\n- 不得声称某个资产"突破"了某个点位，除非数据中的实际Level或High确实越过了该点位\
-n- 不得推测数据中未出现的极值（如数据中USDJPY最高159.84，不能说"触及160"）\
-n- 对每个关键判断，在括号中标注数据来源值，如"10Y收益率高于4.30%（4.3325%）"\
-\n\n写作要求：\n- 使用规范书面中文，句子完整，避免口语化表达、夸张语气和交易台行话\
-n- 每段先写观察到的变化，再解释背后的分项结构，最后写仍需继续观察的事项\
-n- 文字应当克制、清晰，减少机械重复，不使用项目符号\
-n- 如果历史参照不足，明确写出"近阶段可比样本有限"\
-\n\n你的分析风格：简洁、审慎、逻辑清晰。用中文撰写。'
+
+REPORT_WATCH_DB = r'D:\Report Watch\.state\report_watch.sqlite3'
+
+# Keywords to filter macro/rates/FX relevant reports from Report Watch
+_MACRO_KEYWORDS = [
+    'rates', 'treasury', 'yield', 'FOMC', 'inflation', 'PCE', 'CPI',
+    'FX', 'DXY', 'CNY', 'CNH', 'JPY', 'USD', 'EUR',
+    'oil', 'gold', 'commodit', 'crude', 'Brent',
+    'macro', 'GDP', 'Fed', 'BoJ', 'ECB', 'BoE',
+    'morning', 'conviction', 'fixed income',
+    'trade', 'tariff', 'Hormuz', 'geopolit',
+    'strategy', 'rates strategy', 'open',
+]
+SYSTEM_PROMPT = (
+    '你是深圳某券商固定收益研究团队的晨报分析师。你只基于提供的数据进行分析，不编造任何数字。'
+    '如果数据不足以支持明确判断，应当明确说明数据仍需继续观察。\n\n'
+    '严格规则：\n'
+    '- 引用任何数字时，必须与提供的数据完全一致，不得四舍五入或近似（如数据写3.57bp就不能写成3.6bp）\n'
+    '- 不得声称某个资产"突破"了某个点位，除非数据中的实际Level或High确实越过了该点位\n'
+    '- 不得推测数据中未出现的极值（如数据中USDJPY最高159.84，不能说"触及160"）\n'
+    '- 对每个关键判断，在括号中标注数据来源值，如"10Y收益率高于4.30%（4.3325%）"\n'
+    '- 原因分析部分只能引用"近期外资研报摘要"中提供的研报观点，必须标注来源（如"据Barclays《US in Focus》"），不得编造来源\n\n'
+    '写作要求：\n'
+    '- 使用规范书面中文，句子完整，避免口语化表达、夸张语气和交易台行话\n'
+    '- 每段先写观察到的变化，再解释背后的分项结构，最后写仍需继续观察的事项\n'
+    '- 文字应当克制、清晰，减少机械重复，不使用项目符号\n'
+    '- 如果历史参照不足，明确写出"近阶段可比样本有限"\n\n'
+    '你的分析风格：简洁、审慎、逻辑清晰。用中文撰写。'
+)
 
 
 def _fmt_change(chg = None, unit = None):
@@ -80,29 +102,146 @@ def _build_quality_text(quality_df = None):
     return '\n'.join(lines)
 
 
+def get_recent_macro_reports(asof_dt=None, lookback_days=3, max_reports=15):
+    """Read recent macro-relevant report summaries from Report Watch SQLite DB.
+
+    Returns a list of dicts: {bank, title, published_at, summary}
+    """
+    if not os.path.exists(REPORT_WATCH_DB):
+        return []
+    if asof_dt is None:
+        asof_dt = datetime.now()
+    cutoff = (asof_dt - timedelta(days=lookback_days)).strftime('%Y-%m-%dT00:00:00')
+    try:
+        conn = sqlite3.connect(REPORT_WATCH_DB)
+        cur = conn.cursor()
+        # Build keyword filter on title + section_name
+        kw_clauses = []
+        kw_params = []
+        for kw in _MACRO_KEYWORDS:
+            kw_clauses.append('(title LIKE ? COLLATE NOCASE OR section_name LIKE ? COLLATE NOCASE)')
+            kw_params.extend([f'%{kw}%', f'%{kw}%'])
+        where_kw = ' OR '.join(kw_clauses)
+        sql = (
+            'SELECT source_bank, title, published_at, extra_json '
+            'FROM items '
+            'WHERE published_at >= ? '
+            "AND extra_json LIKE '%ai_summary%' "
+            f'AND ({where_kw}) '
+            'ORDER BY published_at DESC '
+            f'LIMIT {max_reports * 3}'  # fetch more, deduplicate later
+        )
+        cur.execute(sql, [cutoff] + kw_params)
+        rows = cur.fetchall()
+        conn.close()
+    except Exception as e:
+        print(f'[ReportWatch] Error reading DB: {e}')
+        return []
+
+    # Parse and deduplicate
+    seen_titles = set()
+    results = []
+    for bank, title, pub_at, extra_json_str in rows:
+        # Skip duplicates by normalized title
+        norm_title = title.strip().lower()
+        if norm_title in seen_titles:
+            continue
+        seen_titles.add(norm_title)
+        try:
+            ej = json.loads(extra_json_str) if extra_json_str else {}
+        except json.JSONDecodeError:
+            continue
+        ai_summary = ej.get('ai_summary', '')
+        if not ai_summary or len(ai_summary) < 50:
+            continue
+        # Extract just the key takeaways section (核心观点) for brevity
+        summary_text = _extract_key_section(ai_summary)
+        results.append({
+            'bank': bank.capitalize(),
+            'title': title,
+            'published_at': pub_at[:19],
+            'summary': summary_text,
+        })
+        if len(results) >= max_reports:
+            break
+    return results
+
+
+def _extract_key_section(full_summary):
+    """Extract the most useful sections from the AI summary for context injection.
+
+    Keeps: 核心观点/Key Takeaways + 关键数据/Key Data (truncated).
+    Drops: 投资建议, 风险提示, 报告主体 boilerplate.
+    """
+    lines = full_summary.split('\n')
+    keep = []
+    in_section = False
+    skip_sections = {'投资建议', '风险提示', '报告主体'}
+    for line in lines:
+        stripped = line.strip()
+        # Detect section headers (## ...)
+        if stripped.startswith('## '):
+            header = stripped.lstrip('# ').split('/')[0].strip()
+            if any(sk in header for sk in skip_sections):
+                in_section = False
+                continue
+            in_section = True
+            keep.append(stripped)
+            continue
+        if in_section:
+            keep.append(line)
+    text = '\n'.join(keep).strip()
+    # Truncate to ~800 chars per report to keep context manageable
+    if len(text) > 800:
+        text = text[:800] + '...'
+    return text
+
+
+def _build_bank_research_text(reports):
+    """Format bank research summaries for injection into AI context."""
+    if not reports:
+        return '（无外资研报数据）'
+    lines = []
+    for r in reports:
+        lines.append(f'### {r["bank"]} — {r["title"]}')
+        lines.append(f'发布时间：{r["published_at"]}')
+        lines.append(r['summary'])
+        lines.append('')
+    return '\n'.join(lines)
+
+
 def build_context(summary_main, summary_24h = None, daily_panel = None, quality_df = None, windows = None):
     """Build the full prompt context for AI interpretation."""
     asof_str = windows.asof_dt.strftime('%Y-%m-%d %H:%M %Z')
     main_window_str = f'{windows.main_start.strftime("%m-%d %H:%M")} -> {windows.main_end.strftime("%m-%d %H:%M")}'
-    return f'## 报告时间\
-n锚定时间：{asof_str}\
-n主窗口：{main_window_str}\
-\n\n## 今日数据概览（主窗口）\
-\n{_build_summary_text(summary_main)}\
-\n\n## 滚动24小时概览\
-\n{_build_summary_text(summary_24h)}\
-\n\n## 近60天走势摘要\
-\n{_build_daily_stats_text(daily_panel)}\
-\n\n## 数据质量检查\
-\n{_build_quality_text(quality_df)}\
-\n\n---\
-\n\n请围绕以下三个方面撰写，文字以分析为主，减少机械复述，所有数字都必须与上文完全一致：\
-\n\n### 1. 变动\
-\n概述主窗口内收益率、汇率、商品的主要变动，拆分名义/实际/通胀预期的贡献。\
-\n\n### 2. 原因\
-\n结合外部信息来源（新闻、外资研报等）说明变动背后的驱动因素。仅引用有明确出处的观点，标注来源。\
-\n\n### 3. 综合\
-\n综合上述变动与原因，指出当前值得关注的价位、信号和待跟踪事项。'
+    # Fetch bank research from Report Watch
+    bank_reports = get_recent_macro_reports(asof_dt=windows.asof_dt, lookback_days=3)
+    bank_research_text = _build_bank_research_text(bank_reports)
+    return f'## 报告时间\n\
+锚定时间：{asof_str}\n\
+主窗口：{main_window_str}\n\
+\n## 今日数据概览（主窗口）\n\
+{_build_summary_text(summary_main)}\n\
+\n## 滚动24小时概览\n\
+{_build_summary_text(summary_24h)}\n\
+\n## 近60天走势摘要\n\
+{_build_daily_stats_text(daily_panel)}\n\
+\n## 数据质量检查\n\
+{_build_quality_text(quality_df)}\n\
+\n## 近期外资研报摘要（Report Watch）\n\
+{bank_research_text}\n\
+\n---\n\
+\n请按照以下五个部分撰写晨会复盘，文字以分析为主，减少机械复述，所有数字必须与上文完全一致：\n\
+\n### 一、核心结论\n\
+用2-3句话概括隔夜最核心的变化和驱动逻辑。\n\
+\n### 二、市场表现\n\
+分利率、汇率、商品三个子板块详述变动，拆分名义/实际/通胀预期贡献。\n\
+\n### 三、原因分析\n\
+结合上方"近期外资研报摘要"中的观点说明变动背后的驱动因素。每个判断必须标注来源研报（如"据Barclays《US in Focus》"）。没有研报支持的观点不要写。\n\
+\n### 四、后续观察\n\
+列出2-3个值得关注的价位、事件或信号，说明为什么重要以及后续看什么。\n\
+\n### 五、错误检查\n\
+指出数据质量问题、样本不足或推断不确定的地方。'
 
 
 def save_context(context = None, timestamp = None):
