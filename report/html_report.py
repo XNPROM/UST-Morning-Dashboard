@@ -185,7 +185,12 @@ def generate_html_report(
             card_data.append(('DXY', f'{r["Level"]}（{r["Change Text"]}）'))
     fix = latest_fixing_info(daily_panel, windows.target_fixing_date)
     if fix['status'] != 'missing':
-        card_data.append(('USD/CNY fixing', f'{fix["last"]:.4f}｜+{fix["chg_pips"]:.0f} pips<br><span class="muted">latest {fix["last_date"]} / target {fix["target_date"]}</span>'))
+        import math
+        if isinstance(fix.get('chg_pips'), (int, float)) and not math.isnan(fix['chg_pips']):
+            pips_str = f'{fix["chg_pips"]:+.0f} pips'
+        else:
+            pips_str = 'n/a'
+        card_data.append(('USD/CNY fixing', f'{fix["last"]:.4f}｜{pips_str}<br><span class="muted">latest {fix["last_date"]} / target {fix["target_date"]}</span>'))
     for title, body in card_data:
         cards_html += f'<div class="card"><div class="card-title">{title}</div><div class="card-body">{body}</div></div>'
 
