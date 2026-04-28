@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 from datetime import datetime
+import numpy as np
 import pandas as pd
 from config.settings import settings
 
@@ -33,6 +34,48 @@ def add_derived(panel = None):
         out['USDCNY - fixing'] = out['USDCNY'] - out['USD/CNY fixing']
     if 'USDCNH' in out.columns and 'USD/CNY fixing' in out.columns:
         out['USDCNH - fixing'] = out['USDCNH'] - out['USD/CNY fixing']
+    return out
+
+
+def clean_panel(panel, freq_minutes=5):
+    """Clean intraday panel: forward-fill small gaps and remove outlier spikes.
+
+    1. Forward-fill NaN gaps of up to 3 bars (15 min for 5-min data) so that
+       minor timestamp misalignments between assets don't leave holes.
+    2. Detect single-bar outlier spikes using a rolling-median filter and
+       replace them with NaN, then forward-fill once to close the hole.
+    3. Does NOT fill across large gaps (different trading sessions).
+    """
+    if panel is None or panel.empty:
+        return panel
+    out = panel.copy()
+
+    # --- Step 1: forward-fill small gaps ---
+    out = out.ffill(limit=3)
+
+    # --- Step 2: rolling-median spike removal ---
+    window = 13  # ~1 hour for 5-min bars
+    for col in out.columns:
+        s = out[col]
+        n_valid = s.count()
+        if n_valid < 20:
+            continue
+        w = min(window, n_valid // 2)
+        if w < 5:
+            continue
+        med = s.rolling(window=w, center=True, min_periods=5).median()
+        std = s.rolling(window=w, center=True, min_periods=5).std()
+        # Avoid zero / tiny std (flat series)
+        std = std.clip(lower=1e-8)
+        deviation = (s - med).abs()
+        is_spike = deviation > (4 * std)
+        # Don't flag edges (first/last 3 bars) – they lack rolling context
+        is_spike.iloc[:3] = False
+        is_spike.iloc[-3:] = False
+        if is_spike.any():
+            out.loc[is_spike, col] = np.nan
+            out[col] = out[col].ffill(limit=1)
+
     return out
 
 

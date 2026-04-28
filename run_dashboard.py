@@ -19,7 +19,7 @@ from config.settings import settings
 from config.assets import wanted_assets
 from dates.windows import compute_report_windows
 from data.fetch import download_panel
-from data.derived import add_derived, slice_window
+from data.derived import add_derived, slice_window, clean_panel
 from data.validation import cross_validate, detect_anomalies, sanity_check
 from analytics.summary import summarize_panel
 from analytics.quality import data_quality_checks, find_blocking_quality_issues
@@ -86,8 +86,10 @@ def main():
         session = open_lseg_session()
         assets_intra = wanted_assets(freq='intraday')
         assets_daily = wanted_assets(freq='daily')
+        # Fetch intraday from rolling_24h_start so the 24h chart has full data
+        fetch_start = min(windows.rolling_24h_start, windows.main_start)
         print('Fetching intraday data...')
-        intraday_panel, intraday_logs = download_panel(assets_intra, windows.main_start, windows.main_end, session=session)
+        intraday_panel, intraday_logs = download_panel(assets_intra, fetch_start, windows.main_end, session=session)
         print('Fetching daily data...')
         daily_panel, daily_logs = download_panel(assets_daily, windows.daily_start, windows.daily_end, session=session)
     finally:
@@ -100,6 +102,8 @@ def main():
     print('Computing derived metrics...')
     intraday_panel = add_derived(intraday_panel)
     daily_panel = add_derived(daily_panel)
+    print('Cleaning data (ffill gaps, remove spikes)...')
+    intraday_panel = clean_panel(intraday_panel)
     main_panel = slice_window(intraday_panel, windows.main_start, windows.main_end)
     rolling24_panel = slice_window(intraday_panel, windows.rolling_24h_start, windows.main_end)
     ny_panel = slice_window(intraday_panel, windows.ny_start, windows.ny_end)

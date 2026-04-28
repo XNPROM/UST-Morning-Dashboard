@@ -6,26 +6,26 @@ from plotly.graph_objects import Figure, Scatter, Bar
 from config.settings import settings
 from analytics.summary import rows_by_section
 
-CHART_COLORS = ['#24564f', '#b16d2e', '#365f91', '#8d3333', '#5c6b58', '#7a5a9a']
+CHART_COLORS = ['#2563eb', '#dc2626', '#059669', '#d97706', '#7c3aed', '#64748b']
 
 
 def _apply_chart_style(fig, title, ytitle, height=400, bottom_margin=80):
     fig.update_layout(
-        title=dict(text=title, x=0.02, xanchor='left', font=dict(family='"Source Han Serif SC", "STSong", "SimSun", Georgia, serif', size=18, color='#1b3635')),
+        title=dict(text=title, x=0.02, xanchor='left', font=dict(family='"IBM Plex Sans", "PingFang SC", "Microsoft YaHei", sans-serif', size=16, color='#0f172a')),
         template=settings.PLOTLY_TEMPLATE,
         colorway=CHART_COLORS,
         hovermode='x unified',
         height=height,
-        margin=dict(l=44, r=18, t=62, b=bottom_margin),
-        legend=dict(orientation='h', yanchor='bottom', y=1.01, xanchor='left', x=0, bgcolor='rgba(255,255,255,0.72)', bordercolor='#d6ccb9', borderwidth=1, font=dict(family='"Bahnschrift", "Aptos", "PingFang SC", "Microsoft YaHei", sans-serif', size=11)),
-        font=dict(family='"Bahnschrift", "Aptos", "PingFang SC", "Microsoft YaHei", sans-serif', size=12, color='#22313d'),
+        margin=dict(l=44, r=18, t=56, b=bottom_margin),
+        legend=dict(orientation='h', yanchor='bottom', y=1.01, xanchor='left', x=0, bgcolor='rgba(255,255,255,0.9)', bordercolor='#e2e8f0', borderwidth=1, font=dict(family='"IBM Plex Sans", "PingFang SC", "Microsoft YaHei", sans-serif', size=11)),
+        font=dict(family='"IBM Plex Sans", "PingFang SC", "Microsoft YaHei", sans-serif', size=12, color='#1e293b'),
         paper_bgcolor='rgba(0,0,0,0)',
-        plot_bgcolor='#fbf7ef',
+        plot_bgcolor='#ffffff',
         yaxis_title=ytitle,
         xaxis_title=''
     )
-    fig.update_xaxes(showgrid=True, gridcolor='#e2d8c7', linecolor='#cfc4b2', zerolinecolor='#cfc4b2')
-    fig.update_yaxes(showgrid=True, gridcolor='#e2d8c7', linecolor='#cfc4b2', zerolinecolor='#cfc4b2')
+    fig.update_xaxes(showgrid=True, gridcolor='#f1f5f9', linecolor='#e2e8f0', zerolinecolor='#e2e8f0')
+    fig.update_yaxes(showgrid=True, gridcolor='#f1f5f9', linecolor='#e2e8f0', zerolinecolor='#e2e8f0')
     return fig
 
 
@@ -43,15 +43,16 @@ def line_fig(panel, cols=None, title=None, ytitle=None, normalize=False, height=
         _apply_chart_style(fig, f'{title}（无可用数据）', ytitle, height)
         return fig
     for col in cols:
-        s = panel[col].dropna()
-        if s.empty:
+        s = panel[col]
+        non_null = s.dropna()
+        if non_null.empty:
             continue
         if normalize:
-            base = float(s.iloc[0])
+            base = float(non_null.iloc[0])
             y = s if base == 0 else (s / base) * 100
         else:
             y = s
-        fig.add_trace(Scatter(x=s.index.tz_convert(settings.REPORT_TZ), y=y, mode='lines', name=col, line=dict(width=2.4), hovertemplate='%{x}<br>%{y:.4f}<extra>%{fullData.name}</extra>'))
+        fig.add_trace(Scatter(x=s.index.tz_convert(settings.REPORT_TZ), y=y, mode='lines', name=col, line=dict(width=2), connectgaps=False, hovertemplate='%{x}<br>%{y:.4f}<extra>%{fullData.name}</extra>'))
     return _apply_chart_style(fig, title, ytitle, height)
 
 
@@ -63,7 +64,7 @@ def change_bar_fig(summary=None, sections=None, title=None):
         return fig
     df = df.copy().dropna(subset=['Change Display'])
     marker_colors = ['#dc2626' if v > 0 else '#16a34a' if v < 0 else '#9ca3af' for v in df['Change Display']]
-    fig = Figure(Bar(x=df['Asset'], y=df['Change Display'], text=df['Change Text'], textposition='outside', hovertemplate='%{x}<br>%{y:.4f} %{customdata}<extra></extra>', customdata=df['Change Unit'], marker=dict(color=marker_colors, line=dict(color='#f6f1e6', width=1))))
+    fig = Figure(Bar(x=df['Asset'], y=df['Change Display'], text=df['Change Text'], textposition='outside', hovertemplate='%{x}<br>%{y:.4f} %{customdata}<extra></extra>', customdata=df['Change Unit'], marker=dict(color=marker_colors, line=dict(color='#ffffff', width=1))))
     _apply_chart_style(fig, title, 'Change', 380, bottom_margin=88)
     fig.update_xaxes(tickangle=-25)
     fig.add_hline(y=0, line_width=1)
