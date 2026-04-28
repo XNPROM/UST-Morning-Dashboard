@@ -1,0 +1,58 @@
+name,unit,status,error,ric,fields,obs
+UST 2Y,yield_pct,ok,,US2YT=RR,MID_YLD_1,64
+UST 5Y,yield_pct,ok,,US5YT=RR,MID_YLD_1,74
+UST 10Y,yield_pct,ok,,US10YT=RR,MID_YLD_1,76
+UST 30Y,yield_pct,ok,,US30YT=RR,MID_YLD_1,83
+TIPS real 5Y,yield_pct,ok,,US5YTIP=RR,MID_YLD_1,55
+TIPS real 10Y,yield_pct,ok,,US10YTIP=RR,MID_YLD_1,72
+TIPS real 30Y,yield_pct,ok,,US30YTIP=RR,MID_YLD_1,81
+TU 2Y Treasury Fut,futures_price,ok,,TUc1,TRDPRC_1,97
+FV 5Y Treasury Fut,futures_price,ok,,FVc1,TRDPRC_1,95
+TY 10Y Treasury Fut,futures_price,ok,,TYc1,TRDPRC_1,97
+US 30Y Treasury Fut,futures_price,ok,,USc1,TRDPRC_1,97
+DXY,index,ok,,.DXY,TRDPRC_1,92
+EURUSD,fx,ok,,EUR=,MID_PRICE,112
+USDJPY,fx_jpy,ok,,JPY=,MID_PRICE,112
+GBPUSD,fx,ok,,GBP=,MID_PRICE,112
+AUDUSD,fx,ok,,AUD=,MID_PRICE,112
+USDCNY,fx,error,"No data to return, please check errors: ERROR: No successful response.
+(TS.Intraday.UserRequestError.90006, The universe does not support the following fields: [TRDPRC_1])",CNY=,TRDPRC_1,0
+USDCNY,fx,error,No valid data from any field set,,,0
+USDCNH,fx,ok,,CNH=,MID_PRICE,112
+Brent crude,commodity,ok,,LCOc1,TRDPRC_1,81
+WTI crude,commodity,ok,,CLc1,TRDPRC_1,98
+Gold,commodity,error,"No data to return, please check errors: ERROR: No successful response.
+(TS.Intraday.UserRequestError.90006, The universe does not support the following fields: [TRDPRC_1])",XAU=,TRDPRC_1,0
+Gold,commodity,ok,,XAU=,MID_PRICE,101
+Copper,commodity,error,"No data to return, please check errors: ERROR: No successful response.
+(TS.Intraday.UserRequestError.90006, The universe does not support the following fields: [MID_PRICE])",HGc1,MID_PRICE,0
+Copper,commodity,error,"No data to return, please check errors: ERROR: No successful response.
+(TS.Intraday.UserRequestError.90006, The universe does not support the following fields: [SETTLE])",HGc1,SETTLE,0
+Copper,commodity,ok,,HGc1,"BID,ASK",99
+UST 2Y,yield_pct,ok,,US2YT=RR,MID_YLD_1,214
+UST 5Y,yield_pct,ok,,US5YT=RR,MID_YLD_1,237
+UST 10Y,yield_pct,ok,,US10YT=RR,MID_YLD_1,241
+UST 30Y,yield_pct,ok,,US30YT=RR,MID_YLD_1,259
+TIPS real 5Y,yield_pct,ok,,US5YTIP=RR,MID_YLD_1,176
+TIPS real 10Y,yield_pct,ok,,US10YTIP=RR,MID_YLD_1,192
+TIPS real 30Y,yield_pct,ok,,US30YTIP=RR,MID_YLD_1,216
+TU 2Y Treasury Fut,futures_price,ok,,TUc1,TRDPRC_1,272
+FV 5Y Treasury Fut,futures_price,ok,,FVc1,TRDPRC_1,273
+TY 10Y Treasury Fut,futures_price,ok,,TYc1,TRDPRC_1,274
+US 30Y Treasury Fut,futures_price,ok,,USc1,TRDPRC_1,271
+DXY,index,ok,,.DXY,TRDPRC_1,270
+EURUSD,fx,ok,,EUR=,MID_PRICE,288
+USDJPY,fx_jpy,ok,,JPY=,MID_PRICE,288
+GBPUSD,fx,ok,,GBP=,MID_PRICE,288
+AUDUSD,fx,ok,,AUD=,MID_PRICE,288
+USDCNY,fx,ok,,CNY=,MID_PRICE,106
+USDCNH,fx,ok,,CNH=,MID_PRICE,288
+USD/CNY fixing,fixing_fx,error,"No data to return, please check errors: ERROR: No successful response.
+(TS.Intraday.UserRequestError.90006, The universe does not support the following fields: [TRDPRC_1])",CNY=PBOC,TRDPRC_1,0
+USD/CNY fixing,fixing_fx,ok,,CNY=PBOC,MID_PRICE,1
+Brent crude,commodity,ok,,LCOc1,TRDPRC_1,257
+WTI crude,commodity,ok,,CLc1,TRDPRC_1,276
+Gold,commodity,error,"No data to return, please check errors: ERROR: No successful response.
+(TS.Intraday.UserRequestError.90006, The universe does not support the following fields: [TRDPRC_1])",XAU=,TRDPRC_1,0
+Gold,commodity,ok,,XAU=,MID_PRICE,277
+Copper,commodity,ok,,HGc1,TRDPRC_1,2

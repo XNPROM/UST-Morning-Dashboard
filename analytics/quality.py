@@ -19,8 +19,19 @@ def data_quality_checks(intraday_log, daily_log = None, main_panel = None, daily
     all_logs = pd.concat([
         intraday_log.assign(freq='5min'),
         daily_log.assign(freq='daily')], ignore_index=True)
+    # Assets that eventually succeeded (any 'ok' row for the same name+freq)
+    # should not have their intermediate retry errors reported.
+    succeeded = set()
     for _, r in all_logs.iterrows():
-        if r['status'] != 'ok':
+        if r['status'] == 'ok':
+            succeeded.add((r['name'], r['freq']))
+    for _, r in all_logs.iterrows():
+        if r['status'] != 'ok' and (r['name'], r['freq']) not in succeeded:
+            # Only report the final summary error per asset+freq, skip
+            # intermediate field-set retry errors (which are logged for
+            # the ric_log CSV but should not inflate the quality report).
+            if r.get('error', '') != 'No valid data from any field set':
+                continue
             issues.append({
                 'Severity': 'HIGH' if r['unit'] in ('yield_pct', 'fx', 'fx_jpy', 'fixing_fx') else 'MEDIUM',
                 'Asset': r['name'],

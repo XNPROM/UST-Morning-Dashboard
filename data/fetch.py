@@ -76,7 +76,14 @@ def looks_valid(s = None, unit = None):
 
 
 def fetch_one(asset = None, start = None, end = None, interval = '5min', session = None):
-    """Fetch data for a single asset. Returns (series, log_row)."""
+    """Fetch data for a single asset. Returns (series, log_row).
+
+    Iterates RICs individually to avoid the lseg-data 2.x
+    ``UniverseContainer`` bug that occurs with multi-RIC requests.
+    For each RIC, all configured field sets are attempted before
+    moving on to the next RIC (preserving the RIC fallback order
+    defined in ``config/assets.py``).
+    """
     ld = None
     try:
         import lseg.data
@@ -87,28 +94,29 @@ def fetch_one(asset = None, start = None, end = None, interval = '5min', session
     log_rows = []
     unit = asset.unit
     field_sets = FIELD_SETS_BY_UNIT.get(unit, [None])
-    for fields in field_sets:
-        if fields is None:
-            break
-        try:
-            response = ld.get_history(
-                universe=asset.rics,
-                fields=fields,
-                start=to_lseg_time(start),
-                end=to_lseg_time(end),
-                interval=interval,
-            )
-            if response is None or response.empty:
+    for ric in asset.rics:
+        for fields in field_sets:
+            if fields is None:
+                break
+            try:
+                response = ld.get_history(
+                    universe=ric,
+                    fields=fields,
+                    start=to_lseg_time(start),
+                    end=to_lseg_time(end),
+                    interval=interval,
+                )
+                if response is None or response.empty:
+                    continue
+                s = _series_from_history(response, [fields], unit)
+                s = ensure_dt_index(s.to_frame()).iloc[:, 0] if not s.empty else pd.Series(dtype=float)
+                if looks_valid(s, unit):
+                    log_rows.append({'name': asset.name, 'unit': unit, 'status': 'ok', 'error': '', 'ric': ric, 'fields': ','.join(fields) if fields else '', 'obs': len(s)})
+                    return s, pd.DataFrame(log_rows)
+            except Exception as e:
+                log_rows.append({'name': asset.name, 'unit': unit, 'status': 'error', 'error': str(e)[:180], 'ric': ric, 'fields': ','.join(fields) if fields else '', 'obs': 0})
                 continue
-            s = _series_from_history(response, [fields], unit)
-            s = ensure_dt_index(s.to_frame()).iloc[:, 0] if not s.empty else pd.Series(dtype=float)
-            if looks_valid(s, unit):
-                log_rows.append({'name': asset.name, 'unit': unit, 'status': 'ok', 'error': '', 'fields': ','.join(fields) if fields else '', 'obs': len(s)})
-                return s, pd.DataFrame(log_rows)
-        except Exception as e:
-            log_rows.append({'name': asset.name, 'unit': unit, 'status': 'error', 'error': str(e)[:180], 'fields': ','.join(fields) if fields else '', 'obs': 0})
-            continue
-    log_rows.append({'name': asset.name, 'unit': unit, 'status': 'error', 'error': 'No valid data from any field set', 'fields': '', 'obs': 0})
+    log_rows.append({'name': asset.name, 'unit': unit, 'status': 'error', 'error': 'No valid data from any field set', 'ric': '', 'fields': '', 'obs': 0})
     return pd.Series(dtype=float), pd.DataFrame(log_rows)
 
 

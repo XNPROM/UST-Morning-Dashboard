@@ -73,7 +73,7 @@ def generate_html_report(
     # AI section
     if interpretation:
         ai_html = '<div class="ai-grid">'
-        dim_titles = {'attribution': '变化归因', 'key_levels': '关键价位/观察信号', 'historical_analogy': '跨周期/历史参照', 'outlook': '前瞻观察'}
+        dim_titles = {'changes': '变动', 'reasons': '原因', 'synthesis': '综合'}
         for key, title in dim_titles.items():
             content = interpretation.get(key, '数据不足，当前无法生成解读。')
             ai_html += f'<div class="ai-card"><div class="ai-card-title">{title}</div><div class="ai-card-body">{content}</div></div>'
@@ -205,62 +205,62 @@ def generate_html_report(
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>深圳早会看板 {date_str}</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 *, *::before, *::after {{ box-sizing: border-box; }}
-body {{ font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", "Noto Sans SC", Arial, sans-serif; background: #f0f2f7; color: #1a1d26; margin: 0; line-height: 1.6; -webkit-font-smoothing: antialiased; }}
+body {{ font-family: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif; background: #ffffff; color: #0f172a; margin: 0; line-height: 1.6; -webkit-font-smoothing: antialiased; }}
 .container {{ max-width: 1360px; margin: 0 auto; padding: 20px 28px 60px; }}
-.nav-bar {{ position: sticky; top: 0; z-index: 100; background: rgba(17,24,39,.92); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); padding: 0 28px; display: flex; align-items: center; gap: 4px; overflow-x: auto; border-bottom: 1px solid rgba(255,255,255,.08); }}
-.nav-bar a {{ color: #94a3b8; text-decoration: none; font-size: 12.5px; font-weight: 500; padding: 12px 14px; white-space: nowrap; transition: color .2s, border-color .2s; border-bottom: 2px solid transparent; }}
-.nav-bar a:hover, .nav-bar a.active {{ color: #e2e8f0; border-bottom-color: #60a5fa; }}
-.header {{ background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 50%, #1e293b 100%); color: white; padding: 32px 36px 28px; border-radius: 20px; box-shadow: 0 16px 48px rgba(15,23,42,.22), inset 0 1px 0 rgba(255,255,255,.06); position: relative; overflow: hidden; margin-top: 16px; }}
-.header::before {{ content: ''; position: absolute; top: -60%; right: -10%; width: 400px; height: 400px; background: radial-gradient(circle, rgba(96,165,250,.12) 0%, transparent 70%); pointer-events: none; }}
-.header h1 {{ margin: 0 0 6px 0; font-size: 28px; font-weight: 700; letter-spacing: -0.3px; }}
-.subtitle {{ color: rgba(203,213,225,.85); font-size: 13px; line-height: 1.7; font-weight: 400; }}
+.nav-bar {{ position: sticky; top: 0; z-index: 100; background: rgba(255,255,255,.95); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); padding: 0 28px; display: flex; align-items: center; gap: 4px; overflow-x: auto; border-bottom: 1px solid #e2e8f0; }}
+.nav-bar a {{ color: #64748b; text-decoration: none; font-size: 12.5px; font-weight: 500; padding: 12px 14px; white-space: nowrap; transition: color .2s, border-color .2s; border-bottom: 2px solid transparent; }}
+.nav-bar a:hover {{ color: #0f172a; border-bottom-color: #2563eb; }}
+.header {{ background: #ffffff; color: #0f172a; padding: 32px 0 24px; border-bottom: 1px solid #e2e8f0; margin-bottom: 4px; }}
+.header h1 {{ margin: 0 0 6px 0; font-size: 26px; font-weight: 700; letter-spacing: -0.3px; color: #0f172a; }}
+.subtitle {{ color: #64748b; font-size: 13px; line-height: 1.7; font-weight: 400; }}
 .cards {{ display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 14px; margin: 18px 0 22px 0; }}
-.card {{ background: white; border-radius: 16px; padding: 18px 16px 16px; box-shadow: 0 2px 8px rgba(15,23,42,.06), 0 1px 2px rgba(15,23,42,.04); border: 1px solid rgba(226,232,240,.6); transition: transform .18s ease, box-shadow .18s ease; position: relative; }}
-.card:hover {{ transform: translateY(-2px); box-shadow: 0 8px 24px rgba(15,23,42,.1), 0 2px 4px rgba(15,23,42,.06); }}
-.card::before {{ content: ''; position: absolute; top: 0; left: 16px; right: 16px; height: 3px; border-radius: 0 0 3px 3px; background: linear-gradient(90deg, #3b82f6, #60a5fa); opacity: 0; transition: opacity .18s ease; }}
-.card:hover::before {{ opacity: 1; }}
-.card-title {{ font-size: 11.5px; color: #64748b; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; }}
-.card-body {{ font-size: 17px; font-weight: 700; line-height: 1.4; color: #0f172a; }}
-.section {{ background: white; border-radius: 16px; padding: 22px 24px; margin: 16px 0; box-shadow: 0 2px 8px rgba(15,23,42,.05), 0 1px 2px rgba(15,23,42,.03); border: 1px solid rgba(226,232,240,.5); }}
-.section h2 {{ font-size: 18px; font-weight: 700; margin: 0 0 16px 0; padding-bottom: 12px; border-bottom: 2px solid #e2e8f0; color: #0f172a; display: flex; align-items: center; gap: 10px; border-left: none; padding-left: 0; }}
-.section h2::before {{ content: ''; display: inline-block; width: 4px; height: 22px; background: linear-gradient(180deg, #3b82f6, #2563eb); border-radius: 2px; flex-shrink: 0; }}
-.section h3 {{ font-size: 15px; margin: 20px 0 10px 0; color: #334155; font-weight: 600; }}
-.clean-table {{ border-collapse: separate; border-spacing: 0; width: 100%; font-size: 13px; border-radius: 10px; overflow: hidden; border: 1px solid #e5e7eb; }}
+.card {{ background: #ffffff; border-radius: 8px; padding: 16px; border: 1px solid #e2e8f0; transition: border-color .2s ease; cursor: default; }}
+.card:hover {{ border-color: #cbd5e1; }}
+.card-title {{ font-size: 11px; color: #64748b; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; }}
+.card-body {{ font-size: 16px; font-weight: 600; line-height: 1.4; color: #0f172a; }}
+.section {{ background: #ffffff; border-radius: 8px; padding: 22px 24px; margin: 14px 0; border: 1px solid #e2e8f0; }}
+.section h2 {{ font-size: 16px; font-weight: 600; margin: 0 0 14px 0; padding-bottom: 10px; border-bottom: 1px solid #f1f5f9; color: #0f172a; display: flex; align-items: center; gap: 10px; }}
+.section h2::before {{ content: ''; display: inline-block; width: 3px; height: 18px; background: #2563eb; border-radius: 2px; flex-shrink: 0; }}
+.section h3 {{ font-size: 14px; margin: 18px 0 10px 0; color: #334155; font-weight: 600; }}
+.clean-table {{ border-collapse: collapse; width: 100%; font-size: 13px; }}
 .clean-table thead {{ position: sticky; top: 0; z-index: 2; }}
-.clean-table th {{ text-align: left; background: #f8fafc; color: #475569; padding: 11px 14px; border-bottom: 2px solid #e2e8f0; white-space: nowrap; font-weight: 600; font-size: 11.5px; text-transform: uppercase; letter-spacing: 0.4px; }}
-.clean-table td {{ padding: 10px 14px; border-bottom: 1px solid #f1f5f9; white-space: nowrap; font-variant-numeric: tabular-nums; }}
+.clean-table th {{ text-align: left; background: #f8fafc; color: #475569; padding: 10px 14px; border-bottom: 1px solid #e2e8f0; white-space: nowrap; font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: 0.4px; }}
+.clean-table td {{ padding: 9px 14px; border-bottom: 1px solid #f1f5f9; white-space: nowrap; font-variant-numeric: tabular-nums; color: #1e293b; }}
 .clean-table tbody tr {{ transition: background .12s ease; }}
 .clean-table tbody tr:hover {{ background: #f8fafc; }}
-.clean-table tbody tr:nth-child(even) {{ background: #fafbfc; }}
-.clean-table tbody tr:nth-child(even):hover {{ background: #f1f5f9; }}
 .clean-table tbody tr:last-child td {{ border-bottom: none; }}
+.chg-pos {{ color: #16a34a !important; font-weight: 500; }}
+.chg-neg {{ color: #dc2626 !important; font-weight: 500; }}
 .muted {{ color: #64748b; font-size: 12px; font-weight: 400; }}
-.ai-grid {{ display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }}
-.ai-card {{ background: linear-gradient(135deg, #fffbeb, #fef3c7); border: 1px solid #fcd34d; border-radius: 14px; padding: 18px; transition: transform .15s ease; }}
-.ai-card:hover {{ transform: translateY(-1px); }}
-.ai-card-title {{ font-size: 14px; font-weight: 700; color: #92400e; margin-bottom: 8px; }}
-.ai-card-body {{ font-size: 13px; line-height: 1.8; color: #1c1917; }}
-.ai-pending {{ background: linear-gradient(135deg, #f8fafc, #f1f5f9); border: 1px dashed #cbd5e1; border-radius: 14px; padding: 28px 16px; text-align: center; color: #64748b; font-size: 14px; }}
-.grade-bar {{ background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 14px 18px; margin-bottom: 16px; font-size: 13px; line-height: 2.2; display: flex; flex-wrap: wrap; gap: 6px 16px; align-items: center; }}
+.ai-grid {{ display: grid; grid-template-columns: 1fr; gap: 0; }}
+.ai-card {{ background: #ffffff; border-left: 3px solid #2563eb; padding: 16px 20px; }}
+.ai-card + .ai-card {{ border-top: 1px solid #f1f5f9; }}
+.ai-card-title {{ font-size: 12px; font-weight: 600; color: #2563eb; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.3px; }}
+.ai-card-body {{ font-size: 13px; line-height: 1.85; color: #1e293b; }}
+.ai-pending {{ background: #f8fafc; border: 1px dashed #cbd5e1; border-radius: 8px; padding: 28px 16px; text-align: center; color: #64748b; font-size: 14px; }}
+.grade-bar {{ background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px 16px; margin-bottom: 14px; font-size: 13px; line-height: 2.2; display: flex; flex-wrap: wrap; gap: 6px 16px; align-items: center; }}
 details {{ margin-top: 12px; }}
-summary {{ cursor: pointer; color: #2563eb; font-weight: 600; font-size: 13.5px; padding: 6px 0; transition: color .15s; }}
+summary {{ cursor: pointer; color: #2563eb; font-weight: 600; font-size: 13px; padding: 6px 0; transition: color .15s; }}
 summary:hover {{ color: #1d4ed8; }}
 ul {{ margin-top: 8px; line-height: 1.8; padding-left: 20px; }}
 ul li {{ margin-bottom: 4px; }}
-.collapsible {{ background: white; border-radius: 16px; margin: 16px 0; box-shadow: 0 2px 8px rgba(15,23,42,.05), 0 1px 2px rgba(15,23,42,.03); border: 1px solid rgba(226,232,240,.5); overflow: hidden; }}
-.collapsible-header {{ padding: 16px 24px; cursor: pointer; font-size: 17px; font-weight: 600; color: #1e293b; user-select: none; display: flex; align-items: center; gap: 10px; transition: background .15s ease; border-left: 4px solid #6366f1; }}
+.collapsible {{ background: #ffffff; border-radius: 8px; margin: 14px 0; border: 1px solid #e2e8f0; overflow: hidden; }}
+.collapsible-header {{ padding: 14px 24px; cursor: pointer; font-size: 15px; font-weight: 600; color: #0f172a; user-select: none; display: flex; align-items: center; gap: 10px; transition: background .15s ease; }}
 .collapsible-header:hover {{ background: #f8fafc; }}
-.collapsible-header::after {{ content: ''; display: inline-block; width: 8px; height: 8px; border-right: 2px solid #6366f1; border-bottom: 2px solid #6366f1; transform: rotate(-45deg); margin-left: auto; transition: transform .25s ease; flex-shrink: 0; }}
+.collapsible-header::after {{ content: ''; display: inline-block; width: 7px; height: 7px; border-right: 2px solid #94a3b8; border-bottom: 2px solid #94a3b8; transform: rotate(-45deg); margin-left: auto; transition: transform .25s ease; flex-shrink: 0; }}
 .collapsible-header.active::after {{ transform: rotate(45deg); }}
 .collapsible-body {{ padding: 0 24px 20px 24px; display: none; }}
 .collapsible-header.active + .collapsible-body {{ display: block; }}
-.scroll-top {{ position: fixed; bottom: 28px; right: 28px; width: 42px; height: 42px; background: #1e293b; color: white; border: none; border-radius: 12px; cursor: pointer; font-size: 18px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 16px rgba(15,23,42,.2); opacity: 0; transform: translateY(12px); transition: opacity .25s, transform .25s; z-index: 99; }}
+.scroll-top {{ position: fixed; bottom: 28px; right: 28px; width: 40px; height: 40px; background: #0f172a; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 18px; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(15,23,42,.15); opacity: 0; transform: translateY(12px); transition: opacity .25s, transform .25s; z-index: 99; }}
 .scroll-top.visible {{ opacity: 1; transform: translateY(0); }}
-.scroll-top:hover {{ background: #334155; }}
-@media print {{ .nav-bar, .scroll-top {{ display: none !important; }} .collapsible-body {{ display: block !important; }} .container {{ padding: 0; }} .section, .collapsible, .card {{ box-shadow: none; border: 1px solid #ddd; break-inside: avoid; }} body {{ background: white; }} }}
-@media (max-width: 1000px) {{ .cards {{ grid-template-columns: repeat(2, minmax(0, 1fr)); }} .ai-grid {{ grid-template-columns: 1fr; }} .container {{ padding: 12px 14px 48px; }} .header {{ padding: 22px 20px; border-radius: 14px; }} .header h1 {{ font-size: 22px; }} .section, .collapsible {{ border-radius: 12px; }} .nav-bar {{ padding: 0 12px; }} }}
+.scroll-top:hover {{ background: #1e293b; }}
+@media print {{ .nav-bar, .scroll-top {{ display: none !important; }} .collapsible-body {{ display: block !important; }} .container {{ padding: 0; }} .section, .collapsible, .card {{ box-shadow: none; border: 1px solid #ddd; break-inside: avoid; }} }}
+@media (max-width: 1000px) {{ .cards {{ grid-template-columns: repeat(2, minmax(0, 1fr)); }} .container {{ padding: 12px 14px 48px; }} .header {{ padding: 22px 0; }} .header h1 {{ font-size: 22px; }} .nav-bar {{ padding: 0 12px; }} }}
 @media (max-width: 600px) {{ .cards {{ grid-template-columns: 1fr; }} .header h1 {{ font-size: 19px; }} .clean-table {{ font-size: 11.5px; }} .clean-table th, .clean-table td {{ padding: 7px 8px; }} }}
 </style>
 </head>
@@ -269,9 +269,6 @@ ul li {{ margin-bottom: 4px; }}
     <a href="#summary">Summary</a>
     <a href="#ai">AI</a>
     <a href="#quality">Quality</a>
-    <a href="#rates">Rates</a>
-    <a href="#fx">FX</a>
-    <a href="#futures">Futures</a>
     <a href="#24h">24h</a>
     <a href="#ny">NY</a>
     <a href="#charts">Charts</a>
@@ -282,7 +279,7 @@ ul li {{ margin-bottom: 4px; }}
     <div class="header">
         <h1>LSEG 美债收益率 & 美元晨间看板</h1>
         <div class="subtitle">
-            深圳早会版 v6 | 主窗口：上一中国交易日16:00 → 今日09:00 |
+            深圳早会版 v6 | 主窗口：上一中国交易日16:00 &rarr; 今日09:00 |
             {ny_label} |
             生成时间：{now_str}
         </div>
