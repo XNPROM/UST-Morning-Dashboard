@@ -40,8 +40,8 @@ def line_fig(panel, cols=None, title=None, ytitle=None, normalize=False, height=
     cols = existing(panel, cols)
     fig = Figure()
     if not cols:
-        _apply_chart_style(fig, f'{title}（无可用数据）', ytitle, height)
-        return fig
+        return None  # No columns at all – skip entirely
+    added = 0
     for col in cols:
         s = panel[col]
         non_null = s.dropna()
@@ -53,15 +53,16 @@ def line_fig(panel, cols=None, title=None, ytitle=None, normalize=False, height=
         else:
             y = s
         fig.add_trace(Scatter(x=s.index.tz_convert(settings.REPORT_TZ), y=y, mode='lines', name=col, line=dict(width=2), connectgaps=True, hovertemplate='%{x}<br>%{y:.4f}<extra>%{fullData.name}</extra>'))
+        added += 1
+    if added == 0:
+        return None  # All columns were empty – skip entirely
     return _apply_chart_style(fig, title, ytitle, height)
 
 
 def change_bar_fig(summary=None, sections=None, title=None):
     df = rows_by_section(summary, sections)
     if df.empty:
-        fig = Figure()
-        _apply_chart_style(fig, f'{title}（无可用数据）', 'Change', 360, bottom_margin=80)
-        return fig
+        return None
     df = df.copy().dropna(subset=['Change Display'])
     marker_colors = ['#dc2626' if v > 0 else '#16a34a' if v < 0 else '#9ca3af' for v in df['Change Display']]
     fig = Figure(Bar(x=df['Asset'], y=df['Change Display'], text=df['Change Text'], textposition='outside', hovertemplate='%{x}<br>%{y:.4f} %{customdata}<extra></extra>', customdata=df['Change Unit'], marker=dict(color=marker_colors, line=dict(color='#ffffff', width=1))))
@@ -92,39 +93,43 @@ def make_figures(main_panel=None, summary_main=None, daily_panel=None, rolling24
     figs.append(line_fig(ny_panel, ['DXY'], '纽约时段：DXY', 'Index'))
 
     # --- Daily panel charts (近1年 / 近2年) ---
+    # Note: TIPS/BEI have no daily history (RICs only support intraday), so not included here
     d1y = daily_panel.tail(260) if daily_panel is not None else None
     d2y = daily_panel if daily_panel is not None else None
     figs.append(line_fig(d1y, ['UST 2Y', 'UST 5Y', 'UST 10Y', 'UST 30Y'], '日线（1Y）：美债收益率', 'Yield (%)'))
-    figs.append(line_fig(d1y, ['TIPS real 5Y', 'TIPS real 10Y', 'TIPS real 30Y'], '日线（1Y）：TIPS真实收益率', 'Real yield (%)'))
-    figs.append(line_fig(d1y, ['BEI 5Y', 'BEI 10Y', 'BEI 30Y'], '日线（1Y）：BEI', 'BEI (%)'))
     figs.append(line_fig(d1y, ['UST 2s10s spread', 'UST 5s30s spread'], '日线（1Y）：利差 2s10s / 5s30s', 'bp'))
+    figs.append(line_fig(d1y, ['TU 2Y Treasury Fut', 'FV 5Y Treasury Fut', 'TY 10Y Treasury Fut', 'US 30Y Treasury Fut'], '日线（1Y）：美债期货（归一化）', 'Start=100', normalize=True))
     figs.append(line_fig(d1y, ['DXY'], '日线（1Y）：美元指数 DXY', 'Index'))
     figs.append(line_fig(d1y, ['EURUSD', 'USDJPY', 'GBPUSD', 'AUDUSD'], '日线（1Y）：G10汇率（归一化）', 'Start=100', normalize=True))
     figs.append(line_fig(d1y, ['USD/CNY fixing', 'USDCNY', 'USDCNH'], '日线（1Y）：人民币中间价 vs CNY/CNH', 'USD/CNY'))
     figs.append(line_fig(d1y, ['Brent crude', 'WTI crude'], '日线（1Y）：原油', 'USD'))
     figs.append(line_fig(d1y, ['Gold'], '日线（1Y）：黄金', 'USD'))
+    figs.append(line_fig(d1y, ['Copper'], '日线（1Y）：铜', 'USD'))
 
     # --- Weekly panel charts ---
     if weekly_panel is not None and not weekly_panel.empty:
         figs.append(line_fig(weekly_panel, ['UST 2Y', 'UST 5Y', 'UST 10Y', 'UST 30Y'], '周线：美债收益率', 'Yield (%)'))
         figs.append(line_fig(weekly_panel, ['UST 2s10s spread', 'UST 5s30s spread'], '周线：利差 2s10s / 5s30s', 'bp'))
-        figs.append(line_fig(weekly_panel, ['BEI 5Y', 'BEI 10Y', 'BEI 30Y'], '周线：BEI', 'BEI (%)'))
         figs.append(line_fig(weekly_panel, ['DXY'], '周线：美元指数 DXY', 'Index'))
+        figs.append(line_fig(weekly_panel, ['EURUSD', 'USDJPY', 'GBPUSD', 'AUDUSD'], '周线：G10汇率（归一化）', 'Start=100', normalize=True))
         figs.append(line_fig(weekly_panel, ['USD/CNY fixing', 'USDCNY', 'USDCNH'], '周线：人民币', 'USD/CNY'))
-        figs.append(line_fig(weekly_panel, ['Brent crude', 'WTI crude', 'Gold'], '周线：油金（归一化）', 'Start=100', normalize=True))
+        figs.append(line_fig(weekly_panel, ['Brent crude', 'WTI crude', 'Gold', 'Copper'], '周线：油铜金（归一化）', 'Start=100', normalize=True))
 
     # --- Monthly panel charts ---
     if monthly_panel is not None and not monthly_panel.empty:
         figs.append(line_fig(monthly_panel, ['UST 2Y', 'UST 5Y', 'UST 10Y', 'UST 30Y'], '月线：美债收益率', 'Yield (%)'))
         figs.append(line_fig(monthly_panel, ['UST 2s10s spread', 'UST 5s30s spread'], '月线：利差 2s10s / 5s30s', 'bp'))
-        figs.append(line_fig(monthly_panel, ['BEI 5Y', 'BEI 10Y', 'BEI 30Y'], '月线：BEI', 'BEI (%)'))
         figs.append(line_fig(monthly_panel, ['DXY'], '月线：美元指数 DXY', 'Index'))
         figs.append(line_fig(monthly_panel, ['USD/CNY fixing', 'USDCNY', 'USDCNH'], '月线：人民币', 'USD/CNY'))
-        figs.append(line_fig(monthly_panel, ['Brent crude', 'WTI crude', 'Gold'], '月线：油金（归一化）', 'Start=100', normalize=True))
+        figs.append(line_fig(monthly_panel, ['Brent crude', 'WTI crude', 'Gold', 'Copper'], '月线：油铜金（归一化）', 'Start=100', normalize=True))
 
     # --- Yearly view (full 2Y daily) ---
     figs.append(line_fig(d2y, ['UST 10Y', 'UST 2Y'], '全周期（2Y daily）：10Y vs 2Y', 'Yield (%)'))
+    figs.append(line_fig(d2y, ['UST 2s10s spread'], '全周期（2Y daily）：2s10s 利差', 'bp'))
     figs.append(line_fig(d2y, ['DXY'], '全周期（2Y daily）：美元指数', 'Index'))
+    figs.append(line_fig(d2y, ['USDCNY', 'USDCNH'], '全周期（2Y daily）：USDCNY / USDCNH', 'Spot'))
     figs.append(line_fig(d2y, ['Gold'], '全周期（2Y daily）：黄金', 'USD'))
+    figs.append(line_fig(d2y, ['Brent crude', 'WTI crude'], '全周期（2Y daily）：原油', 'USD'))
 
-    return figs
+    # Filter out None (charts with no data at all)
+    return [f for f in figs if f is not None]

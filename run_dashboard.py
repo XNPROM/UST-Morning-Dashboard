@@ -108,6 +108,7 @@ def main():
     print('Resampling daily panel to weekly / monthly...')
     weekly_panel = resample_panel(daily_panel, rule='W-FRI')
     monthly_panel = resample_panel(daily_panel, rule='ME')
+    print(f'  daily: {daily_panel.shape[0]} rows x {daily_panel.shape[1]} cols | weekly: {weekly_panel.shape[0]} | monthly: {monthly_panel.shape[0]}')
     print('Cleaning data (ffill gaps, remove spikes)...')
     intraday_panel = clean_panel(intraday_panel)
     main_panel = slice_window(intraday_panel, windows.main_start, windows.main_end)
