@@ -1,0 +1,203 @@
+## 报告时间n锚定时间：2026-04-27 09:13 CSTn主窗口：04-24 16:00 -> 04-27 09:00
+
+## 今日数据概览（主窗口）
+UST 2Y: 3.7825%（+0.11bp）
+UST 5Y: 3.9202%（+0.09bp）
+UST 10Y: 4.3046%（+0.19bp）
+UST 30Y: 4.9112%（+0.26bp）
+UST 2s10s spread: 52.21bp（+0.09bp）
+UST 5s10s spread: 38.44bp（+0.10bp）
+UST 5s30s spread: 99.10bp（+0.17bp）
+TU 2Y Treasury Fut: 103.7344（-0.0234）
+FV 5Y Treasury Fut: 108.2109（-0.0547）
+TY 10Y Treasury Fut: 111.1406（-0.0938）
+US 30Y Treasury Fut: 113.9375（-0.1875）
+DXY: 98.4840（-0.0620）
+EURUSD: 1.1722（+3.50pips）
+USDJPY: 159.375（+2.50pips）
+GBPUSD: 1.3530（+15.50pips）
+AUDUSD: 0.7162（+12.00pips）
+USDCNH: 6.8316（-14.50pips）
+Brent crude: 106.7100（+2.1900）
+WTI crude: 95.7300（+2.1900）
+Gold: 4694.9400（-31.0050）
+Copper: 6.0470（+0.0165）
+
+## 滚动24小时概览
+TU 2Y Treasury Fut: 103.7344（+0.0117）
+FV 5Y Treasury Fut: 108.2109（+0.0312）
+TY 10Y Treasury Fut: 111.1406（+0.0625）
+US 30Y Treasury Fut: 113.9375（+0.0938）
+DXY: 98.4840（-0.1450）
+EURUSD: 1.1722（+22.50pips）
+USDJPY: 159.375（-26.00pips）
+GBPUSD: 1.3530（+27.00pips）
+AUDUSD: 0.7162（+14.50pips）
+USDCNH: 6.8316（-28.00pips）
+Brent crude: 106.7100（-0.8400）
+WTI crude: 95.7300（-0.7200）
+Gold: 4694.9400（-2.0800）
+Copper: 6.0470（+0.0410）
+
+## 近60天走势摘要
+UST 2Y: 当前3.7825%，5d变化-0.2bp，20d变化0.7bp，60d百分位94%
+UST 5Y: 当前3.9202%，5d变化-0.3bp，20d变化0.8bp，60d百分位75%
+UST 10Y: 当前4.3046%，5d变化-0.1bp，20d变化0.4bp，60d百分位36%
+UST 30Y: 当前4.9112%，5d变化-0.1bp，20d变化0.2bp，60d百分位23%
+UST 2s10s spread: 当前52.21bp，5d变化0.1bp，20d变化-0.6bp，60d百分位10%
+UST 5s10s spread: 当前38.44bp，5d变化0.2bp，20d变化-0.4bp，60d百分位8%
+UST 5s30s spread: 当前99.10bp，5d变化0.2bp，20d变化-0.6bp，60d百分位7%
+TU 2Y Treasury Fut: 当前103.7656，5d变化0.01pts，20d变化-0.01pts，60d百分位66%
+FV 5Y Treasury Fut: 当前108.2812，5d变化0.01pts，20d变化-0.02pts，60d百分位59%
+TY 10Y Treasury Fut: 当前111.2344，5d变化0.02pts，20d变化-0.03pts，60d百分位75%
+US 30Y Treasury Fut: 当前114.1250，5d变化0.03pts，20d变化0.00pts，60d百分位92%
+DXY: 当前98.5100，5d变化-0.01pts，20d变化-0.02pts，60d百分位9%
+EURUSD: 当前1.1719，5d变化-3.0pips，20d变化0.5pips，60d百分位69%
+USDJPY: 当前159.395，5d变化-0.5pips，20d变化-2.5pips，60d百分位21%
+GBPUSD: 当前1.3533，5d变化-4.0pips，20d变化4.0pips，60d百分位83%
+AUDUSD: 当前0.7153，5d变化2.0pips，20d变化1.5pips，60d百分位96%
+USDCNH: 当前6.8331，5d变化-10.0pips，20d变化-14.5pips，60d百分位8%
+Brent crude: 当前105.8800，5d变化-0.10pts，20d变化-0.79pts，60d百分位65%
+WTI crude: 当前94.8800，5d变化-0.12pts，20d变化0.09pts，60d百分位76%
+Gold: 当前4709.2527，5d变化1.79pts，20d变化-9.86pts，60d百分位24%
+
+## 数据质量检查
+[HIGH] TIPS real 5Y: 5min 拉取失败/无效 -- 'UniverseContainer' object is not subscriptable
+[HIGH] TIPS real 5Y: 5min 拉取失败/无效 -- No data to return, please check errors: ERROR: No successful response.
+(TS.Intraday.UserRequestError.90006, The universe does not support the following fields: [YLDTOMAT]), (TS.Int
+[HIGH] TIPS real 5Y: 5min 拉取失败/无效 -- No data to return, please check errors: ERROR: No successful response.
+(TS.Intraday.UserRequestError.90006, The universe does not support the following fields: [B_YLD_1, A_YLD_1]),
+[HIGH] TIPS real 5Y: 5min 拉取失败/无效 -- The read operation timed out
+[HIGH] TIPS real 5Y: 5min 拉取失败/无效 -- _ssl.c:989: The handshake operation timed out
+[HIGH] TIPS real 5Y: 5min 拉取失败/无效 -- [WinError 10054] 远程主机强迫关闭了一个现有的连接。
+[HIGH] TIPS real 5Y: 5min 拉取失败/无效 -- No data to return, please check errors: ERROR: No successful response.
+(TS.Intraday.UserRequestError.90006, The universe does not support the following fields: [OPEN_YLD]), (TS.Int
+[HIGH] TIPS real 5Y: 5min 拉取失败/无效 -- No valid data from any field set
+[HIGH] TIPS real 10Y: 5min 拉取失败/无效 -- 'UniverseContainer' object is not subscriptable
+[HIGH] TIPS real 10Y: 5min 拉取失败/无效 -- No data to return, please check errors: ERROR: No successful response.
+(TS.Intraday.UserRequestError.90006, The universe does not support the following fields: [YLDTOMAT]), (TS.Int
+[HIGH] TIPS real 10Y: 5min 拉取失败/无效 -- No data to return, please check errors: ERROR: No successful response.
+(TS.Intraday.UserRequestError.90006, The universe does not support the following fields: [B_YLD_1, A_YLD_1]),
+[HIGH] TIPS real 10Y: 5min 拉取失败/无效 -- No data to return, please check errors: ERROR: No successful response.
+(TS.Intraday.UserRequestError.90006, The universe does not support the following fields: [B_YLD_1]), (TS.Intr
+[HIGH] TIPS real 10Y: 5min 拉取失败/无效 -- No data to return, please check errors: ERROR: No successful response.
+(TS.Intraday.UserRequestError.90006, The universe does not support the following fields: [A_YLD_1]), (TS.Intr
+[HIGH] TIPS real 10Y: 5min 拉取失败/无效 -- 'UniverseContainer' object is not subscriptable
+[HIGH] TIPS real 10Y: 5min 拉取失败/无效 -- No data to return, please check errors: ERROR: No successful response.
+(TS.Intraday.UserRequestError.90006, The universe does not support the following fields: [OPEN_YLD]), (TS.Int
+[HIGH] TIPS real 10Y: 5min 拉取失败/无效 -- No valid data from any field set
+[HIGH] TIPS real 30Y: 5min 拉取失败/无效 -- 'UniverseContainer' object is not subscriptable
+[HIGH] TIPS real 30Y: 5min 拉取失败/无效 -- No data to return, please check errors: ERROR: No successful response.
+(TS.Intraday.UserRequestError.90006, The universe does not support the following fields: [YLDTOMAT]), (TS.Int
+[HIGH] TIPS real 30Y: 5min 拉取失败/无效 -- No data to return, please check errors: ERROR: No successful response.
+(TS.Intraday.UserRequestError.90006, The universe does not support the following fields: [B_YLD_1, A_YLD_1]),
+[HIGH] TIPS real 30Y: 5min 拉取失败/无效 -- No data to return, please check errors: ERROR: No successful response.
+(TS.Intraday.UserRequestError.90006, The universe does not support the following fields: [B_YLD_1]), (TS.Intr
+[HIGH] TIPS real 30Y: 5min 拉取失败/无效 -- No data to return, please check errors: ERROR: No successful response.
+(TS.Intraday.UserRequestError.90006, The universe does not support the following fields: [A_YLD_1]), (TS.Intr
+[HIGH] TIPS real 30Y: 5min 拉取失败/无效 -- No data to return, please check errors: ERROR: No successful response.
+(TS.Intraday.UserRequestError.90006, The universe does not support the following fields: [ISMA_B_YLD, ISMA_A_
+[HIGH] TIPS real 30Y: 5min 拉取失败/无效 -- No data to return, please check errors: ERROR: No successful response.
+(TS.Intraday.UserRequestError.90006, The universe does not support the following fields: [OPEN_YLD]), (TS.Int
+[HIGH] TIPS real 30Y: 5min 拉取失败/无效 -- No valid data from any field set
+[HIGH] USDCNY: 5min 拉取失败/无效 -- No data to return, please check errors: ERROR: No successful response.
+(TS.Intraday.UserRequestError.90006, The universe does not support the following fields: [TRDPRC_1])
+[HIGH] USDCNY: 5min 拉取失败/无效 -- No valid data from any field set
+[MEDIUM] Gold: 5min 拉取失败/无效 -- [WinError 10054] 远程主机强迫关闭了一个现有的连接。
+[MEDIUM] Copper: 5min 拉取失败/无效 -- No data to return, please check errors: ERROR: No successful response.
+(TS.Intraday.UserRequestError.90006, The universe does not support the following fields: [MID_PRICE])
+[MEDIUM] Copper: 5min 拉取失败/无效 -- No data to return, please check errors: ERROR: No successful response.
+(TS.Intraday.UserRequestError.90006, The universe does not support the following fields: [SETTLE])
+[HIGH] TIPS real 5Y: daily 拉取失败/无效 -- 'UniverseContainer' object is not subscriptable
+[HIGH] TIPS real 5Y: daily 拉取失败/无效 -- No data to return, please check errors: ERROR: No successful response.
+(TS.Intraday.UserRequestError.90006, The universe does not support the following fields: [YLDTOMAT]), (TS.Int
+[HIGH] TIPS real 5Y: daily 拉取失败/无效 -- No data to return, please check errors: ERROR: No successful response.
+(TS.Intraday.UserRequestError.90006, The universe does not support the following fields: [B_YLD_1, A_YLD_1]),
+[HIGH] TIPS real 5Y: daily 拉取失败/无效 -- No data to return, please check errors: ERROR: No successful response.
+(TS.Intraday.UserRequestError.90006, The universe does not support the following fields: [B_YLD_1]), (TS.Intr
+[HIGH] TIPS real 5Y: daily 拉取失败/无效 -- No data to return, please check errors: ERROR: No successful response.
+(TS.Intraday.UserRequestError.90006, The universe does not support the following fields: [A_YLD_1]), (TS.Intr
+[HIGH] TIPS real 5Y: daily 拉取失败/无效 -- No data to return, please check errors: ERROR: No successful response.
+(TS.Intraday.UserRequestError.90006, The universe does not support the following fields: [ISMA_B_YLD, ISMA_A_
+[HIGH] TIPS real 5Y: daily 拉取失败/无效 -- No data to return, please check errors: ERROR: No successful response.
+(TS.Intraday.UserRequestError.90006, The universe does not support the following fields: [OPEN_YLD]), (TS.Int
+[HIGH] TIPS real 5Y: daily 拉取失败/无效 -- No valid data from any field set
+[HIGH] TIPS real 10Y: daily 拉取失败/无效 -- 'UniverseContainer' object is not subscriptable
+[HIGH] TIPS real 10Y: daily 拉取失败/无效 -- No data to return, please check errors: ERROR: No successful response.
+(TS.Intraday.UserRequestError.90006, The universe does not support the following fields: [YLDTOMAT]), (TS.Int
+[HIGH] TIPS real 10Y: daily 拉取失败/无效 -- No data to return, please check errors: ERROR: No successful response.
+(TS.Intraday.UserRequestError.90006, The universe does not support the following fields: [B_YLD_1, A_YLD_1]),
+[HIGH] TIPS real 10Y: daily 拉取失败/无效 -- No data to return, please check errors: ERROR: No successful response.
+(TS.Intraday.UserRequestError.90006, The universe does not support the following fields: [B_YLD_1]), (TS.Intr
+[HIGH] TIPS real 10Y: daily 拉取失败/无效 -- No data to return, please check errors: ERROR: No successful response.
+(TS.Intraday.UserRequestError.90006, The universe does not support the following fields: [A_YLD_1]), (TS.Intr
+[HIGH] TIPS real 10Y: daily 拉取失败/无效 -- 'UniverseContainer' object is not subscriptable
+[HIGH] TIPS real 10Y: daily 拉取失败/无效 -- No data to return, please check errors: ERROR: No successful response.
+(TS.Intraday.UserRequestError.90006, The universe does not support the following fields: [OPEN_YLD]), (TS.Int
+[HIGH] TIPS real 10Y: daily 拉取失败/无效 -- No valid data from any field set
+[HIGH] TIPS real 30Y: daily 拉取失败/无效 -- 'UniverseContainer' object is not subscriptable
+[HIGH] TIPS real 30Y: daily 拉取失败/无效 -- No data to return, please check errors: ERROR: No successful response.
+(TS.Intraday.UserRequestError.90006, The universe does not support the following fields: [YLDTOMAT]), (TS.Int
+[HIGH] TIPS real 30Y: daily 拉取失败/无效 -- No data to return, please check errors: ERROR: No successful response.
+(TS.Intraday.UserRequestError.90006, The universe does not support the following fields: [B_YLD_1, A_YLD_1]),
+[HIGH] TIPS real 30Y: daily 拉取失败/无效 -- No data to return, please check errors: ERROR: No successful response.
+(TS.Intraday.UserRequestError.90006, The universe does not support the following fields: [B_YLD_1]), (TS.Intr
+[HIGH] TIPS real 30Y: daily 拉取失败/无效 -- No data to return, please check errors: ERROR: No successful response.
+(TS.Intraday.UserRequestError.90006, The universe does not support the following fields: [A_YLD_1]), (TS.Intr
+[HIGH] TIPS real 30Y: daily 拉取失败/无效 -- No data to return, please check errors: ERROR: No successful response.
+(TS.Intraday.UserRequestError.90006, The universe does not support the following fields: [ISMA_B_YLD, ISMA_A_
+[HIGH] TIPS real 30Y: daily 拉取失败/无效 -- No data to return, please check errors: ERROR: No successful response.
+(TS.Intraday.UserRequestError.90006, The universe does not support the following fields: [OPEN_YLD]), (TS.Int
+[HIGH] TIPS real 30Y: daily 拉取失败/无效 -- No valid data from any field set
+[HIGH] USD/CNY fixing: daily 拉取失败/无效 -- [WinError 10054] 远程主机强迫关闭了一个现有的连接。
+[HIGH] USD/CNY fixing: daily 拉取失败/无效 -- 'UniverseContainer' object is not subscriptable
+[HIGH] USD/CNY fixing: daily 拉取失败/无效 -- _ssl.c:989: The handshake operation timed out
+[HIGH] USD/CNY fixing: daily 拉取失败/无效 -- 'UniverseContainer' object is not subscriptable
+[HIGH] USD/CNY fixing: daily 拉取失败/无效 -- 'UniverseContainer' object is not subscriptable
+[HIGH] USD/CNY fixing: daily 拉取失败/无效 -- No valid data from any field set
+[MEDIUM] Gold: daily 拉取失败/无效 -- 'UniverseContainer' object is not subscriptable
+[MEDIUM] USD/CNY fixing: 中间价缺失 -- USD/CNY fixing not available
+[LOW] UST 2Y: 检测到 1 个 3σ 以上跳变点 -- max_jump=0.0084, 3σ=0.0072
+[LOW] UST 30Y: 检测到 1 个 3σ 以上跳变点 -- max_jump=0.0076, 3σ=0.0063
+[LOW] TU 2Y Treasury Fut: 检测到 1 个 3σ 以上跳变点 -- max_jump=0.0430, 3σ=0.0185
+[LOW] FV 5Y Treasury Fut: 检测到 1 个 3σ 以上跳变点 -- max_jump=0.1016, 3σ=0.0420
+[LOW] TY 10Y Treasury Fut: 检测到 1 个 3σ 以上跳变点 -- max_jump=0.1562, 3σ=0.0690
+[LOW] US 30Y Treasury Fut: 检测到 1 个 3σ 以上跳变点 -- max_jump=0.2812, 3σ=0.1249
+[LOW] DXY: 检测到 2 个 3σ 以上跳变点 -- max_jump=0.1190, 3σ=0.0527
+[LOW] EURUSD: 检测到 2 个 3σ 以上跳变点 -- max_jump=0.0020, 3σ=0.0008
+[LOW] USDJPY: 检测到 2 个 3σ 以上跳变点 -- max_jump=0.2400, 3σ=0.0934
+[LOW] GBPUSD: 检测到 1 个 3σ 以上跳变点 -- max_jump=0.0030, 3σ=0.0011
+[LOW] AUDUSD: 检测到 1 个 3σ 以上跳变点 -- max_jump=0.0010, 3σ=0.0006
+[LOW] USDCNH: 检测到 3 个 3σ 以上跳变点 -- max_jump=0.0026, 3σ=0.0017
+[LOW] Brent crude: 检测到 1 个 3σ 以上跳变点 -- max_jump=1.6700, 3σ=0.7042
+[LOW] WTI crude: 检测到 1 个 3σ 以上跳变点 -- max_jump=1.5700, 3σ=0.6888
+[LOW] Gold: 检测到 2 个 3σ 以上跳变点 -- max_jump=15.3100, 3σ=10.0173
+[LOW] Copper: 检测到 2 个 3σ 以上跳变点 -- max_jump=1.0430, 3σ=0.4457
+[LOW] UST 2s10s spread: 检测到 1 个 3σ 以上跳变点 -- max_jump=0.6450, 3σ=0.6344
+[LOW] UST 5s30s spread: 检测到 1 个 3σ 以上跳变点 -- max_jump=0.7300, 3σ=0.6260
+[MEDIUM] Gold: 5min与daily最后值偏差较大 -- intraday_last=4694.9400, daily_last=4709.2527, diff=14.3127, threshold=1.0000
+[MEDIUM] DXY: 5min与daily最后值偏差较大 -- intraday_last=98.4840, daily_last=98.5100, diff=0.0260, threshold=0.0020
+
+---
+
+请围绕以下四个方面分别撰写 120-220 字。文字应以分析为主，减少机械复述，所有数字都必须与上文完全一致：
+
+### 1. 变化归因n说明收益率与相关资产变化的主要来源：
+- 实际利率 vs 通胀预期的贡献拆分（用 TIPS 和 BEI 数据）
+- 市场偏好变化（用曲线形态、商品、汇率联动推断）
+- 主要驱动因素排序
+
+### 2. 关键价位与观察信号n写出当前最值得留意的价位、斜率和联动指标：
+- 收益率相对整数位或近期高低点的位置
+- 曲线形态变化
+- 汇率与商品的同步变化
+
+### 3. 近阶段历史参照n在近60天数据中寻找相近的结构组合：
+- 当前曲线斜率与 BEI 组合相对近期历史的位置
+- 可以参照的相近样本
+- 样本有限时，明确说明比较边界
+
+### 4. 短线观察n今日可继续观察：
+- 未来一至三个交易日的方向判断及依据
+- 人民币中间价与离在岸价差
+- 仍需继续核对或跟踪的事项

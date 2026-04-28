@@ -174,14 +174,15 @@ def generate_html_report(
     card_data = []
     card_data.append(('As-of', f'{asof_str}<br><span class="muted">Asia/Shanghai</span>'))
     card_data.append(('主窗口', f'{windows.main_start.strftime("%m-%d %H:%M")} → {windows.main_end.strftime("%m-%d %H:%M")}<br><span class="muted">上一中国收盘后至早会</span>'))
-    ust_10y = summary_main[summary_main['Asset'] == 'UST 10Y']
-    if not ust_10y.empty:
-        r = ust_10y.iloc[0]
-        card_data.append(('10Y UST', f'{r["Level"]}（{r["Change Text"]}）'))
-    dxy = summary_main[summary_main['Asset'] == 'DXY']
-    if not dxy.empty:
-        r = dxy.iloc[0]
-        card_data.append(('DXY', f'{r["Level"]}（{r["Change Text"]}）'))
+    if not summary_main.empty and 'Asset' in summary_main.columns:
+        ust_10y = summary_main[summary_main['Asset'] == 'UST 10Y']
+        if not ust_10y.empty:
+            r = ust_10y.iloc[0]
+            card_data.append(('10Y UST', f'{r["Level"]}（{r["Change Text"]}）'))
+        dxy = summary_main[summary_main['Asset'] == 'DXY']
+        if not dxy.empty:
+            r = dxy.iloc[0]
+            card_data.append(('DXY', f'{r["Level"]}（{r["Change Text"]}）'))
     fix = latest_fixing_info(daily_panel, windows.target_fixing_date)
     if fix['status'] != 'missing':
         card_data.append(('USD/CNY fixing', f'{fix["last"]:.4f}｜+{fix["chg_pips"]:.0f} pips<br><span class="muted">latest {fix["last_date"]} / target {fix["target_date"]}</span>'))

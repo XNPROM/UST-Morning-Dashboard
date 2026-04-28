@@ -1,0 +1,135 @@
+name,unit,status,error,fields,obs
+UST 2Y,yield_pct,ok,,MID_YLD_1,59
+UST 5Y,yield_pct,ok,,MID_YLD_1,62
+UST 10Y,yield_pct,ok,,MID_YLD_1,61
+UST 30Y,yield_pct,ok,,MID_YLD_1,62
+TIPS real 5Y,yield_pct,error,'UniverseContainer' object is not subscriptable,MID_YLD_1,0
+TIPS real 5Y,yield_pct,error,"No data to return, please check errors: ERROR: No successful response.
+(TS.Intraday.UserRequestError.90006, The universe does not support the following fields: [YLDTOMAT]), (TS.Int",YLDTOMAT,0
+TIPS real 5Y,yield_pct,error,"No data to return, please check errors: ERROR: No successful response.
+(TS.Intraday.UserRequestError.90006, The universe does not support the following fields: [B_YLD_1, A_YLD_1]),","B_YLD_1,A_YLD_1",0
+TIPS real 5Y,yield_pct,error,"No data to return, please check errors: ERROR: No successful response.
+(TS.Intraday.UserRequestError.90006, The universe does not support the following fields: [B_YLD_1]), (TS.Intr",B_YLD_1,0
+TIPS real 5Y,yield_pct,error,"No data to return, please check errors: ERROR: No successful response.
+(TS.Intraday.UserRequestError.90006, The universe does not support the following fields: [A_YLD_1]), (TS.Intr",A_YLD_1,0
+TIPS real 5Y,yield_pct,error,"No data to return, please check errors: ERROR: No successful response.
+(TS.Intraday.UserRequestError.90006, The universe does not support the following fields: [ISMA_B_YLD, ISMA_A_","ISMA_B_YLD,ISMA_A_YLD",0
+TIPS real 5Y,yield_pct,error,"No data to return, please check errors: ERROR: No successful response.
+(TS.Intraday.UserRequestError.90006, The universe does not support the following fields: [OPEN_YLD]), (TS.Int",OPEN_YLD,0
+TIPS real 5Y,yield_pct,error,No valid data from any field set,,0
+TIPS real 10Y,yield_pct,error,'UniverseContainer' object is not subscriptable,MID_YLD_1,0
+TIPS real 10Y,yield_pct,error,"No data to return, please check errors: ERROR: No successful response.
+(TS.Intraday.UserRequestError.90006, The universe does not support the following fields: [YLDTOMAT]), (TS.Int",YLDTOMAT,0
+TIPS real 10Y,yield_pct,error,"No data to return, please check errors: ERROR: No successful response.
+(TS.Intraday.UserRequestError.90006, The universe does not support the following fields: [B_YLD_1, A_YLD_1]),","B_YLD_1,A_YLD_1",0
+TIPS real 10Y,yield_pct,error,"No data to return, please check errors: ERROR: No successful response.
+(TS.Intraday.UserRequestError.90006, The universe does not support the following fields: [B_YLD_1]), (TS.Intr",B_YLD_1,0
+TIPS real 10Y,yield_pct,error,"No data to return, please check errors: ERROR: No successful response.
+(TS.Intraday.UserRequestError.90006, The universe does not support the following fields: [A_YLD_1]), (TS.Intr",A_YLD_1,0
+TIPS real 10Y,yield_pct,error,'UniverseContainer' object is not subscriptable,"ISMA_B_YLD,ISMA_A_YLD",0
+TIPS real 10Y,yield_pct,error,"No data to return, please check errors: ERROR: No successful response.
+(TS.Intraday.UserRequestError.90006, The universe does not support the following fields: [OPEN_YLD]), (TS.Int",OPEN_YLD,0
+TIPS real 10Y,yield_pct,error,No valid data from any field set,,0
+TIPS real 30Y,yield_pct,error,'UniverseContainer' object is not subscriptable,MID_YLD_1,0
+TIPS real 30Y,yield_pct,error,"No data to return, please check errors: ERROR: No successful response.
+(TS.Intraday.UserRequestError.90006, The universe does not support the following fields: [YLDTOMAT]), (TS.Int",YLDTOMAT,0
+TIPS real 30Y,yield_pct,error,"No data to return, please check errors: ERROR: No successful response.
+(TS.Intraday.UserRequestError.90006, The universe does not support the following fields: [B_YLD_1, A_YLD_1]),","B_YLD_1,A_YLD_1",0
+TIPS real 30Y,yield_pct,error,"No data to return, please check errors: ERROR: No successful response.
+(TS.Intraday.UserRequestError.90006, The universe does not support the following fields: [B_YLD_1]), (TS.Intr",B_YLD_1,0
+TIPS real 30Y,yield_pct,error,"No data to return, please check errors: ERROR: No successful response.
+(TS.Intraday.UserRequestError.90006, The universe does not support the following fields: [A_YLD_1]), (TS.Intr",A_YLD_1,0
+TIPS real 30Y,yield_pct,error,"No data to return, please check errors: ERROR: No successful response.
+(TS.Intraday.UserRequestError.90006, The universe does not support the following fields: [ISMA_B_YLD, ISMA_A_","ISMA_B_YLD,ISMA_A_YLD",0
+TIPS real 30Y,yield_pct,error,"No data to return, please check errors: ERROR: No successful response.
+(TS.Intraday.UserRequestError.90006, The universe does not support the following fields: [OPEN_YLD]), (TS.Int",OPEN_YLD,0
+TIPS real 30Y,yield_pct,error,No valid data from any field set,,0
+TU 2Y Treasury Fut,futures_price,ok,,TRDPRC_1,60
+FV 5Y Treasury Fut,futures_price,ok,,TRDPRC_1,60
+TY 10Y Treasury Fut,futures_price,ok,,TRDPRC_1,60
+US 30Y Treasury Fut,futures_price,ok,,TRDPRC_1,60
+DXY,index,ok,,TRDPRC_1,60
+EURUSD,fx,ok,,MID_PRICE,63
+USDJPY,fx_jpy,ok,,MID_PRICE,61
+GBPUSD,fx,ok,,MID_PRICE,61
+AUDUSD,fx,ok,,MID_PRICE,61
+USDCNY,fx,error,"No data to return, please check errors: ERROR: No successful response.
+(TS.Intraday.UserRequestError.90006, The universe does not support the following fields: [TRDPRC_1])",TRDPRC_1,0
+USDCNY,fx,error,No valid data from any field set,,0
+USDCNH,fx,ok,,MID_PRICE,62
+Brent crude,commodity,ok,,TRDPRC_1,72
+WTI crude,commodity,ok,,TRDPRC_1,60
+Gold,commodity,error,'UniverseContainer' object is not subscriptable,TRDPRC_1,0
+Gold,commodity,ok,,MID_PRICE,61
+Copper,commodity,error,"No data to return, please check errors: ERROR: No successful response.
+(TS.Intraday.UserRequestError.90006, The universe does not support the following fields: [MID_PRICE])",MID_PRICE,0
+Copper,commodity,error,"No data to return, please check errors: ERROR: No successful response.
+(TS.Intraday.UserRequestError.90006, The universe does not support the following fields: [SETTLE])",SETTLE,0
+Copper,commodity,ok,,"BID,ASK",61
+UST 2Y,yield_pct,ok,,MID_YLD_1,240
+UST 5Y,yield_pct,ok,,MID_YLD_1,250
+UST 10Y,yield_pct,ok,,MID_YLD_1,243
+UST 30Y,yield_pct,ok,,MID_YLD_1,252
+TIPS real 5Y,yield_pct,error,'UniverseContainer' object is not subscriptable,MID_YLD_1,0
+TIPS real 5Y,yield_pct,error,"No data to return, please check errors: ERROR: No successful response.
+(TS.Intraday.UserRequestError.90006, The universe does not support the following fields: [YLDTOMAT]), (TS.Int",YLDTOMAT,0
+TIPS real 5Y,yield_pct,error,"No data to return, please check errors: ERROR: No successful response.
+(TS.Intraday.UserRequestError.90006, The universe does not support the following fields: [B_YLD_1, A_YLD_1]),","B_YLD_1,A_YLD_1",0
+TIPS real 5Y,yield_pct,error,"No data to return, please check errors: ERROR: No successful response.
+(TS.Intraday.UserRequestError.90006, The universe does not support the following fields: [B_YLD_1]), (TS.Intr",B_YLD_1,0
+TIPS real 5Y,yield_pct,error,"No data to return, please check errors: ERROR: No successful response.
+(TS.Intraday.UserRequestError.90006, The universe does not support the following fields: [A_YLD_1]), (TS.Intr",A_YLD_1,0
+TIPS real 5Y,yield_pct,error,"No data to return, please check errors: ERROR: No successful response.
+(TS.Intraday.UserRequestError.90006, The universe does not support the following fields: [ISMA_B_YLD, ISMA_A_","ISMA_B_YLD,ISMA_A_YLD",0
+TIPS real 5Y,yield_pct,error,"No data to return, please check errors: ERROR: No successful response.
+(TS.Intraday.UserRequestError.90006, The universe does not support the following fields: [OPEN_YLD]), (TS.Int",OPEN_YLD,0
+TIPS real 5Y,yield_pct,error,No valid data from any field set,,0
+TIPS real 10Y,yield_pct,error,'UniverseContainer' object is not subscriptable,MID_YLD_1,0
+TIPS real 10Y,yield_pct,error,"No data to return, please check errors: ERROR: No successful response.
+(TS.Intraday.UserRequestError.90006, The universe does not support the following fields: [YLDTOMAT]), (TS.Int",YLDTOMAT,0
+TIPS real 10Y,yield_pct,error,"No data to return, please check errors: ERROR: No successful response.
+(TS.Intraday.UserRequestError.90006, The universe does not support the following fields: [B_YLD_1, A_YLD_1]),","B_YLD_1,A_YLD_1",0
+TIPS real 10Y,yield_pct,error,"No data to return, please check errors: ERROR: No successful response.
+(TS.Intraday.UserRequestError.90006, The universe does not support the following fields: [B_YLD_1]), (TS.Intr",B_YLD_1,0
+TIPS real 10Y,yield_pct,error,"No data to return, please check errors: ERROR: No successful response.
+(TS.Intraday.UserRequestError.90006, The universe does not support the following fields: [A_YLD_1]), (TS.Intr",A_YLD_1,0
+TIPS real 10Y,yield_pct,error,'UniverseContainer' object is not subscriptable,"ISMA_B_YLD,ISMA_A_YLD",0
+TIPS real 10Y,yield_pct,error,"No data to return, please check errors: ERROR: No successful response.
+(TS.Intraday.UserRequestError.90006, The universe does not support the following fields: [OPEN_YLD]), (TS.Int",OPEN_YLD,0
+TIPS real 10Y,yield_pct,error,No valid data from any field set,,0
+TIPS real 30Y,yield_pct,error,'UniverseContainer' object is not subscriptable,MID_YLD_1,0
+TIPS real 30Y,yield_pct,error,"No data to return, please check errors: ERROR: No successful response.
+(TS.Intraday.UserRequestError.90006, The universe does not support the following fields: [YLDTOMAT]), (TS.Int",YLDTOMAT,0
+TIPS real 30Y,yield_pct,error,"No data to return, please check errors: ERROR: No successful response.
+(TS.Intraday.UserRequestError.90006, The universe does not support the following fields: [B_YLD_1, A_YLD_1]),","B_YLD_1,A_YLD_1",0
+TIPS real 30Y,yield_pct,error,"No data to return, please check errors: ERROR: No successful response.
+(TS.Intraday.UserRequestError.90006, The universe does not support the following fields: [B_YLD_1]), (TS.Intr",B_YLD_1,0
+TIPS real 30Y,yield_pct,error,"No data to return, please check errors: ERROR: No successful response.
+(TS.Intraday.UserRequestError.90006, The universe does not support the following fields: [A_YLD_1]), (TS.Intr",A_YLD_1,0
+TIPS real 30Y,yield_pct,error,"No data to return, please check errors: ERROR: No successful response.
+(TS.Intraday.UserRequestError.90006, The universe does not support the following fields: [ISMA_B_YLD, ISMA_A_","ISMA_B_YLD,ISMA_A_YLD",0
+TIPS real 30Y,yield_pct,error,"No data to return, please check errors: ERROR: No successful response.
+(TS.Intraday.UserRequestError.90006, The universe does not support the following fields: [OPEN_YLD]), (TS.Int",OPEN_YLD,0
+TIPS real 30Y,yield_pct,error,No valid data from any field set,,0
+TU 2Y Treasury Fut,futures_price,ok,,TRDPRC_1,252
+FV 5Y Treasury Fut,futures_price,ok,,TRDPRC_1,251
+TY 10Y Treasury Fut,futures_price,ok,,TRDPRC_1,251
+US 30Y Treasury Fut,futures_price,ok,,TRDPRC_1,249
+DXY,index,ok,,TRDPRC_1,252
+EURUSD,fx,ok,,MID_PRICE,255
+USDJPY,fx_jpy,ok,,MID_PRICE,253
+GBPUSD,fx,ok,,MID_PRICE,253
+AUDUSD,fx,ok,,MID_PRICE,253
+USDCNY,fx,ok,,MID_PRICE,101
+USDCNH,fx,ok,,MID_PRICE,254
+USD/CNY fixing,fixing_fx,error,'UniverseContainer' object is not subscriptable,TRDPRC_1,0
+USD/CNY fixing,fixing_fx,error,'UniverseContainer' object is not subscriptable,MID_PRICE,0
+USD/CNY fixing,fixing_fx,error,'UniverseContainer' object is not subscriptable,"BID,ASK",0
+USD/CNY fixing,fixing_fx,error,'UniverseContainer' object is not subscriptable,BID,0
+USD/CNY fixing,fixing_fx,error,'UniverseContainer' object is not subscriptable,ASK,0
+USD/CNY fixing,fixing_fx,error,No valid data from any field set,,0
+Brent crude,commodity,ok,,TRDPRC_1,264
+WTI crude,commodity,ok,,TRDPRC_1,252
+Gold,commodity,error,'UniverseContainer' object is not subscriptable,TRDPRC_1,0
+Gold,commodity,ok,,MID_PRICE,253
+Copper,commodity,ok,,TRDPRC_1,1
