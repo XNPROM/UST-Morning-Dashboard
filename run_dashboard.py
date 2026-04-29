@@ -21,7 +21,7 @@ from dates.windows import compute_report_windows
 from data.fetch import download_panel
 from data.derived import add_derived, slice_window, clean_panel, resample_panel
 from data.validation import cross_validate, detect_anomalies, sanity_check
-from analytics.summary import summarize_panel
+from analytics.summary import summarize_panel, summarize_daily_change
 from analytics.quality import data_quality_checks, find_blocking_quality_issues
 from analytics.notes import build_morning_notes
 from analytics.ai_interpreter import interpret_market
@@ -124,6 +124,7 @@ def main():
     summary_main = summarize_panel(main_panel, 'main')
     summary_24h = summarize_panel(rolling24_panel, '24h')
     summary_ny = summarize_panel(ny_panel, 'ny')
+    summary_daily = summarize_daily_change(daily_panel)
     print('Running quality checks...')
     quality_df = data_quality_checks(
         intraday_log=intraday_logs,
@@ -142,7 +143,7 @@ def main():
     morning_notes = build_morning_notes(summary_main)
     print('Generating AI interpretation context...')
     timestamp = build_artifact_timestamp(windows.asof_dt, now)
-    ai_result = interpret_market(summary_main, summary_24h, daily_panel, quality_df, windows, timestamp)
+    ai_result = interpret_market(summary_daily, summary_main, summary_24h, daily_panel, quality_df, windows, timestamp)
     interpretation = ai_result if isinstance(ai_result, dict) else None
     print('Generating charts...')
     figs = make_figures(main_panel, summary_main, daily_panel, rolling24_panel, ny_panel,
@@ -153,6 +154,7 @@ def main():
     all_logs = pd.concat([intraday_logs, daily_logs], ignore_index=True) if not intraday_logs.empty or not daily_logs.empty else pd.DataFrame()
     html_path, csv_path, log_path = generate_html_report(
         summary_main=summary_main,
+        summary_daily=summary_daily,
         summary_24h=summary_24h,
         summary_ny=summary_ny,
         morning_notes=morning_notes,

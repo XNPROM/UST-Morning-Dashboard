@@ -104,6 +104,47 @@ def summarize_panel(panel = None, window_name = None):
     return df
 
 
+def summarize_daily_change(daily_panel=None):
+    """Compute close-to-close changes from the daily panel (prev close -> current close).
+    This aligns with standard market convention for 'daily change' and matches public data."""
+    rows = []
+    if daily_panel is None or daily_panel.empty:
+        return pd.DataFrame()
+    if len(daily_panel) < 2:
+        return pd.DataFrame()
+    prev_row = daily_panel.iloc[-2]
+    curr_row = daily_panel.iloc[-1]
+    for col in daily_panel.columns:
+        prev_val = prev_row.get(col)
+        curr_val = curr_row.get(col)
+        if pd.isna(prev_val) or pd.isna(curr_val):
+            continue
+        unit = get_unit(col)
+        first = float(prev_val)
+        last = float(curr_val)
+        change_raw, change_display_val, change_unit, pct = change_display(first, last, unit)
+        rows.append({
+            'Section': get_section(col),
+            'Group': get_group(col),
+            'Asset': col,
+            'Level': format_level(last, unit),
+            'Change': change_raw,
+            'Change Display': change_display_val,
+            'Change Unit': change_unit,
+            'Change Text': format_change(change_display_val, change_unit),
+            '% Change': pct,
+            '% Change Text': f'{pct:+.2f}%' if pd.notna(pct) else '',
+            'High': float(curr_row.get(col, np.nan)),
+            'Low': float(curr_row.get(col, np.nan)),
+            'Obs': 1,
+            'Order': get_order(col),
+        })
+    df = pd.DataFrame(rows)
+    if not df.empty:
+        df = df.sort_values('Order').reset_index(drop=True)
+    return df
+
+
 def rows_by_section(summary = None, sections = None):
     if summary.empty:
         return summary

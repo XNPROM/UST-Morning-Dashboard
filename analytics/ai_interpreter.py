@@ -210,7 +210,7 @@ def _build_bank_research_text(reports):
     return '\n'.join(lines)
 
 
-def build_context(summary_main, summary_24h = None, daily_panel = None, quality_df = None, windows = None):
+def build_context(summary_daily, summary_main=None, summary_24h=None, daily_panel=None, quality_df=None, windows=None):
     """Build the full prompt context for AI interpretation."""
     asof_str = windows.asof_dt.strftime('%Y-%m-%d %H:%M %Z')
     main_window_str = f'{windows.main_start.strftime("%m-%d %H:%M")} -> {windows.main_end.strftime("%m-%d %H:%M")}'
@@ -220,7 +220,9 @@ def build_context(summary_main, summary_24h = None, daily_panel = None, quality_
     return f'## 报告时间\n\
 锚定时间：{asof_str}\n\
 主窗口：{main_window_str}\n\
-\n## 今日数据概览（主窗口）\n\
+\n## 今日收盘变动（前日收盘→当日收盘，与公开行情口径一致）\n\
+{_build_summary_text(summary_daily)}\n\
+\n## 主窗口内变动（{main_window_str}，仅反映亚洲时段窄幅波动）\n\
 {_build_summary_text(summary_main)}\n\
 \n## 滚动24小时概览\n\
 {_build_summary_text(summary_24h)}\n\
@@ -231,7 +233,9 @@ def build_context(summary_main, summary_24h = None, daily_panel = None, quality_
 \n## 近期外资研报摘要（Report Watch）\n\
 {bank_research_text}\n\
 \n---\n\
-\n请按照以下五个部分撰写晨会复盘，文字以分析为主，减少机械复述，所有数字必须与上文完全一致：\n\
+\n请按照以下五个部分撰写晨会复盘，文字以分析为主，减少机械复述。\n\
+**重要：变动方向必须以"今日收盘变动"（前日收盘→当日收盘）为准，这是与公开行情一致的口径。"主窗口内变动"仅反映亚洲时段窄幅波动，不能作为全日叙事依据。**\n\
+所有数字必须与上文完全一致：\n\
 \n### 一、核心结论\n\
 用2-3句话概括隔夜最核心的变化和驱动逻辑。\n\
 \n### 二、市场表现\n\
@@ -293,14 +297,14 @@ def save_interpretation(interpretation = None, timestamp = None):
     return path
 
 
-def interpret_market(summary_main, summary_24h = None, daily_panel = None, quality_df = None, windows = None, timestamp = None):
+def interpret_market(summary_daily, summary_main=None, summary_24h=None, daily_panel=None, quality_df=None, windows=None, timestamp=None):
     """Try to load pre-generated interpretation. If not found or stale, save context for later."""
     if timestamp:
-        fp = _summary_fingerprint(summary_main)
+        fp = _summary_fingerprint(summary_daily)
         result = load_interpretation(timestamp, fingerprint=fp)
         if result:
             return result
-        context = build_context(summary_main, summary_24h, daily_panel, quality_df, windows)
+        context = build_context(summary_daily, summary_main, summary_24h, daily_panel, quality_df, windows)
         if timestamp:
             ctx_path = save_context(context, timestamp)
             print(f'[AI] Context saved to {ctx_path}')

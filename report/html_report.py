@@ -42,6 +42,7 @@ def _grade_badge(grade: str) -> str:
 
 def generate_html_report(
     summary_main: pd.DataFrame,
+    summary_daily: pd.DataFrame,
     summary_24h: pd.DataFrame,
     summary_ny: pd.DataFrame,
     morning_notes: list[str],
@@ -112,13 +113,13 @@ def generate_html_report(
         cols = ['Group', 'Asset', 'Level', 'Change Text', '% Change Text', 'High', 'Low', 'Obs']
         return html_table(df, cols)
 
-    # Main section tables
+    # Main section tables — use daily close-to-close changes
     section_tables = {}
     for sec_key in SECTION_ORDER:
         sec_label = SECTION_LABELS.get(sec_key, sec_key)
         if sec_label not in section_tables:
             section_tables[sec_label] = {'dfs': [], 'title': sec_label}
-        df = rows_by_section(summary_main, [sec_key])
+        df = rows_by_section(summary_daily, [sec_key])
         if not df.empty:
             section_tables[sec_label]['dfs'].append(df)
 
@@ -149,6 +150,24 @@ def generate_html_report(
         combined = pd.concat(sec_data['dfs'], ignore_index=True)
         cols = ['Group', 'Asset', 'Level', 'Change Text', '% Change Text', 'High', 'Low', 'Obs']
         sections_24h_html += f'<h3>{sec_label}</h3>{html_table(combined, cols)}'
+
+    # Intraday main window sections (supplementary)
+    section_tables_intra = {}
+    for sec_key in SECTION_ORDER:
+        sec_label = SECTION_LABELS.get(sec_key, sec_key)
+        if sec_label not in section_tables_intra:
+            section_tables_intra[sec_label] = {'dfs': []}
+        df = rows_by_section(summary_main, [sec_key])
+        if not df.empty:
+            section_tables_intra[sec_label]['dfs'].append(df)
+    intra_label = f'主窗口内变动：{windows.main_start.strftime("%m-%d %H:%M")} → {windows.main_end.strftime("%m-%d %H:%M")} Asia/Shanghai（仅亚洲时段）'
+    sections_intra_html = ''
+    for sec_label, sec_data in section_tables_intra.items():
+        if not sec_data['dfs']:
+            continue
+        combined = pd.concat(sec_data['dfs'], ignore_index=True)
+        cols = ['Group', 'Asset', 'Level', 'Change Text', '% Change Text', 'High', 'Low', 'Obs']
+        sections_intra_html += f'<h3>{sec_label}</h3>{html_table(combined, cols)}'
 
     # NY sections
     section_tables_ny = {}
@@ -213,13 +232,13 @@ def generate_html_report(
     cards_html = ''
     card_data = []
     card_data.append(('As-of', f'{asof_str}<br><span class="muted">Asia/Shanghai</span>'))
-    card_data.append(('主窗口', f'{windows.main_start.strftime("%m-%d %H:%M")} → {windows.main_end.strftime("%m-%d %H:%M")}<br><span class="muted">上一中国收盘后至早会</span>'))
-    if not summary_main.empty and 'Asset' in summary_main.columns:
-        ust_10y = summary_main[summary_main['Asset'] == 'UST 10Y']
+    card_data.append(('收盘变动', f'前日收盘 → 当日收盘<br><span class="muted">与公开行情口径一致</span>'))
+    if not summary_daily.empty and 'Asset' in summary_daily.columns:
+        ust_10y = summary_daily[summary_daily['Asset'] == 'UST 10Y']
         if not ust_10y.empty:
             r = ust_10y.iloc[0]
             card_data.append(('10Y UST', f'{r["Level"]}（{r["Change Text"]}）'))
-        dxy = summary_main[summary_main['Asset'] == 'DXY']
+        dxy = summary_daily[summary_daily['Asset'] == 'DXY']
         if not dxy.empty:
             r = dxy.iloc[0]
             card_data.append(('DXY', f'{r["Level"]}（{r["Change Text"]}）'))
@@ -235,7 +254,7 @@ def generate_html_report(
         cards_html += f'<div class="card"><div class="card-title">{title}</div><div class="card-body">{body}</div></div>'
 
     # Main window label
-    main_label = f'主窗口：{windows.main_start.strftime("%m-%d %H:%M")} → {windows.main_end.strftime("%m-%d %H:%M")} Asia/Shanghai'
+    main_label = f'收盘变动：前日收盘 → 当日收盘（与公开行情口径一致）'
     ny_label = f'纽约窗口：{windows.ny_start.strftime("%m-%d %H:%M")} → {windows.ny_end.strftime("%m-%d %H:%M")} Asia/Shanghai'
 
     # Trading hours table
@@ -328,7 +347,7 @@ ul li {{ margin-bottom: 4px; }}
     <div class="header">
         <h1>LSEG 美债收益率 & 美元晨间看板</h1>
         <div class="subtitle">
-            深圳早会版 v6 | 主窗口：上一中国交易日16:00 &rarr; 今日09:00 |
+            深圳早会版 v7 | 收盘变动口径 |
             {ny_label} |
             生成时间：{now_str}
         </div>
@@ -354,6 +373,11 @@ ul li {{ margin-bottom: 4px; }}
     <div class="collapsible" id="24h">
         <div class="collapsible-header" onclick="this.classList.toggle('active')">▸ 滚动24小时概览</div>
         <div class="collapsible-body">{sections_24h_html}</div>
+    </div>
+
+    <div class="collapsible" id="intra">
+        <div class="collapsible-header" onclick="this.classList.toggle('active')">▸ {intra_label}</div>
+        <div class="collapsible-body">{sections_intra_html}</div>
     </div>
 
     <div class="collapsible" id="ny">
