@@ -1,0 +1,344 @@
+## 报告时间
+锚定时间：2026-04-29 09:22 CST
+主窗口：04-28 16:00 -> 04-29 09:00
+
+## 今日数据概览（主窗口）
+UST 2Y: 3.8380%（-0.31bp）
+UST 5Y: 3.9802%（-0.17bp）
+UST 10Y: 4.3465%（-1.00bp）
+UST 30Y: 4.9358%（-1.70bp）
+UST 2s10s spread: 50.84bp（-0.69bp）
+UST 5s10s spread: 36.63bp（-0.82bp）
+UST 5s30s spread: 95.56bp（-1.52bp）
+TIPS real 5Y: 1.3300%（-1.75bp）
+TIPS real 10Y: 1.8905%（-2.05bp）
+TIPS real 30Y: 2.6790%（-2.10bp）
+BEI 5Y: 2.6502%（+1.57bp）
+BEI 10Y: 2.4560%（+1.05bp）
+BEI 30Y: 2.2568%（+0.40bp）
+TU 2Y Treasury Fut: 103.6367（-0.0117）
+FV 5Y Treasury Fut: 107.9766（-0.0391）
+TY 10Y Treasury Fut: 110.7969（-0.0469）
+US 30Y Treasury Fut: 113.4375（+0.0625）
+DXY: 98.6550（+0.0410）
+EURUSD: 1.1709（-5.50pips）
+USDJPY: 159.645（+10.00pips）
+GBPUSD: 1.3516（+5.00pips）
+AUDUSD: 0.7179（-1.00pips）
+USDCNY: 6.8374（0.00pips）
+USDCNH: 6.8381（+2.00pips）
+CNH-CNY spread: 14.5pips（0.00pips）
+Brent crude: 111.4400（+0.1800）
+WTI crude: 100.0300（+0.2000）
+Gold: 4584.0350（-0.1550）
+Copper: 5.9150（-0.0175）
+
+## 滚动24小时概览
+UST 2Y: 3.8380%（+1.54bp）
+UST 5Y: 3.9802%（+0.78bp）
+UST 10Y: 4.3465%（-1.00bp）
+UST 30Y: 4.9358%（-2.42bp）
+UST 2s10s spread: 50.84bp（-2.54bp）
+UST 5s10s spread: 36.63bp（-1.78bp）
+UST 5s30s spread: 95.56bp（-3.20bp）
+TIPS real 5Y: 1.3300%（+0.05bp）
+TIPS real 10Y: 1.8905%（-1.90bp）
+TIPS real 30Y: 2.6790%（-2.70bp）
+BEI 5Y: 2.6502%（+0.73bp）
+BEI 10Y: 2.4560%（+0.90bp）
+BEI 30Y: 2.2568%（+0.28bp）
+TU 2Y Treasury Fut: 103.6367（-0.0469）
+FV 5Y Treasury Fut: 107.9766（-0.0859）
+TY 10Y Treasury Fut: 110.7969（-0.0781）
+US 30Y Treasury Fut: 113.4375（+0.1250）
+DXY: 98.6550（-0.0110）
+EURUSD: 1.1709（+8.00pips）
+USDJPY: 159.645（+12.00pips）
+GBPUSD: 1.3516（+13.50pips）
+AUDUSD: 0.7179（+5.00pips）
+USDCNY: 6.8374（+14.50pips）
+USDCNH: 6.8381（-4.00pips）
+CNH-CNY spread: 14.5pips（-10.50pips）
+Brent crude: 111.4400（+0.1600）
+WTI crude: 100.0300（+0.5400）
+Gold: 4584.0350（-38.7100）
+Copper: 5.9150（-0.0175）
+
+## 近60天走势摘要
+UST 2Y: 当前3.8380%，5d变化3.5bp，20d变化3.2bp，60d百分位86%
+UST 5Y: 当前3.9802%，5d变化5.0bp，20d变化2.3bp，60d百分位88%
+UST 10Y: 当前4.3465%，5d变化4.0bp，20d变化2.5bp，60d百分位90%
+UST 30Y: 当前4.9358%，5d变化2.6bp，20d变化3.2bp，60d百分位95%
+UST 2s10s spread: 当前50.84bp，5d变化0.5bp，20d变化-0.7bp，60d百分位29%
+UST 5s10s spread: 当前36.63bp，5d变化-1.0bp，20d变化0.2bp，60d百分位17%
+UST 5s30s spread: 当前95.56bp，5d变化-2.4bp，20d变化1.0bp，60d百分位22%
+TU 2Y Treasury Fut: 当前103.6602，5d变化-0.06pts，20d变化-0.05pts，60d百分位18%
+FV 5Y Treasury Fut: 当前108.0312，5d变化-0.20pts，20d变化-0.10pts，60d百分位14%
+TY 10Y Treasury Fut: 当前110.8906，5d变化-0.30pts，20d变化-0.06pts，60d百分位17%
+US 30Y Treasury Fut: 当前113.6250，5d变化-0.44pts，20d变化-0.09pts，60d百分位19%
+DXY: 当前98.6400，5d变化0.05pts，20d变化-1.01pts，60d百分位50%
+EURUSD: 当前1.1712，5d变化7.0pips，20d变化123.5pips，60d百分位53%
+USDJPY: 当前159.615，5d变化13.0pips，20d变化81.0pips，60d百分位86%
+GBPUSD: 当前1.3518，5d变化15.0pips，20d变化211.5pips，60d百分位72%
+AUDUSD: 当前0.7181，5d变化21.0pips，20d变化253.0pips，60d百分位98%
+USDCNY: 当前6.8374，5d变化94.5pips，20d变化-352.5pips，60d百分位25%
+USDCNH: 当前6.8400，5d变化81.5pips，20d变化-368.5pips，60d百分位25%
+USD/CNY fixing: 当前6.8589，5d变化-46.0pips，20d变化-605.0pips，60d百分位6%
+CNH-CNY spread: 当前25.5pips，5d变化-13.0pips，20d变化-16.0pips，60d百分位58%
+USDCNY - fixing: 当前-214.5pips，5d变化140.5pips，20d变化-10.5pips，60d百分位57%
+USDCNH - fixing: 当前-189.0pips，5d变化127.5pips，20d变化120.0pips，60d百分位58%
+Brent crude: 当前111.2200，5d变化9.67pts，20d变化-7.09pts，60d百分位95%
+WTI crude: 当前99.6200，5d变化6.75pts，20d变化0.71pts，60d百分位86%
+Gold: 当前4595.5100，5d变化-143.27pts，20d变化-76.50pts，60d百分位14%
+Copper: 当前6.0190，5d变化0.05pts，20d变化0.39pts，60d百分位88%
+
+## 数据质量检查
+[MEDIUM] CNH-CNY spread: CNY/CNH可比样本偏少 -- obs=4; CNY在岸交易时段较短，spread只在共同时间戳比较。
+[LOW] UST 2Y: 检测到 1 个 3σ 以上跳变点 -- max_jump=0.0051, 3σ=0.0049
+[LOW] UST 30Y: 检测到 1 个 3σ 以上跳变点 -- max_jump=0.0052, 3σ=0.0047
+[LOW] TIPS real 10Y: 检测到 3 个 3σ 以上跳变点 -- max_jump=0.0065, 3σ=0.0053
+[LOW] TIPS real 30Y: 检测到 2 个 3σ 以上跳变点 -- max_jump=0.0050, 3σ=0.0049
+[LOW] TU 2Y Treasury Fut: 检测到 3 个 3σ 以上跳变点 -- max_jump=0.0117, 3σ=0.0113
+[LOW] FV 5Y Treasury Fut: 检测到 1 个 3σ 以上跳变点 -- max_jump=0.0391, 3σ=0.0254
+[LOW] TY 10Y Treasury Fut: 检测到 1 个 3σ 以上跳变点 -- max_jump=0.0625, 3σ=0.0532
+[LOW] US 30Y Treasury Fut: 检测到 1 个 3σ 以上跳变点 -- max_jump=0.1250, 3σ=0.1097
+[LOW] DXY: 检测到 2 个 3σ 以上跳变点 -- max_jump=0.0540, 3σ=0.0348
+[LOW] EURUSD: 检测到 3 个 3σ 以上跳变点 -- max_jump=0.0006, 3σ=0.0005
+[LOW] USDJPY: 检测到 1 个 3σ 以上跳变点 -- max_jump=0.0850, 3σ=0.0610
+[LOW] GBPUSD: 检测到 2 个 3σ 以上跳变点 -- max_jump=0.0008, 3σ=0.0005
+[LOW] AUDUSD: 检测到 1 个 3σ 以上跳变点 -- max_jump=0.0007, 3σ=0.0004
+[LOW] USDCNH: 检测到 2 个 3σ 以上跳变点 -- max_jump=0.0019, 3σ=0.0013
+[LOW] Brent crude: 检测到 2 个 3σ 以上跳变点 -- max_jump=0.6400, 3σ=0.4459
+[LOW] WTI crude: 检测到 3 个 3σ 以上跳变点 -- max_jump=0.4800, 3σ=0.4139
+[LOW] Gold: 检测到 2 个 3σ 以上跳变点 -- max_jump=17.3800, 3σ=8.5608
+[LOW] UST 5s10s spread: 检测到 1 个 3σ 以上跳变点 -- max_jump=0.3300, 3σ=0.3295
+[LOW] UST 5s30s spread: 检测到 1 个 3σ 以上跳变点 -- max_jump=0.4650, 3σ=0.3468
+[LOW] BEI 5Y: 检测到 2 个 3σ 以上跳变点 -- max_jump=0.0063, 3σ=0.0052
+[LOW] BEI 10Y: 检测到 1 个 3σ 以上跳变点 -- max_jump=0.0045, 3σ=0.0039
+[LOW] BEI 30Y: 检测到 2 个 3σ 以上跳变点 -- max_jump=0.0030, 3σ=0.0028
+[MEDIUM] DXY: 5min与daily最后值偏差较大 -- intraday_last=98.6550, daily_last=98.6400, diff=0.0150, threshold=0.0020
+[MEDIUM] Gold: 5min与daily最后值偏差较大 -- intraday_last=4584.0350, daily_last=4595.5100, diff=11.4750, threshold=1.0000
+[HIGH] UST 10Y vs TY 10Y Treasury Fut: 方向不一致：收益率与期货应反向变动 -- UST 10Y change=-0.0100, TY Fut change=-0.0469
+
+## 近期外资研报摘要（Report Watch）
+### Barclays — Loose labour market reduces inflation risk
+发布时间：2026-04-29T07:46:26
+## 核心观点 / Key Takeaways
+1. 财政乘数在经济衰退期显著高于扩张期，财政政策在衰退期更为有效。(Fiscal multipliers are significantly larger during recessions than during expansions, making fiscal policy more effective in economic downturns.)
+2. 政府支出的乘数效应在衰退期比扩张期高出约50%，控制财政变量的实时预测会进一步提高衰退期的乘数估计值。(Government spending multipliers are about 50% higher in recessions than in expansions, and controlling for real-time predictions of fiscal variables tends to increase the estimated multipliers in recessions.)
+3. 军事支出的乘数效应最大，而其他类型政府支出的乘数效应相对较小。(Military spending has the largest multiplier effect, while other types of government spending have relatively smaller multiplier effects.)
+4. 研究方法从传统的结构向量自回归(SVAR)转向直接投影法，这种方法更节省自由度且不施加SVAR方法对脉冲响应函数的假设限制。(The research methodology shifts from traditional Structural Vector Autoregression (SVAR) to...
+
+### Barclays — Treasury Liquidity Resilient through the Stress Period
+发布时间：2026-04-29T07:45:51
+## 核心观点 / Key Takeaways
+1. 美国国债流动性在3月地缘政治冲突引发的波动高峰期表现出韧性，样条误差保持稳定，期货基差未显示出压力或去杠杆迹象，融资条件良好。(Treasury liquidity conditions remained resilient during the peak stress period in March, with stable spline errors, no signs of stress in futures basis, and benign funding conditions.)
+
+2. 尽管买卖价差仍略高于正常水平，但已显示出正常化的空间，互换利差已从低点回升但仍低于战前水平。(While bid-ask spreads remain somewhat elevated, there is scope for normalization, and swap spreads have recovered from lows but are still below pre-war levels.)
+
+3. 美国财政部2024年 introduced的回购计划为交易商提供了处置非活跃国债的渠道，改善了二级市场流动性，而SLR改革和即将到来的巴塞尔提案变化将增加资产负债表能力并支持做市和中介活动。(The Treasury's 2024 buyback program has improved secondary market liquidity, while SLR reform and upcoming Basel proposal changes will increase balance sheet capacity and support market-making.)
+
+## 关键数据 / Key Da...
+
+### Goldman — Out of Sync : JPY vs G3 curves
+发布时间：2026-04-29T07:44:53
+## 核心观点 / Key Takeaways
+- 日元与G3国家收益率曲线之间出现显著背离，这种不同步现象正在创造独特的交易机会。
+- The divergence between JPY and G3 yield curves is creating unique trading opportunities as they move out of sync with each other.
+- 日本央行可能正在调整其超宽松货币政策，这可能导致日元收益率上升，与其他G3国家的政策分化加剧。
+- The Bank of Japan may be adjusting its ultra-loose monetary policy, potentially leading to higher JPY yields and increasing divergence from other G3 policies.
+- 这种收益率曲线分化可能对日元汇率、日本股市以及跨境资本流动产生重大影响。
+- This yield curve divergence could significantly impact JPY exchange rates, Japanese equities, and cross-border capital flows.
+
+## 关键数据 / Key Data
+- 报告未提供具体数字或目标价，主要关注收益率曲线关系的定性分析
+- The report focuses on qualitative analysis of yield curve relationships rather than providing specific numbers or price targets
+
+### Ubs — North American Oil & Gas "Active Rig Monitor Weekly; UBS Evidence Lab in..."
+发布时间：2026-04-29T07:12:34
+## 核心观点 / Key Takeaways
+1. 美国本土48州活跃钻机数量增加：根据四周平均值，美国本土48州的活跃钻机数量为554台，环比增加5台，较2025年底增长1%。其中石油钻机增加5%，天然气钻机持平，而"其他"类型钻机大幅下降。
+2. 中东冲突影响市场预期：达拉斯联储发布了对2026年第一季度调查的后续报告，反映了自冲突开始以来市场的不确定性。近80%的受访者预计霍尔木兹海峡的交通量至少要到8月才能恢复正常水平。
+3. 生产响应有限：近75%的受访者预计2026年美国产量将因此冲突增加0-0.25百万桶/日，而2027年，超过30%的受访者预计产量可能增加0.25-0.50百万桶/日。
+
+## 关键数据 / Key Data
+- 美国本土48州活跃钻机数量：554台（四周平均值），环比增加5台，同比增加1%
+- 石油钻机数量：同比增加5%
+- 天然气钻机数量：持平
+- 覆盖公司活跃钻机数量：264台，与上周持平
+- XOM（埃克森美孚）是最活跃的公共运营商，拥有37台钻机
+- COP（康菲石油）拥有28台钻机，OXY（西方石油）拥有25台，EOG（EOG资源）拥有23台
+- 覆盖公司钻机数量占美国本土48州总活跃钻机的48%
+
+### Ubs — US Building "FHA & USDA mortgage applicants could benefit from new HUD e..."
+发布时间：2026-04-29T06:26:31
+## 核心观点 / Key Takeaways
+1. 美国住房与城市发展部 (HUD) 宣布，新的 FHA 和 USDA 贷款将不再需要遵守 2021 年国际节能规范 (IECC)，这可能会将单户住宅的建设成本降低 2万至3万美元。HUD estimates that revoking these more stringent energy-efficiency codes could reduce the cost of construction on a single-family home by $20K-$31K.
+2. 这一决定与特朗普政府最近的住房倡议以及总统经济报告一致，该报告强调了美国存在1000万套住房短缺的问题，并指出政府法规使新房建设成本增加了10万美元。This ruling appears consistent with recent government housing initiatives and the Economic Report of the President, which highlighted a 10mm unit US housing shortage and a $100K "bureaucrat tax" impacting construction costs.
+3. 瑞银认为，短期内政府可能通过增加房利美/房地美 MBS 购买或暂时降低担保费来降低抵押贷款利率，但长期解决方案需要通过技术注入来解决美国住房供需失衡问题。We believe additional MBS purchases by Fannie Mae/Freddie Mac or a temporary reduction in guarantee fees could quickly drive mortgage rates lower, but l...
+
+### Ubs — PJT Partners Inc "1Q26 Earnings: Solid Execution in a Choppy Macro" (Neutral)
+发布时间：2026-04-29T06:13:26
+## 核心观点 / Key Takeaways
+1. 业绩超出预期但股价表现不及：PJT Partners第一季度业绩超出预期（收入、薪酬比例和运营利润率），但由于市场期望过高且管理层表态不够坚定，股价下跌（-1.7%，同业为-0.8%）。
+2. 咨询业务前景好于预期：尽管宏观经济波动，管理层重申了建设性的前景，并预计战略咨询业务将实现环比同比增长，瑞银因此上调了咨询业务预测。
+3. 薪酬比例小幅超出但全年指引保守：第一季度薪酬比例为66.5%，好于预期的10个基点，但公司将此视为全年最佳估计，反映了宏观不确定性下的保守立场。
+
+## 关键数据 / Key Data
+- 目标价：上调至160美元（前值152美元）
+- 评级：中性（Neutral）
+- 2026年EPS预期：上调至7.37美元（前值6.91美元）
+- 2027年EPS预期：上调至8.00美元（前值7.58美元）
+- 2026年第一季度薪酬比例：66.5%（好于预期的66.4%）
+- 管理层预计2026年全年薪酬比例：66.5%
+
+### Ubs — First Read: NXP Semiconductors "Q126 Results: Recovery Broadens and Accelerates"
+发布时间：2026-04-29T05:45:51
+## 核心观点 / Key Takeaways
+1. NXP Semiconductors Q1 2026业绩超出预期，非GAAP EBIT超出共识预期5%，预计2026年和2027年每股收益将上调至中个位数至高个位数百分比。NXP Semiconductors' Q1 2026 results exceeded expectations with non-GAAP EBIT 5% above consensus, and we estimate mid-single digit to high-single digit percentage upgrades to 2026E and 2027E EPS.
+
+2. 公司各业务板块复苏势头增强，尤其是工业与物联网(+24% YoY)和通信基础设施(+21% YoY)表现突出，数据中心业务首次披露2025年预计2亿美元收入，2026年预计超5亿美元。The company's recovery is broadening across business segments, particularly strong in Industrial & IoT (+24% YoY) and Communication Infrastructure (+21% YoY). NXP revealed its Datacenter revenue projections for the first time, estimating $200 million in 2025 and exceeding $500 million in 2026E.
+
+3. 管理层预计2026年剩余时间势头将加速，Q2指引显示销售额将达34.5亿美元，毛利率预计达到58%，均超出市场预期。Management expects momentum to acceler...
+
+### Ubs — Kforce "Strong Execution as Demand Accelerates After Multi-Year Downturn"
+发布时间：2026-04-29T05:18:38
+## 核心观点 / Key Takeaways
+1. Kforce在经历多年下滑后需求加速增长，2026年第一季度收入恢复同比增长(+0.1%)，为自2022年第四季度以来首次。
+2. 公司2026年第二季度指引显示收入将加速增长至同比增长4%，客户访问量、工作订单和新任务启动量均同比双位数增长。
+3. Kforce的执行能力明显优于同行，正从"AI逆风"分类中突破出来，尽管该行业普遍被认为受到AI影响。
+4. 尽管股价已上涨，估值(~10倍远期EBITDA)处于历史平均水平，但强劲的执行力和财务动能与持续的宏观/AI逆风因素相平衡。
+
+## 关键数据 / Key Data
+- 2026年第一季度每股收益(EPS)：$0.46，高于分析师预期的$0.40和瑞银预期的$0.37
+- 2026年第一季度收入：$3.30亿，同比微增0.1%，符合瑞银预期
+- 2026年第一季度EBIT：$1200万，高于分析师/瑞银预期的$1000万
+- 2026年第二季度收入指引：$3.44-3.52亿，同比增长3-5%
+- 12个月目标价：$47.00（此前为$39.00）
+- 当前股价(2026年4月28日)：$46.42
+
+### Ubs — UBS: Fast Take: Visa Inc "FY 2026 FXN net revs/EPS guide raised to LDD-Low T..."
+发布时间：2026-04-29T04:43:55
+## 核心观点 / Key Takeaways
+1. Visa上调了2026财年的财务指引，非公认会计准则(net)营收和每股收益预期均上调至低双位数增长区间。
+   Visa raised its FY 2026 guidance for non-GAAP net revenues and EPS to the low double-digits growth range.
+
+2. 第二季度营收同比增长约15%，超出指引的低双位数预期。
+   FQ2 revenues grew approximately 15% year-over-year, exceeding the low double-digit guidance.
+
+3. 国际交易收入增长10%，而名义跨境交易量(不含欧盟内部)增长17%。
+   International transaction revenues increased 10%, while nominal cross-border transaction volume (excluding intra-EU) grew 17%.
+
+## 关键数据 / Key Data
+- 12个月评级：买入 (Buy)
+- 12个月目标价：390.00美元
+- 当前股价(2026年4月27日)：309.65美元
+- 预计股价上涨空间：25.9%
+- 预计股息收益率：1.0%
+- 预计股票回报率：26.9%
+
+### Citi — Asia Open - Money talks
+发布时间：2026-04-29T04:19:35
+## 核心观点 / Key Takeaways
+1. 美国科技股在OpenAI营收不及预期后出现回调，投资者关注AI需求及即将到来的大型科技公司资本支出指引。US tech stocks pulled back following OpenAI's revenue miss, with investors focusing on AI demand and upcoming capex guidance.
+2. 原油价格在100美元附近保持韧性，美元走软，美国国债收益率上升，市场为美联储的鹰派倾向定价。Oil remained resilient around $100, the dollar softened, and UST yields rose as markets price a hawkish Fed stance.
+3. 多个亚洲央行即将做出利率决策，包括智利、澳大利亚和泰国，市场预期多数将维持利率不变。Multiple Asian central banks are set to make rate decisions, with markets expecting most to hold rates steady.
+4. 美国国债收益率曲线前端上升4个基点，市场完全定价美联储将维持利率不变，但整体风险倾向鹰派。UST front-end yields rose 4bps with a rate hold fully priced, though market risks skew hawkish overall.
+
+## 关键数据 / Key Data
+- 纳斯达克指数 (NDX) 下跌1%
+- WTI原油价格重新回到100美元以上
+- 美元指数 (DXY) 技术位在98.50
+- 美国7年期国债拍卖收益率4.175%，投标覆盖比率2.51
+- 澳大利亚...
+
+### Ubs — UBS: Fast Take: Copa "According to Reuters, CPA and Boeing finalized a deal ..."
+发布时间：2026-04-29T04:17:16
+## 核心观点 / Key Takeaways
+1. 据路透社报道，Copa与波音公司最终敲定了一笔涉及60架737 MAX飞机的交易，这对Copa未来十年的运力扩张和飞机更新换代是积极信号。
+   According to Reuters, Copa and Boeing finalized a deal involving 60 737 MAX aircraft, which is positive for the company as it prepares for capacity expansion and aircraft replacement in the next decade.
+
+2. 交易细节包括：飞机将于2030-2034年间交付；Copa可以选择MAX 8、9或10等不同型号；交易清单价格为135亿美元。
+   The deal details include: deliveries between 2030-34; Copa can select between MAX variants (8, 9 or 10); list price of $13.5bn.
+
+3. UBS给予Copa"买入"评级，目标价为185美元，较当前股价(115.90美元)有59.6%的上涨空间。
+   UBS rates Copa as "Buy" with a price target of US$185.00, implying 59.6% upside from the current price of US$115.90.
+
+## 关键数据 / Key Data
+- 12个月目标价: US$185.00
+- 当前股价(2026年4月27日): US$115.90
+- 52周股价区间: US$154.09-91.45
+- 市值: US$4.78b
+- 预期EPS...
+
+### Ubs — Global Strategy "Warsh vs Bernanke Fed - More volatile rates ahead?" De Bock
+发布时间：2026-04-29T02:17:40
+## 核心观点 / Key Takeaways
+1. 美联储政策转变：瑞银预计Kevin Warsh将在6月FOMC会议前宣誓就任美联储主席，他将推动回归以政策利率为核心工具的政策体系，减少渐进主义，这与伯南克时期的政策形成鲜明对比。
+
+2. 利率波动性增加：Warsh不相信"前瞻性指引"，认为美联储需要在"室内"做出决策，这可能导致美国利率预期和期限溢价上升，从而对经济产生通缩冲击。
+
+3. 美国收益率曲线趋平：瑞银已关闭2025年9月的美国5s30s收益率曲线陡峭化交易，并继续预期美国5s30s曲线将面临持续的趋平压力，特别是在30年期利率处于4.95%的水平时。
+
+4. 联储资产负债表缩减：瑞银预计2027-28年美国国债购买量将增加，每月约400-500亿美元，资产负债表缩减将是一个缓慢的过程。
+
+## 关键数据 / Key Data
+- 自特朗普提名Kevin Warsh为美联储主席以来（1月底），黄金价格已下跌约14%
+- 美联储资产负债表缩减可能需要超过一年时间才能实施决策
+- 瑞银预计2026年底前每月储备管理购买量为250亿美元，2027年增至约400亿美元/月，2028年增至约500亿美元/月
+- 美国30年期利率目前为4.95%，预计在此水平将出现对价格敏感的买家
+
+### Ubs — Deutsche Boerse "Q1:26 Wrap - Raising EBITDA (ex-NTI) by 2%; Volume trends..."
+发布时间：2026-04-29T01:37:27
+## 核心观点 / Key Takeaways
+1. 德意志交易所2026年第一季度业绩超出预期，主要由基金服务(Fund Services)和证券服务(Securities Services)部门推动。我们因此将2026-2028年每股收益(EPS)预期上调2-4%。
+   Deutsche Boerse reported a stronger-than-expected Q1 2026 performance, driven by beats in Fund Services and Securities Services segments. We consequently raise our 2026-28E EPS estimates by 2-4%.
+
+2. 我们将2026-2028年EBITDA(不含净交易利息NTI)预期上调2%，主要反映了基金服务和证券服务部门收入前景的改善。
+   We raise our 2026-28E EBITDA (ex-NTI) by 2%, largely reflecting a stronger revenue outlook in Fund Services and Securities Services.
+
+3. 尽管业绩良好，但自2月中旬以来股价已上涨30%，当前估值不再具有吸引力，我们认为未来几个月出现进一步盈利上调的可能性较小。
+   Despite the solid results, the stock is no longer attractive after a 30% run-up since mid-Feb, and we see less likelihood of further earnings upgrades in the coming months.
+
+## 关键数据 / Key Data
+...
+
+### Ubs — ソフトバンクグループ "Open AIって心配ですよね" (Buy) 安井
+发布时间：2026-04-29T01:17:41
+## 核心观点 / Key Takeaways
+1. **OpenAI面临挑战**：根据《华尔街日报》报道，OpenAI未能实现2025年每周活跃用户达到10亿的内部目标，CFO对巨额数据中心投资和年内IPO表示担忧，且最近筹集的1220亿美元资金可能在三年内耗尽。
+   * **OpenAI faces challenges**: According to Wall Street Journal reports, OpenAI failed to meet its internal target of 1 billion weekly active users by 2025, its CFO expressed concerns about massive data center investments and an IPO within the year, and its recently raised $122 billion could be depleted within three years.
+
+2. **投资者情绪已转向悲观**：投资者已广泛了解OpenAI的困境，其在ChatGPT的领先地位已被Google的Gemini（B2C）和Anthropic（B2B）超越，但其Codex 5.5性能与Anthropic的Opus 4.7相当，B2B业务销售团队强化有望改善投资者情绪。
+   * **Investor sentiment has turned pessimistic**: Investors are widely aware of OpenAI's difficulties, where its leading position in ChatGPT has been surpassed by Google's Gemini (B2C) and A...
+
+### Ubs — SoftBank Group "OpenAI is a concern" (Buy) Yasui
+发布时间：2026-04-29T01:17:02
+## 核心观点 / Key Takeaways
+1. OpenAI面临挑战：根据《华尔街日报》报道，OpenAI未能在2025年底实现10亿周活跃用户的目标，其首席财务官也对大规模数据中心投资的可持续性表示担忧，并质疑今年进行IPO的可能性。
+   OpenAI faces challenges: According to a WSJ report, OpenAI missed its target of 1 billion weekly active users by end-2025, and its CFO has raised concerns about sustaining large-scale data center investments and questioned the possibility of an IPO this year.
+
+2. 投资者对OpenAI已持悲观态度：尽管OpenAI的Codex 5.5在代码生成领域表现优异，但其在B2C和B2B市场已被Google和Anthropic超越，投资者情绪已较为悲观。
+   Investors are already pessimistic about OpenAI: Despite OpenAI's Codex 5.5 performing well in code generation, it has been overtaken by Google in the B2C area and by Anthropic in the B2B area, leading to negative investor sentiment.
+
+3. ARM成为积极因素：与OpenAI的困境形成对比，ARM的投资者情绪日益积极，AI推理工作负载和云服务需求推动CPU需求增长，这些增长驱动因素仍处于早期阶段。...
+
+
+---
+
+请按照以下五个部分撰写晨会复盘，文字以分析为主，减少机械复述，所有数字必须与上文完全一致：
+
+### 一、核心结论
+用2-3句话概括隔夜最核心的变化和驱动逻辑。
+
+### 二、市场表现
+分利率、汇率、商品三个子板块详述变动，拆分名义/实际/通胀预期贡献。
+
+### 三、原因分析
+结合上方"近期外资研报摘要"中的观点说明变动背后的驱动因素。每个判断必须标注来源研报（如"据Barclays《US in Focus》"）。没有研报支持的观点不要写。
+
+### 四、后续观察
+列出2-3个值得关注的价位、事件或信号，说明为什么重要以及后续看什么。
+
+### 五、错误检查
+指出数据质量问题、样本不足或推断不确定的地方。
