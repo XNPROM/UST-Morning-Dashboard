@@ -53,7 +53,7 @@ def compute_report_windows(asof_dt = None):
     # Main window: previous China trading day 16:00 to asof_dt 09:00
     prev_trade = _get_prev_trading_date(asof_dt)
     main_start = datetime(prev_trade.year, prev_trade.month, prev_trade.day, 16, 0, tzinfo=settings.REPORT_TZ)
-    main_end = asof_dt.replace(hour=9, minute=0, second=0, microsecond=0)
+    main_end = asof_dt.replace(second=0, microsecond=0)
     # Rolling 24h window
     rolling_24h_start = main_end - timedelta(hours=24)
     # Daily window: full previous trading day

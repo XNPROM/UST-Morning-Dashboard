@@ -33,15 +33,15 @@ python -m unittest discover -s tests -v   # 运行测试
 | 1 | `dates/windows.py` | 计算报告时间窗口，返回 `ReportWindows`（含 `history_start` 2 年日线窗口） |
 | 2 | `auth/lseg_session.py` | 从 `.env` 读取 LSEG 凭据，管理 session（最多重试 3 次） |
 | 3 | `data/fetch.py` | 按 RIC 与 field 回退顺序拉取 intraday + daily 数据 |
-| 4 | `data/derived.py` | 计算衍生指标（利差、BEI、CNH-CNY 价差、Fixing Gap）；`resample_panel()` 生成 weekly/monthly |
+| 4 | `data/derived.py` | 计算衍生指标（利差、BEI、CNH-CNY 价差、Fixing Gap） |
 | 5 | `data/validation.py` | 交叉校验、异常检测（3-sigma）、合理性判断 |
-| 6 | `analytics/summary.py` | 生成摘要表 |
-| 7 | `analytics/quality.py` | 质量检查与分区 A/B/C 评级；HIGH 级问题阻断推送 |
-| 8 | `analytics/notes.py` | 生成一屏结论 |
+| 6 | `analytics/summary.py` | 生成摘要表；`summarize_daily_change()` 是收盘变动核心 |
+| 7 | `analytics/quality.py` | 质量检查；HIGH 级问题阻断推送与 AI 解读 |
+| 8 | `analytics/notes.py` | 生成一屏结论（基于 `summary_daily` 收盘口径） |
 | 9 | `analytics/ai_interpreter.py` | 读取 Report Watch 研报 + 保存上下文 / 读取已有 AI 解读 JSON |
 | 10 | `analytics/calendar.py` | 交易时段表与经济事件日历 |
-| 11 | `charts/plotly_charts.py` | Plotly 图表生成（intraday + daily + weekly + monthly + yearly 分组） |
-| 12 | `report/html_report.py` | 输出自包含 HTML（内嵌 CSS、CDN Plotly）与 CSV |
+| 11 | `charts/plotly_charts.py` | Plotly 图表生成（5 主题分区：Rates / Futures / FX / Commodities / Long-term） |
+| 12 | `report/html_report.py` | 输出自包含 HTML（CSS 双列网格、CDN Plotly）与 CSV |
 | 13 | `push/push_report.py` | 仅 `git add -f` 当次生成的文件，commit 并 push |
 
 配置核心：`config/settings.py`（Settings dataclass、全局常量）、`config/assets.py`（AssetConfig、22 项基础资产 + 9 项衍生指标、RIC 定义、FIELD_SETS_BY_UNIT 回退映射）。
@@ -52,9 +52,10 @@ python -m unittest discover -s tests -v   # 运行测试
 
 ## 数据频率说明
 
-- TIPS 系列（`US5YTIP=RR` 等）仅支持 intraday 频率，`config/assets.py` 中 freq 设为 `'intraday'`
-- 日线面板通过 `interval='daily'` 拉取 2 年历史，再用 `resample_panel()` 生成 weekly（`W-FRI`）和 monthly（`ME`）
+- TIPS 系列（`US5YTIP=RR` 等）freq 设为 `'both'`，日线拉取使用 `B_YLD_1`/`A_YLD_1`（`MID_YLD_1` 日线 TIPS 历史过少，被 `fetch_one` 稀疏跳过逻辑自动跳过）
+- 日线面板通过 `interval='daily'` 拉取 2 年历史，所有摘要、变动、图表均统一收盘口径
 - `ffill limit=12` 覆盖 Globex 1 小时结算休市（12 x 5min bars）
+- `data/fetch.py` 中 `fetch_one` 对日线请求有稀疏数据跳过：若返回行数远低于日期跨度，自动尝试下一个 field set
 
 ## 报告产物与 Git 策略
 
@@ -67,7 +68,7 @@ python -m unittest discover -s tests -v   # 运行测试
 ## 关键约束
 
 - `config/assets.py` 中的 `ASSETS` 与 `FIELD_SETS_BY_UNIT` 是数据拉取核心，RIC 回退顺序保持不变
-- `data/fetch.py` 中的 `looks_valid()` 与 `_series_from_history()` 校验逻辑保持不变
+- `data/fetch.py` 中的 `looks_valid()`、`_series_from_history()` 与稀疏跳过逻辑保持不变
 - 所有时间统一使用 `Asia/Shanghai`，`ensure_dt_index()` 时区处理逻辑保持不变
 - AI 解读采用人工补写方式，不调用外部大模型接口
 - `load_dotenv()` 仅在 `run_dashboard.py` 调用一次

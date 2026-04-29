@@ -30,9 +30,9 @@ ASSETS: 'list[AssetConfig]' = [
     AssetConfig('ust5y', 'A. Rates', 'Nominal UST', 'UST 5Y', ['US5YT=RR', 'US5YT=X'], 'yield_pct', 'both', 20),
     AssetConfig('ust10y', 'A. Rates', 'Nominal UST', 'UST 10Y', ['US10YT=RR', 'US10YT=X'], 'yield_pct', 'both', 30),
     AssetConfig('ust30y', 'A. Rates', 'Nominal UST', 'UST 30Y', ['US30YT=RR', 'US30YT=X'], 'yield_pct', 'both', 40),
-    AssetConfig('tips5y', 'B. Real & Inflation', 'Real Yield / TIPS', 'TIPS real 5Y', ['US5YTIP=RR'], 'yield_pct', 'intraday', 110),
-    AssetConfig('tips10y', 'B. Real & Inflation', 'Real Yield / TIPS', 'TIPS real 10Y', ['US10YTIP=RR'], 'yield_pct', 'intraday', 120),
-    AssetConfig('tips30y', 'B. Real & Inflation', 'Real Yield / TIPS', 'TIPS real 30Y', ['US30YTIP=RR'], 'yield_pct', 'intraday', 130),
+    AssetConfig('tips5y', 'B. Real & Inflation', 'Real Yield / TIPS', 'TIPS real 5Y', ['US5YTIP=RR'], 'yield_pct', 'both', 110),
+    AssetConfig('tips10y', 'B. Real & Inflation', 'Real Yield / TIPS', 'TIPS real 10Y', ['US10YTIP=RR'], 'yield_pct', 'both', 120),
+    AssetConfig('tips30y', 'B. Real & Inflation', 'Real Yield / TIPS', 'TIPS real 30Y', ['US30YTIP=RR'], 'yield_pct', 'both', 130),
     AssetConfig('tu', 'C. Treasury Futures', 'Treasury Futures', 'TU 2Y Treasury Fut', ['TUc1'], 'futures_price', 'both', 210),
     AssetConfig('fv', 'C. Treasury Futures', 'Treasury Futures', 'FV 5Y Treasury Fut', ['FVc1'], 'futures_price', 'both', 220),
     AssetConfig('ty', 'C. Treasury Futures', 'Treasury Futures', 'TY 10Y Treasury Fut', ['TYc1'], 'futures_price', 'both', 230),
@@ -64,7 +64,7 @@ DERIVED_METRICS: 'list[DerivedConfig]' = [
 ]
 
 FIELD_SETS_BY_UNIT: 'dict[str, list[list[str] | None]]' = {
-    'yield_pct': [['MID_YLD_1'], ['YLDTOMAT'], ['B_YLD_1', 'A_YLD_1'], ['B_YLD_1'], ['A_YLD_1'], ['ISMA_B_YLD', 'ISMA_A_YLD'], ['OPEN_YLD'], None],
+    'yield_pct': [['MID_YLD_1'], ['YLDTOMAT'], ['VALUE'], ['B_YLD_1', 'A_YLD_1'], ['B_YLD_1'], ['A_YLD_1'], ['ISMA_B_YLD', 'ISMA_A_YLD'], ['OPEN_YLD'], None],
     'index': [['TRDPRC_1'], ['MID_PRICE'], ['BID', 'ASK'], ['BID'], ['ASK'], None],
     'fx': [['MID_PRICE'], ['BID', 'ASK'], ['TRDPRC_1'], ['BID'], ['ASK'], None],
     'fx_jpy': [['MID_PRICE'], ['BID', 'ASK'], ['TRDPRC_1'], ['BID'], ['ASK'], None],

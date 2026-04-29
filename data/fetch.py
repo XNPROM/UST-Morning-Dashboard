@@ -111,6 +111,12 @@ def fetch_one(asset = None, start = None, end = None, interval = '5min', session
                 s = _series_from_history(response, [fields], unit)
                 s = ensure_dt_index(s.to_frame()).iloc[:, 0] if not s.empty else pd.Series(dtype=float)
                 if looks_valid(s, unit):
+                    # For daily interval, skip fields with suspiciously sparse data
+                    if interval == 'daily' and start is not None and end is not None:
+                        span_days = (end - start).days
+                        if span_days > 30 and len(s) < max(10, span_days // 20):
+                            log_rows.append({'name': asset.name, 'unit': unit, 'status': 'skip', 'error': f'Sparse daily data: {len(s)} rows for {span_days}-day range', 'ric': ric, 'fields': ','.join(fields) if fields else '', 'obs': len(s)})
+                            continue
                     log_rows.append({'name': asset.name, 'unit': unit, 'status': 'ok', 'error': '', 'ric': ric, 'fields': ','.join(fields) if fields else '', 'obs': len(s)})
                     return s, pd.DataFrame(log_rows)
             except Exception as e:

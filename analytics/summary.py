@@ -104,16 +104,34 @@ def summarize_panel(panel = None, window_name = None):
     return df
 
 
+def _last_complete_rows(daily_panel, n=2):
+    """Find the last n rows with sufficient non-NaN values (complete trading days).
+    The current day may have a partial row (e.g. only fixing data before market close),
+    so we skip rows where most columns are NaN."""
+    min_complete = max(1, len(daily_panel.columns) // 2)
+    complete_idx = []
+    for i in range(len(daily_panel) - 1, -1, -1):
+        if daily_panel.iloc[i].notna().sum() >= min_complete:
+            complete_idx.append(i)
+            if len(complete_idx) >= n:
+                break
+    return complete_idx
+
+
 def summarize_daily_change(daily_panel=None):
     """Compute close-to-close changes from the daily panel (prev close -> current close).
-    This aligns with standard market convention for 'daily change' and matches public data."""
+    This aligns with standard market convention for 'daily change' and matches public data.
+    Skips incomplete current-day rows (e.g. before market close when only fixing data exists)."""
     rows = []
     if daily_panel is None or daily_panel.empty:
         return pd.DataFrame()
     if len(daily_panel) < 2:
         return pd.DataFrame()
-    prev_row = daily_panel.iloc[-2]
-    curr_row = daily_panel.iloc[-1]
+    idx = _last_complete_rows(daily_panel, 2)
+    if len(idx) < 2:
+        return pd.DataFrame()
+    prev_row = daily_panel.iloc[idx[1]]
+    curr_row = daily_panel.iloc[idx[0]]
     for col in daily_panel.columns:
         prev_val = prev_row.get(col)
         curr_val = curr_row.get(col)

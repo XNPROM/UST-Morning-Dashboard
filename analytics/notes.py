@@ -2,7 +2,7 @@
 # File: notes.cpython-311.pyc (Python 3.11)
 
 from __future__ import annotations
-from analytics.summary import lookup, chg
+from analytics.summary import lookup
 
 def build_morning_notes(summary = None):
     """Build a list of one-line morning notes from the summary."""
@@ -59,13 +59,12 @@ def _get_spread_text(summary):
     spread_2s10s = lookup(summary, 'UST 2s10s spread')
     if spread_2s10s is not None:
         return f'{spread_2s10s["Level"]}（{spread_2s10s["Change Text"]}）'
-    # Calculate from yields
     ust_2y = lookup(summary, 'UST 2Y')
     ust_10y = lookup(summary, 'UST 10Y')
     if ust_2y is not None and ust_10y is not None:
         try:
-            spread = float(ust_10y['Change'].replace('+', '').replace('bp', '')) - float(ust_2y['Change'].replace('+', '').replace('bp', ''))
+            spread = float(ust_10y['Change Display']) - float(ust_2y['Change Display'])
             return f'{spread:.2f}bp'
-        except:
+        except (ValueError, TypeError, KeyError):
             pass
     return 'N/A'

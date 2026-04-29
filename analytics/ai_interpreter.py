@@ -269,7 +269,8 @@ def _summary_fingerprint(summary_main):
 
 def load_interpretation(date_str=None, fingerprint=None):
     """Load pre-generated interpretation from JSON file. Matches by date prefix (YYYYMMDD).
-    If fingerprint is provided, checks that the saved fingerprint matches."""
+    Always returns the most recent interpretation for the date, regardless of fingerprint.
+    Fingerprint is stored in the returned dict for optional staleness display."""
     if not os.path.exists(settings.OUTPUT_DIR):
         return None
     for fname in sorted(os.listdir(settings.OUTPUT_DIR), reverse=True):
@@ -278,12 +279,6 @@ def load_interpretation(date_str=None, fingerprint=None):
                 path = os.path.join(settings.OUTPUT_DIR, fname)
                 with open(path, 'r', encoding='utf-8') as f:
                     data = json.load(f)
-                # If fingerprint checking is enabled and the file has a fingerprint, verify it
-                if fingerprint and isinstance(data, dict):
-                    saved_fp = data.get('_fingerprint', '')
-                    if saved_fp and saved_fp != fingerprint:
-                        print(f'[AI] Interpretation fingerprint mismatch (saved={saved_fp}, current={fingerprint}), treating as stale.')
-                        continue
                 return data
     return None
 
@@ -298,18 +293,19 @@ def save_interpretation(interpretation = None, timestamp = None):
 
 
 def interpret_market(summary_daily, summary_main=None, summary_24h=None, daily_panel=None, quality_df=None, windows=None, timestamp=None):
-    """Try to load pre-generated interpretation. If not found or stale, save context for later."""
-    if timestamp:
-        fp = _summary_fingerprint(summary_daily)
-        result = load_interpretation(timestamp, fingerprint=fp)
-        if result:
-            return result
-        context = build_context(summary_daily, summary_main, summary_24h, daily_panel, quality_df, windows)
-        if timestamp:
-            ctx_path = save_context(context, timestamp)
-            print(f'[AI] Context saved to {ctx_path}')
-            print(f'[AI] Run: claude "read {ctx_path} and generate interpretation"')
-            print(f'[AI] Then save to: {os.path.join(settings.OUTPUT_DIR, f"ai_interpretation_{timestamp}.json")}')
-        else:
-            print('[AI] No timestamp provided, skipping interpretation.')
+    """Try to load pre-generated interpretation. Always save context for later generation."""
+    if not timestamp:
+        print('[AI] No timestamp provided, skipping interpretation.')
+        return None
+    fp = _summary_fingerprint(summary_daily)
+    result = load_interpretation(timestamp, fingerprint=fp)
+    # Always save context so it's available for (re)generation
+    context = build_context(summary_daily, summary_main, summary_24h, daily_panel, quality_df, windows)
+    ctx_path = save_context(context, timestamp)
+    if result:
+        print(f'[AI] Loaded existing interpretation from {timestamp[:8]}')
+        return result
+    print(f'[AI] No interpretation found for {timestamp[:8]}. Context saved to {ctx_path}')
+    print(f'[AI] Run: claude "read {ctx_path} and generate interpretation"')
+    print(f'[AI] Then save to: {os.path.join(settings.OUTPUT_DIR, f"ai_interpretation_{timestamp}.json")}')
     return None
