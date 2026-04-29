@@ -271,9 +271,13 @@ def dual_axis_line_fig(panel, cols_left=None, cols_right=None, title=None, ytitl
 def make_figures(summary_daily=None, summary_24h=None, daily_panel=None, rolling24_panel=None, asof_dt=None):
     figs = []
 
+    # For intraday charts, ffill all gaps so lines render continuously
+    # (non-trading hours carry the last known price — standard terminal convention)
+    r24 = rolling24_panel.ffill() if rolling24_panel is not None and not rolling24_panel.empty else rolling24_panel
+
     # --- Section: rates ---
     # 1. UST yields session
-    fig = line_fig(rolling24_panel, ['UST 2Y', 'UST 5Y', 'UST 10Y', 'UST 30Y'], 'UST Yields', 'Yield (%)', height=380, width_hint='full', asof_dt=asof_dt)
+    fig = line_fig(r24, ['UST 2Y', 'UST 5Y', 'UST 10Y', 'UST 30Y'], 'UST Yields', 'Yield (%)', height=380, width_hint='full', asof_dt=asof_dt)
     if fig:
         figs.append(ChartSpec(fig, 'rates', 'full', 10))
 
@@ -300,13 +304,13 @@ def make_figures(summary_daily=None, summary_24h=None, daily_panel=None, rolling
 
     # 6. Rate decomposition bar stays as half, add a half chart for TIPS/real context
     # Replace TIPS 24h with BEI session (intraday)
-    fig = area_fig(rolling24_panel, ['BEI 5Y', 'BEI 10Y', 'BEI 30Y'], 'BEI Intraday', 'BEI (%)', asof_dt=asof_dt)
+    fig = area_fig(r24, ['BEI 5Y', 'BEI 10Y', 'BEI 30Y'], 'BEI Intraday', 'BEI (%)', asof_dt=asof_dt)
     if fig:
         figs.append(ChartSpec(fig, 'rates', 'half', 60))
 
     # --- Section: futures ---
     # 7. Treasury futures session
-    fig = line_fig(rolling24_panel, ['TU 2Y Treasury Fut', 'FV 5Y Treasury Fut', 'TY 10Y Treasury Fut', 'US 30Y Treasury Fut'], 'Treasury Futures (normalized)', 'Start=100', normalize=True, height=380, width_hint='full', asof_dt=asof_dt)
+    fig = line_fig(r24, ['TU 2Y Treasury Fut', 'FV 5Y Treasury Fut', 'TY 10Y Treasury Fut', 'US 30Y Treasury Fut'], 'Treasury Futures (normalized)', 'Start=100', normalize=True, height=380, width_hint='full', asof_dt=asof_dt)
     if fig:
         figs.append(ChartSpec(fig, 'futures', 'full', 10))
 
