@@ -60,16 +60,18 @@ def _add_session_lines(fig, panel, asof_dt=None):
         data_end = panel.index.max().tz_convert(UTC).tz_localize(None)
         open_naive = open_utc.replace(tzinfo=None)
         close_naive = close_utc.replace(tzinfo=None)
+        open_et = open_utc.astimezone(NY_TZ).strftime('%H:%M')
+        close_et = close_utc.astimezone(NY_TZ).strftime('%H:%M')
         if data_start <= open_naive <= data_end:
             fig.add_shape(type='line', x0=open_str, x1=open_str, y0=0, y1=1, yref='paper',
                           line=dict(dash='dot', color='#94a3b8', width=1))
-            fig.add_annotation(x=open_str, y=1, yref='paper', text='NY open',
+            fig.add_annotation(x=open_str, y=1, yref='paper', text=f'NY open {open_et} ET',
                                showarrow=False, font=dict(size=10, color='#94a3b8'),
                                xanchor='left', yanchor='bottom')
         if data_start <= close_naive <= data_end:
             fig.add_shape(type='line', x0=close_str, x1=close_str, y0=0, y1=1, yref='paper',
                           line=dict(dash='dot', color='#94a3b8', width=1))
-            fig.add_annotation(x=close_str, y=1, yref='paper', text='NY close',
+            fig.add_annotation(x=close_str, y=1, yref='paper', text=f'NY close {close_et} ET',
                                showarrow=False, font=dict(size=10, color='#94a3b8'),
                                xanchor='left', yanchor='bottom')
     return fig
@@ -108,7 +110,7 @@ def existing(panel, cols):
     return [c for c in cols if c in panel.columns]
 
 
-def line_fig(panel, cols=None, title=None, ytitle=None, normalize=False, height=380, width_hint='full', asof_dt=None):
+def line_fig(panel, cols=None, title=None, ytitle=None, normalize=False, height=380, width_hint='full', asof_dt=None, use_utc=True):
     cols = existing(panel, cols)
     fig = Figure()
     if not cols:
@@ -124,17 +126,19 @@ def line_fig(panel, cols=None, title=None, ytitle=None, normalize=False, height=
             y = s if base == 0 else (s / base) * 100
         else:
             y = s
-        fig.add_trace(Scatter(x=s.index.tz_convert(UTC).tz_localize(None), y=y, mode='lines', name=col, line=dict(width=2), connectgaps=True, hovertemplate='%{x}<br>%{y:.4f}<extra>%{fullData.name}</extra>'))
+        x_idx = s.index.tz_convert(UTC).tz_localize(None) if use_utc else s.index.tz_localize(None)
+        fig.add_trace(Scatter(x=x_idx, y=y, mode='lines', name=col, line=dict(width=2), connectgaps=True, hovertemplate='%{x}<br>%{y:.4f}<extra>%{fullData.name}</extra>'))
         added += 1
     if added == 0:
         return None
     _apply_chart_style(fig, title, ytitle, height, width_hint=width_hint)
-    if asof_dt:
+    if use_utc and asof_dt:
+        fig.update_xaxes(title_text='Time (UTC)')
         _add_session_lines(fig, panel, asof_dt)
     return fig
 
 
-def area_fig(panel, cols=None, title=None, ytitle=None, height=340, width_hint='half', asof_dt=None):
+def area_fig(panel, cols=None, title=None, ytitle=None, height=340, width_hint='half', asof_dt=None, use_utc=True):
     cols = existing(panel, cols)
     fig = Figure()
     if not cols:
@@ -145,12 +149,14 @@ def area_fig(panel, cols=None, title=None, ytitle=None, height=340, width_hint='
         non_null = s.dropna()
         if non_null.empty:
             continue
-        fig.add_trace(Scatter(x=s.index.tz_convert(UTC).tz_localize(None), y=s, mode='lines', name=col, line=dict(width=1.5), fill='tozeroy', connectgaps=True, hovertemplate='%{x}<br>%{y:.4f}<extra>%{fullData.name}</extra>'))
+        x_idx = s.index.tz_convert(UTC).tz_localize(None) if use_utc else s.index.tz_localize(None)
+        fig.add_trace(Scatter(x=x_idx, y=s, mode='lines', name=col, line=dict(width=1.5), fill='tozeroy', connectgaps=True, hovertemplate='%{x}<br>%{y:.4f}<extra>%{fullData.name}</extra>'))
         added += 1
     if added == 0:
         return None
     _apply_chart_style(fig, title, ytitle, height, width_hint=width_hint)
-    if asof_dt:
+    if use_utc and asof_dt:
+        fig.update_xaxes(title_text='Time (UTC)')
         _add_session_lines(fig, panel, asof_dt)
     return fig
 
@@ -229,7 +235,7 @@ def section_change_bar_fig(summary=None, sections=None, title=None, ytitle=None,
     return fig
 
 
-def dual_axis_line_fig(panel, cols_left=None, cols_right=None, title=None, ytitle_left=None, ytitle_right=None, height=340, width_hint='half'):
+def dual_axis_line_fig(panel, cols_left=None, cols_right=None, title=None, ytitle_left=None, ytitle_right=None, height=340, width_hint='half', use_utc=True):
     cols_l = existing(panel, cols_left)
     cols_r = existing(panel, cols_right)
     fig = Figure()
@@ -240,13 +246,15 @@ def dual_axis_line_fig(panel, cols_left=None, cols_right=None, title=None, ytitl
         s = panel[col].dropna()
         if s.empty:
             continue
-        fig.add_trace(Scatter(x=s.index.tz_convert(UTC).tz_localize(None), y=s, mode='lines', name=col, line=dict(width=2), connectgaps=True, hovertemplate='%{x}<br>%{y:.4f}<extra>%{fullData.name}</extra>'))
+        x_idx = s.index.tz_convert(UTC).tz_localize(None) if use_utc else s.index.tz_localize(None)
+        fig.add_trace(Scatter(x=x_idx, y=s, mode='lines', name=col, line=dict(width=2), connectgaps=True, hovertemplate='%{x}<br>%{y:.4f}<extra>%{fullData.name}</extra>'))
         added += 1
     for col in cols_r:
         s = panel[col].dropna()
         if s.empty:
             continue
-        fig.add_trace(Scatter(x=s.index.tz_convert(UTC).tz_localize(None), y=s, mode='lines', name=col, line=dict(width=2, dash='dot'), connectgaps=True, yaxis='y2', hovertemplate='%{x}<br>%{y:.4f}<extra>%{fullData.name}</extra>'))
+        x_idx = s.index.tz_convert(UTC).tz_localize(None) if use_utc else s.index.tz_localize(None)
+        fig.add_trace(Scatter(x=x_idx, y=s, mode='lines', name=col, line=dict(width=2, dash='dot'), connectgaps=True, yaxis='y2', hovertemplate='%{x}<br>%{y:.4f}<extra>%{fullData.name}</extra>'))
         added += 1
     if added == 0:
         return None
@@ -281,12 +289,12 @@ def make_figures(summary_daily=None, summary_24h=None, daily_panel=None, rolling
 
     # 4. Curve spreads 1Y
     d1y = daily_panel.tail(260) if daily_panel is not None else None
-    fig = line_fig(d1y, ['UST 2s10s spread', 'UST 5s30s spread'], 'Curve Spreads (1Y)', 'bp', height=340, width_hint='full')
+    fig = line_fig(d1y, ['UST 2s10s spread', 'UST 5s30s spread'], 'Curve Spreads (1Y)', 'bp', height=340, width_hint='full', use_utc=False)
     if fig:
         figs.append(ChartSpec(fig, 'rates', 'full', 40))
 
     # 5. BEI 1Y daily close
-    fig = line_fig(d1y, ['BEI 5Y', 'BEI 10Y', 'BEI 30Y'], 'BEI Inflation Expectation (1Y daily)', 'BEI (%)', height=340, width_hint='half')
+    fig = line_fig(d1y, ['BEI 5Y', 'BEI 10Y', 'BEI 30Y'], 'BEI Inflation Expectation (1Y daily)', 'BEI (%)', height=340, width_hint='half', use_utc=False)
     if fig:
         figs.append(ChartSpec(fig, 'rates', 'half', 50))
 
@@ -309,7 +317,7 @@ def make_figures(summary_daily=None, summary_24h=None, daily_panel=None, rolling
         figs.append(ChartSpec(fig, 'fx', 'half', 10))
 
     # 9. DXY 1Y
-    fig = line_fig(d1y, ['DXY'], 'DXY (1Y)', 'Index', height=340, width_hint='half')
+    fig = line_fig(d1y, ['DXY'], 'DXY (1Y)', 'Index', height=340, width_hint='half', use_utc=False)
     if fig:
         figs.append(ChartSpec(fig, 'fx', 'half', 20))
 
@@ -319,7 +327,7 @@ def make_figures(summary_daily=None, summary_24h=None, daily_panel=None, rolling
         figs.append(ChartSpec(fig, 'fx', 'half', 30))
 
     # 11. USDCNY/CNH & Fixing 1Y
-    fig = line_fig(d1y, ['USD/CNY fixing', 'USDCNY', 'USDCNH'], 'USDCNY/CNH & Fixing (1Y)', 'USD/CNY', height=340, width_hint='half')
+    fig = line_fig(d1y, ['USD/CNY fixing', 'USDCNY', 'USDCNH'], 'USDCNY/CNH & Fixing (1Y)', 'USD/CNY', height=340, width_hint='half', use_utc=False)
     if fig:
         figs.append(ChartSpec(fig, 'fx', 'half', 40))
 
@@ -330,29 +338,29 @@ def make_figures(summary_daily=None, summary_24h=None, daily_panel=None, rolling
         figs.append(ChartSpec(fig, 'commodities', 'half', 10))
 
     # 13. Oil 1Y
-    fig = line_fig(d1y, ['Brent crude', 'WTI crude'], 'Crude Oil (1Y)', 'USD', height=340, width_hint='half')
+    fig = line_fig(d1y, ['Brent crude', 'WTI crude'], 'Crude Oil (1Y)', 'USD', height=340, width_hint='half', use_utc=False)
     if fig:
         figs.append(ChartSpec(fig, 'commodities', 'half', 20))
 
     # 14. Gold & Copper 1Y
-    fig = dual_axis_line_fig(d1y, cols_left=['Gold'], cols_right=['Copper'], title='Gold & Copper (1Y)', ytitle_left='Gold (USD)', ytitle_right='Copper (USD)')
+    fig = dual_axis_line_fig(d1y, cols_left=['Gold'], cols_right=['Copper'], title='Gold & Copper (1Y)', ytitle_left='Gold (USD)', ytitle_right='Copper (USD)', use_utc=False)
     if fig:
         figs.append(ChartSpec(fig, 'commodities', 'half', 30))
 
     # --- Section: longterm ---
     # 15. UST 2Y/10Y 2-year
     d2y = daily_panel if daily_panel is not None else None
-    fig = line_fig(d2y, ['UST 2Y', 'UST 10Y'], 'UST 2Y/10Y (2Y daily)', 'Yield (%)', height=340, width_hint='full')
+    fig = line_fig(d2y, ['UST 2Y', 'UST 10Y'], 'UST 2Y/10Y (2Y daily)', 'Yield (%)', height=340, width_hint='full', use_utc=False)
     if fig:
         figs.append(ChartSpec(fig, 'longterm', 'full', 10))
 
     # 16. 2s10s spread 2-year
-    fig = line_fig(d2y, ['UST 2s10s spread'], '2s10s Spread (2Y daily)', 'bp', height=340, width_hint='full')
+    fig = line_fig(d2y, ['UST 2s10s spread'], '2s10s Spread (2Y daily)', 'bp', height=340, width_hint='full', use_utc=False)
     if fig:
         figs.append(ChartSpec(fig, 'longterm', 'full', 20))
 
     # 17. DXY & Gold 2-year
-    fig = dual_axis_line_fig(d2y, cols_left=['DXY'], cols_right=['Gold'], title='DXY & Gold (2Y daily)', ytitle_left='DXY', ytitle_right='Gold (USD)', height=340, width_hint='full')
+    fig = dual_axis_line_fig(d2y, cols_left=['DXY'], cols_right=['Gold'], title='DXY & Gold (2Y daily)', ytitle_left='DXY', ytitle_right='Gold (USD)', height=340, width_hint='full', use_utc=False)
     if fig:
         figs.append(ChartSpec(fig, 'longterm', 'full', 30))
 

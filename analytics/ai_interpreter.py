@@ -7,11 +7,15 @@ import hashlib
 import os
 import sqlite3
 from datetime import datetime, timedelta
+from zoneinfo import ZoneInfo
 import numpy as np
 import pandas as pd
 from config.settings import settings
 from analytics.summary import format_level, get_unit, get_order
 from dates.windows import ReportWindows
+
+NY_TZ = ZoneInfo('America/New_York')
+UTC = ZoneInfo('UTC')
 
 REPORT_WATCH_DB = r'D:\Report Watch\.state\report_watch.sqlite3'
 
@@ -213,13 +217,21 @@ def _build_bank_research_text(reports):
 def build_context(summary_daily, summary_main=None, summary_24h=None, daily_panel=None, quality_df=None, windows=None):
     """Build the full prompt context for AI interpretation."""
     asof_str = windows.asof_dt.strftime('%Y-%m-%d %H:%M %Z')
-    main_window_str = f'{windows.main_start.strftime("%m-%d %H:%M")} -> {windows.main_end.strftime("%m-%d %H:%M")}'
+    asof_utc = windows.asof_dt.astimezone(UTC).strftime('%Y-%m-%d %H:%M UTC')
+    main_window_str = f'{windows.main_start.strftime("%m-%d %H:%M")} -> {windows.main_end.strftime("%m-%d %H:%M")} CST'
+    main_window_utc = f'{windows.main_start.astimezone(UTC).strftime("%m-%d %H:%M")} -> {windows.main_end.astimezone(UTC).strftime("%m-%d %H:%M")} UTC'
+    # NY session times for previous trading day
+    prev_trade = windows.target_fixing_date
+    ny_open_et = datetime(prev_trade.year, prev_trade.month, prev_trade.day, 9, 30, tzinfo=NY_TZ)
+    ny_close_et = datetime(prev_trade.year, prev_trade.month, prev_trade.day, 16, 0, tzinfo=NY_TZ)
+    ny_session_str = f'{ny_open_et.strftime("%H:%M")} - {ny_close_et.strftime("%H:%M")} ET ({ny_open_et.astimezone(UTC).strftime("%H:%M")} - {ny_close_et.astimezone(UTC).strftime("%H:%M")} UTC)'
     # Fetch bank research from Report Watch
     bank_reports = get_recent_macro_reports(asof_dt=windows.asof_dt, lookback_days=3)
     bank_research_text = _build_bank_research_text(bank_reports)
     return f'## 报告时间\n\
-锚定时间：{asof_str}\n\
-主窗口：{main_window_str}\n\
+锚定时间：{asof_str}（{asof_utc}）\n\
+主窗口：{main_window_str}（{main_window_utc}）\n\
+纽约交易时段：{ny_session_str}\n\
 \n## 今日收盘变动（前日收盘→当日收盘，与公开行情口径一致）\n\
 {_build_summary_text(summary_daily)}\n\
 \n## 主窗口内变动（{main_window_str}，仅反映亚洲时段窄幅波动）\n\
@@ -235,6 +247,7 @@ def build_context(summary_daily, summary_main=None, summary_24h=None, daily_pane
 \n---\n\
 \n请按照以下五个部分撰写晨会复盘，文字以分析为主，减少机械复述。\n\
 **重要：变动方向必须以"今日收盘变动"（前日收盘→当日收盘）为准，这是与公开行情一致的口径。"主窗口内变动"仅反映亚洲时段窄幅波动，不能作为全日叙事依据。**\n\
+**图表时间轴统一使用UTC，纽约交易时段以竖线标注开盘（9:30 ET）与收盘（16:00 ET）。**\n\
 所有数字必须与上文完全一致：\n\
 \n### 一、核心结论\n\
 用2-3句话概括隔夜最核心的变化和驱动逻辑。\n\
